@@ -2504,3 +2504,74 @@ table.cios-hm tr:hover td,table.cios-cmt tr:hover td,table.cios-kw tr:hover td{b
   .exec-summary-value{font-size:26px}
 }
 
+/* =========================================================
+   Vercel layout hotfix (horizontal clipping / blank right band)
+   Keep overflow scoped to nav ribbons, never the full page.
+   ========================================================= */
+html,body,#app-root{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+.topbar,.api-bar,.prog-bar,.sit,.comp-nav{
+  width:100%;
+  max-width:100%;
+}
+
+/* Situation ribbon: stable text + wrap strategy that never clips left */
+.sit{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-areas:
+    "flag text"
+    "tags tags";
+  align-items:center!important;
+  gap:8px 12px!important;
+}
+.sfl{grid-area:flag}
+.stx{
+  grid-area:text;
+  min-width:0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.stags{
+  grid-area:tags;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:6px;
+  min-width:0;
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:2px;
+}
+.stag{flex:0 0 auto}
+
+/* Primary tab nav: allow internal horizontal scroll instead of page overflow */
+.comp-nav{
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+.comp-nav-btn{flex:0 0 auto}
+
+@media (max-width:900px){
+  .sit{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "flag"
+      "text"
+      "tags";
+  }
+  .stx{
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+  }
+}
+
