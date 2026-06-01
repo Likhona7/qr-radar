@@ -532,9 +532,14 @@ function normalizeCompData(id, data){
     title: o.title || 'Create B2C action', detail: o.detail || 'Turn cached signal into product/marketing action.', owner:'Digital/B2C team', timeline:'Days 1-14', value:o.value || 'TBD'
   })) : []), function(a){ return firstText(a, ['title'], '')+'|'+firstText(a, ['detail'], ''); });
   const scoreSource = data.overallThreat || data.threat || data.score || derivedThreat || (selectedSignals.length ? domain.score : null);
+  const newsPages = competitorNewsPages(meta);
+  const newsEvidence = collectCompetitorNewsEvidence(meta, data, selectedSignals);
   return {
     competitor: data.competitor || id,
     name: data.name || meta.name || id,
+    why: data.why || meta.why || '',
+    newsPages: newsPages,
+    newsEvidence: newsEvidence,
     overallThreat: hasSpecificCache ? safeScore(scoreSource, derivedThreat || 70) : null,
     summary: hasExplicitCache
       ? firstText(data, ['summary','topInsight'], (meta.name||id)+' intelligence loaded from backend cache.')
@@ -2684,12 +2689,72 @@ const CSTORE='radar_v11_comp_';
 let ACOMP=null;
 
 const CMETA={
-  em:{name:'Emirates',flag:'AE',hub:'Dubai DXB', terms:/\bemirates\b|\bdxb\b|\bdubai\b/i},
-  tk:{name:'Turkish Airlines',flag:'TR',hub:'Istanbul IST', terms:/\bturkish airlines\b|\bturkish\b|\bistanbul\b|\bist\b/i},
-  et:{name:'Etihad Airways',flag:'AE',hub:'Abu Dhabi AUH', terms:/\betihad airways\b|\betihad\b|\babu dhabi\b|\bauh\b/i},
-  sg:{name:'Singapore Airlines',flag:'SG',hub:'Singapore SIN', terms:/\bsingapore airlines\b|\bsingapore\b|\bsin\b/i},
-  ai:{name:'Air India',flag:'IN',hub:'Delhi DEL', terms:/\bair india\b|\bdelhi\b|\bdel\b|\btata\b/i},
-  ea:{name:'Ethiopian Airlines',flag:'ET',hub:'Addis Ababa ADD', terms:/\bethiopian airlines\b|\bethiopian\b|\baddis ababa\b|\baddis\b|\badd\b/i}
+  em:{
+    name:'Emirates',
+    flag:'AE',
+    hub:'Dubai DXB',
+    tier:'priority',
+    terms:/\bemirates\b|\bdxb\b|\bdubai\b/i,
+    why:'Primary Gulf premium and long-haul connector competitor on Europe, Americas, Africa and Asia flows.',
+    newsPages:[
+      'https://www.emirates.com/media-centre/'
+    ]
+  },
+  tk:{
+    name:'Turkish Airlines',
+    flag:'TR',
+    hub:'Istanbul IST',
+    tier:'priority',
+    terms:/\bturkish airlines\b|\bturkish\b|\bistanbul\b|\bist\b/i,
+    why:'Large global network competitor with strong Europe transfer proposition and frequent tactical pricing.',
+    newsPages:[
+      'https://www.turkishairlines.com/en-int/press-room/'
+    ]
+  },
+  et:{
+    name:'Etihad Airways',
+    flag:'AE',
+    hub:'Abu Dhabi AUH',
+    tier:'priority',
+    terms:/\betihad airways\b|\betihad\b|\babu dhabi\b|\bauh\b/i,
+    why:'Gulf premium competitor in overlapping long-haul and high-value loyalty segments.',
+    newsPages:[
+      'https://www.etihad.com/en/news'
+    ]
+  },
+  sg:{
+    name:'Singapore Airlines',
+    flag:'SG',
+    hub:'Singapore SIN',
+    tier:'priority',
+    terms:/\bsingapore airlines\b|\bsingapore\b|\bsin\b/i,
+    why:'Premium service benchmark competitor and key long-haul demand capture rival on Asia-bound traffic.',
+    newsPages:[
+      'https://www.singaporeair.com/en_UK/us/media-centre/'
+    ]
+  },
+  ai:{
+    name:'Air India',
+    flag:'IN',
+    hub:'Delhi DEL',
+    tier:'strategic',
+    terms:/\bair india\b|\bdelhi\b|\bdel\b|\btata\b/i,
+    why:'High-growth India network competitor with strong relevance for South Asia demand and price-sensitive shifts.',
+    newsPages:[
+      'https://www.airindia.com/in/en/newsroom.html'
+    ]
+  },
+  ea:{
+    name:'Ethiopian Airlines',
+    flag:'ET',
+    hub:'Addis Ababa ADD',
+    tier:'strategic',
+    terms:/\bethiopian airlines\b|\bethiopian\b|\baddis ababa\b|\baddis\b|\badd\b/i,
+    why:'Africa connectivity competitor with growing transfer relevance across East/West Africa flows.',
+    newsPages:[
+      'https://corporate.ethiopianairlines.com/media/news'
+    ]
+  }
 };
 const COMP_CACHE_ALIASES = {
   em: ['em', 'ek', 'emirates'],
@@ -2699,6 +2764,41 @@ const COMP_CACHE_ALIASES = {
   ai: ['ai', 'airindia'],
   ea: ['ea', 'eth', 'ethiopian']
 };
+
+function urlHostName(v){
+  const u = safeUrl(v);
+  if(!u) return '';
+  try{
+    return String(new URL(u).hostname || '').replace(/^www\./i, '').toLowerCase();
+  }catch(e){
+    return '';
+  }
+}
+function competitorNewsPages(meta){
+  return asArray(meta && meta.newsPages).map(safeUrl).filter(Boolean);
+}
+function competitorNewsHosts(meta){
+  return competitorNewsPages(meta).map(urlHostName).filter(Boolean);
+}
+function collectCompetitorNewsEvidence(meta, data, selectedSignals){
+  const allowedHosts = competitorNewsHosts(meta);
+  const candidateRows = []
+    .concat(asArray(data && data.weaknesses))
+    .concat(asArray(data && data.opportunities))
+    .concat(asArray(data && data.actions))
+    .concat(asArray(selectedSignals));
+  const mapped = candidateRows.map(function(row){
+    const sourceUrl = safeUrl(firstText(row, ['sourceUrl', 'url'], ''));
+    if(!sourceUrl) return null;
+    const host = urlHostName(sourceUrl);
+    if(allowedHosts.length && !allowedHosts.some(function(h){ return host === h || host.endsWith('.' + h); })) return null;
+    return {
+      source: firstText(row, ['source','publisher','name'], host || 'Official news'),
+      sourceUrl: sourceUrl
+    };
+  }).filter(Boolean);
+  return dedupeBy(mapped, function(row){ return row.sourceUrl; }).slice(0, 6);
+}
 
 
 function analysedThreatScore(data){
@@ -2766,16 +2866,45 @@ function compPriorityScore(id, data){
   score += actions.length * 3;
   return score;
 }
+function competitorTierRank(id){
+  const tier = String(CMETA[id]?.tier || 'priority').toLowerCase();
+  if(tier === 'strategic') return 1;
+  return 0;
+}
+function compareCompIds(aid, bid){
+  const tierDiff = competitorTierRank(aid) - competitorTierRank(bid);
+  if(tierDiff) return tierDiff;
+  const diff = compPriorityScore(bid, CDATA[bid]) - compPriorityScore(aid, CDATA[aid]);
+  if(diff) return diff;
+  return String(CMETA[aid]?.name||aid).localeCompare(String(CMETA[bid]?.name||bid));
+}
 function reorderCompetitors(){
+  const tierBlocks = Array.from(document.querySelectorAll('.comp-tier-block'));
+  if(tierBlocks.length){
+    tierBlocks.forEach(function(block){
+      const grid = block.querySelector('.comp-tier-grid');
+      if(!grid) return;
+      const tiles = Array.from(grid.querySelectorAll('.comp-tile'));
+      tiles.sort(function(a,b){
+        const aid = a.getAttribute('data-comp');
+        const bid = b.getAttribute('data-comp');
+        return compareCompIds(aid, bid);
+      }).forEach(function(tile){
+        grid.appendChild(tile);
+      });
+    });
+    return;
+  }
   const wrap = document.querySelector('.comp-tiles');
   if(!wrap) return;
   const tiles = Array.from(wrap.querySelectorAll('.comp-tile'));
-  tiles.sort((a,b)=>{
-    const aid=a.getAttribute('data-comp'), bid=b.getAttribute('data-comp');
-    const diff = compPriorityScore(bid, CDATA[bid]) - compPriorityScore(aid, CDATA[aid]);
-    if(diff) return diff;
-    return String(CMETA[aid]?.name||aid).localeCompare(String(CMETA[bid]?.name||bid));
-  }).forEach(t=>wrap.appendChild(t));
+  tiles.sort(function(a,b){
+    const aid = a.getAttribute('data-comp');
+    const bid = b.getAttribute('data-comp');
+    return compareCompIds(aid, bid);
+  }).forEach(function(tile){
+    wrap.appendChild(tile);
+  });
 }
 
 function loadCfromStorage(id){
@@ -2881,7 +3010,19 @@ async function loadComp(id, options){
     try{
       if(btn) btn.textContent='Generating...';
       const meta = CMETA[id] || {};
-      const compPrompt = 'Generate current competitor intelligence for Qatar Airways versus '+(meta.name||id)+' ('+(meta.hub||'')+'). Return JSON only with: name, overallThreat (0-100), summary, weaknesses [{title,detail,impact,severity,source,sourceUrl}], opportunities [{title,detail,value,timeWindow,b2cAngle}], actions [{title,detail,owner,timeline,value}]. Focus on B2C, direct booking, loyalty, product, pricing, network and customer experience implications. Keep text concise.';
+      const officialPages = competitorNewsPages(meta);
+      const officialPagesLine = officialPages.length
+        ? 'Prioritise these official competitor pages first: '+officialPages.join(' ; ')+'.'
+        : '';
+      const compPrompt = [
+        'Generate current competitor intelligence for Qatar Airways versus '+(meta.name||id)+' ('+(meta.hub||'')+').',
+        meta.why ? 'Why this rival matters: '+meta.why : '',
+        officialPagesLine,
+        'Use current evidence only; prefer official newsrooms, official route/product announcements, and verified industry sources.',
+        'Return JSON only with: name, overallThreat (0-100), summary, why, weaknesses [{title,detail,impact,severity,source,sourceUrl}], opportunities [{title,detail,value,timeWindow,b2cAngle,source,sourceUrl}], actions [{title,detail,owner,timeline,value,source,sourceUrl}].',
+        'Focus on B2C, direct booking, loyalty, product, pricing, network and customer experience implications.',
+        'Every weakness/opportunity/action must include source and sourceUrl where possible.'
+      ].filter(Boolean).join(' ');
       const genResp = await fetch(BACKEND_URL+'/api/claude', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -2947,7 +3088,8 @@ async function loadComp(id, options){
 }
 
 async function loadAllCompetitors(){
-  for(const id of Object.keys(CMETA)){
+  const allIds = Object.keys(CMETA).sort(compareCompIds);
+  for(const id of allIds){
     await loadComp(id);
   }
 }
@@ -3837,6 +3979,27 @@ function renderAPError(msg){
 function renderComp(id,data){
   data = normalizeCompData(id, data);
   const meta=CMETA[id]||{};
+  const whyLine = firstText(data, ['why'], '') || meta.why || '';
+  const officialNewsPages = competitorNewsPages(meta);
+  const officialNewsHtml = officialNewsPages.length
+    ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px">${officialNewsPages.map(function(u){
+        const host = urlHostName(u) || 'official source';
+        return `<a href="${u}" target="_blank" rel="noopener" class="comp-pill cp-b" style="text-decoration:none">${esc(host)}</a>`;
+      }).join('')}</div>`
+    : '';
+  const newsEvidenceRows = asArray(data.newsEvidence).slice(0,4);
+  const newsEvidenceHtml = newsEvidenceRows.length
+    ? `<div style="background:var(--bg2);border:1px solid var(--bo);border-radius:8px;padding:10px 12px;margin:10px 0 2px">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:7px">Official news-page evidence</div>
+        ${newsEvidenceRows.map(function(n){
+          const u = safeUrl(n.sourceUrl);
+          return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div style="font-size:11px;color:var(--t2)">${esc(n.source || (urlHostName(u) || 'Official source'))}</div>
+            ${u ? `<a href="${u}" target="_blank" rel="noopener" style="font-size:10px;color:var(--qb);text-decoration:none">Verify</a>` : ''}
+          </div>`;
+        }).join('')}
+      </div>`
+    : '';
   const weakH=(data.weaknesses||[]).map(w=>{
     const u=safeUrl(w.sourceUrl);
     return `<div class="comp-sig"><div class="comp-sdot" style="background:var(--red)"></div><div class="comp-sb">
@@ -3855,7 +4018,7 @@ function renderComp(id,data){
     <div style="font-size:9px;color:var(--t3);margin-top:2px">Owner: ${esc(a.owner||'B2C team')}</div>
   </div></div>`).join('');
   const noMatch = !data.hasSpecificCache;
-  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div></div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div></div>` : `<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
+  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
 }
 
 function renderCErr(id,msg){
