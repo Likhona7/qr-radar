@@ -1,0 +1,142 @@
+<!-- VIEW NOTICE -->
+<div class="view-notice" id="viewNotice">
+  <div class="vn-left">
+    <div class="vn-dot"></div>
+    <div>
+      <div class="vn-title" id="viewTitle">Enterprise view</div>
+      <div class="vn-text" id="viewText">External intelligence for Digital Product, Digital Marketing, Loyalty and B2C decision support.</div>
+    </div>
+  </div>
+  <span class="vn-pill" id="viewPill">Risk · Revenue · Opportunity</span>
+</div>
+
+<!-- BACKEND DATA NOTICE -->
+<div class="bm-notice" id="bmNotice">
+  <div class="bm-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+  <div class="bm-txt">
+    <strong>Backend/cache-first data transparency:</strong> Radar shows backend/Supabase cache or saved browser cache only. Empty states are shown where no backend data exists.
+  </div>
+  <span class="bm-close" onclick="document.getElementById('bmNotice').style.display='none'">×</span>
+</div>
+
+<!-- LEADERSHIP COMMAND CENTER -->
+<section class="leadership-deck" id="leadershipDeck">
+  <div class="lead-card">
+    <div class="lead-card-h">
+      <div>
+        <div class="lead-eyebrow">Leadership focus today</div>
+        <div class="lead-title">Top Digital/B2C actions</div>
+        <div class="lead-sub" id="leadDeckSub">Prioritised by website/app impact, direct-booking growth, loyalty, OTA pressure and urgency.</div>
+      </div>
+      <span class="vbadge">Backend/cache</span>
+    </div>
+    <div class="lead-actions" id="leadActionCards">
+      <div class="lead-empty">Load or refresh domains to populate the top leadership actions. This area will show the three items VP/SVP should address first.</div>
+    </div>
+  </div>
+  <div class="lead-side">
+    <div class="lead-card lead-summary">
+      <div class="lead-eyebrow">Executive narrative</div>
+      <div class="lead-summary-main" id="leadNarrativeMain">Digital/B2C scan is ready.</div>
+      <div class="lead-summary-text" id="leadNarrativeText">Connect the API or load saved domains to generate an executive summary for Digital Product VP and SVP review.</div>
+    </div>
+    <div class="lead-card lead-summary">
+      <div class="lead-eyebrow">Direct vs OTA pressure</div>
+      <div class="lead-pressure-grid">
+        <div class="pressure-pill">
+          <div class="pressure-v" id="otaPressureV">—</div>
+          <div class="pressure-l">OTA / agent pressure</div>
+        </div>
+        <div class="pressure-pill">
+          <div class="pressure-v" id="directStrengthV">—</div>
+          <div class="pressure-l">Direct-channel strength</div>
+        </div>
+      </div>
+      <div class="pressure-note" id="pressureNote">Uses external signals only. Treat as estimated market pressure, not internal booking share.</div>
+    </div>
+  </div>
+</section>
+
+<!-- KPI STRIP — hover each card for signal breakdown -->
+<div class="kpi-strip" id="kpiStrip">
+  <div class="kpi" id="kpi1w">
+    <div class="kpi-stale" id="k1dot"></div><div class="kv vn" id="k1v">—</div>
+    <div class="kl" id="k1l">Active risks</div><div class="kd dt" id="k1d">Hover for breakdown</div>
+    <div class="kpi-tooltip"><div class="ktt-title">Risk signals by domain</div><div id="ktt1b"><div class="ktt-empty">Load domains first</div></div></div>
+  </div>
+  <div class="kpi" id="kpi2w">
+    <div class="kpi-stale" id="k2dot"></div><div class="kv vg" id="k2v">—</div>
+    <div class="kl" id="k2l">Opportunity value</div><div class="kd dt" id="k2d">Hover for breakdown</div>
+    <div class="kpi-tooltip"><div class="ktt-title">Top opportunities</div><div id="ktt2b"><div class="ktt-empty">Load domains first</div></div></div>
+  </div>
+  <div class="kpi" id="kpi3w">
+    <div class="kpi-stale" id="k3dot"></div><div class="kv va" id="k3v">—</div>
+    <div class="kl" id="k3l">Action levers</div><div class="kd dt" id="k3d">Hover for breakdown</div>
+    <div class="kpi-tooltip"><div class="ktt-title">Direct/B2C action levers</div><div id="ktt3b"><div class="ktt-empty">Load domains first</div></div></div>
+  </div>
+  <div class="kpi" id="kpi4w">
+    <div class="kpi-stale" id="k4dot"></div><div class="kv vn" id="k4v">—</div>
+    <div class="kl" id="k4l">Forward signals</div><div class="kd dt" id="k4d">Hover for breakdown</div>
+    <div class="kpi-tooltip"><div class="ktt-title">By time window</div><div id="ktt4b"><div class="ktt-empty">Load domains first</div></div></div>
+  </div>
+  <div class="kpi" id="kpi5w">
+    <div class="kpi-stale" id="k5dot"></div><div class="kv vn" id="k5v">0/14</div>
+    <div class="kl" id="k5l">Coverage</div><div class="kd dt" id="k5d">Hover for status</div>
+    <div class="kpi-tooltip"><div class="ktt-title">Domain coverage</div><div id="ktt5b"><div class="ktt-empty">Loading...</div></div></div>
+  </div>
+</div>
+
+<div class="sec-row">
+  <span class="sec-lbl">14 intelligence domains</span>
+  <span class="sec-hint" id="secHint">Each domain loads and saves independently — resume any time if interrupted</span>
+</div>
+
+<!-- 14 DOMAIN TILES -->
+<div class="dom-grid">
+  <div class="dom d-rev" data-id="rev" onclick="openDom('rev')"><div class="dom-rd"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M3 17l3-8 4 4 4-8 4 6"/><path d="M21 21H3"/></svg></div><div class="dom-n">Revenue &amp; pricing</div><div class="dom-b" id="cb-rev">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-rev" style="width:0%"></div></div><span class="onum" id="on-rev">—</span></div></div>
+  <div class="dom d-dig" data-id="dig" onclick="openDom('dig')"><div class="dom-rd"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1"/></svg></div><div class="dom-n">Digital &amp; direct</div><div class="dom-b" id="cb-dig">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-dig" style="width:0%"></div></div><span class="onum" id="on-dig">—</span></div></div>
+  <div class="dom d-loy" data-id="loy" onclick="openDom('loy')"><div class="dom-rd"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.5-8-11a5 5 0 0110 0 5 5 0 0110 0c0 5.5-8 11-8 11z"/></svg></div><div class="dom-n">Loyalty</div><div class="dom-b" id="cb-loy">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-loy" style="width:0%"></div></div><span class="onum" id="on-loy">—</span></div></div>
+  <div class="dom d-prd" data-id="prd" onclick="openDom('prd')"><div class="dom-ad"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg></div><div class="dom-n">Product</div><div class="dom-b" id="cb-prd">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-prd" style="width:0%"></div></div><span class="onum" id="on-prd">—</span></div></div>
+  <div class="dom d-cmp" data-id="cmp" onclick="openDom('cmp')"><div class="dom-rd"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/><line x1="12" y1="8" x2="12" y2="16"/></svg></div><div class="dom-n">Competitors</div><div class="dom-b" id="cb-cmp">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-cmp" style="width:0%"></div></div><span class="onum" id="on-cmp">—</span></div></div>
+  <div class="dom d-geo" data-id="geo" onclick="openDom('geo')"><div class="dom-rd"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3-3 9 0 18M12 3c3 3 3 9 0 18"/></svg></div><div class="dom-n">Geopolitical</div><div class="dom-b" id="cb-geo">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-geo" style="width:0%"></div></div><span class="onum" id="on-geo">—</span></div></div>
+  <div class="dom d-agt" data-id="agt" onclick="openDom('agt')"><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M6 20v-2a5 5 0 0110 0v2"/><circle cx="12" cy="10" r="4"/></svg></div><div class="dom-n">Agents &amp; OTA</div><div class="dom-b" id="cb-agt">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-agt" style="width:0%"></div></div><span class="onum" id="on-agt">—</span></div></div>
+  <div class="dom d-sml" data-id="sml" onclick="openDom('sml')"><div class="dom-gd"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg></div><div class="dom-n">Social media</div><div class="dom-b" id="cb-sml">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-sml" style="width:0%"></div></div><span class="onum" id="on-sml">—</span></div></div>
+  <div class="dom d-soc" data-id="soc" onclick="openDom('soc')"><div class="dom-ad"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="dom-n">Social &amp; unrest</div><div class="dom-b" id="cb-soc">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-soc" style="width:0%"></div></div><span class="onum" id="on-soc">—</span></div></div>
+  <div class="dom d-spt" data-id="spt" onclick="openDom('spt')"><div class="dom-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg></div><div class="dom-n">Sport &amp; events</div><div class="dom-b" id="cb-spt">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-spt" style="width:0%"></div></div><span class="onum" id="on-spt">—</span></div></div>
+  <div class="dom d-sec" data-id="sec" onclick="openDom('sec')"><div class="dom-ad"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="dom-n">Cyber &amp; security</div><div class="dom-b" id="cb-sec">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-sec" style="width:0%"></div></div><span class="onum" id="on-sec">—</span></div></div>
+  <div class="dom d-reg" data-id="reg" onclick="openDom('reg')"><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="dom-n">Regulatory &amp; visa</div><div class="dom-b" id="cb-reg">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-reg" style="width:0%"></div></div><span class="onum" id="on-reg">—</span></div></div>
+  <div class="dom d-ops" data-id="ops" onclick="openDom('ops')"><div class="dom-ad"></div><div class="dom-ic"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="dom-n">Operations &amp; tech</div><div class="dom-b" id="cb-ops">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-ops" style="width:0%"></div></div><span class="onum" id="on-ops">—</span></div></div>
+  <div class="dom d-rep" data-id="rep" onclick="openDom('rep')"><div class="dom-ic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="dom-n">Brand &amp; reputation</div><div class="dom-b" id="cb-rep">loading...</div><div class="obar"><div class="otrk"><div class="ofil" id="of-rep" style="width:0%"></div></div><span class="onum" id="on-rep">—</span></div></div>
+</div>
+
+<div id="detPanel" class="det">
+  <div class="empty-d"><div class="er"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><div class="et" id="emptyTxt">Connect to the backend server or load saved cache. Radar will show backend/cache intelligence only.</div></div>
+</div>
+
+<!-- BOTTOM -->
+<div class="bot">
+  <div class="bcard">
+    <div class="bct"><span class="ld" style="flex-shrink:0"></span>Live signal feed — 14 domains · verified</div>
+    <div id="feedContainer">
+      <div class="fr"><span class="fsrc">Backend cache</span><span class="ftxt">No static signals are displayed. This feed populates only from backend/Supabase or saved browser cache after domains are loaded.</span><span class="imp io">Cache-first</span></div>
+    </div>
+  </div>
+  <div class="bcard" id="channelCard">
+    <div class="bct">
+      <span class="ld" style="flex-shrink:0"></span>
+      Channel intelligence — live verified data
+      <button onclick="loadChannelIntel()" id="chBtn" style="margin-left:auto;font-size:10px;font-weight:600;padding:4px 12px;background:var(--qb);color:#fff;border:none;border-radius:5px;cursor:pointer">↻ Refresh</button>
+    </div>
+    <div id="channelBody">
+      <div class="ch-empty" style="padding:18px;border:1px solid var(--bo);border-radius:14px;background:#fff">
+        <div style="font-weight:700;color:var(--qb);margin-bottom:6px">Channel intelligence cache not loaded yet</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.5">Static channel benchmarks have been removed. This card will only show backend/Supabase cache data or saved domain signals.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<!-- COMPETITOR INTELLIGENCE PAGE -->

@@ -1,0 +1,48 @@
+﻿<div class="comp-page" id="compPage">
+  <div class="comp-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+    <div>
+      <div class="comp-hdr-t">Competitor Intelligence</div>
+      <div class="comp-hdr-s">Weaknesses to exploit - Opportunities their moves create for QR - Specific B2C actions to take. Each loads independently from backend/cache evidence.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0;margin-top:4px">
+      <button onclick="loadAllCompetitors()" style="font-size:10px;font-weight:700;padding:6px 12px;background:var(--qb);border:1px solid var(--qb);border-radius:6px;color:#fff;cursor:pointer">Load all</button>
+      <button onclick="clearCompCache()" style="font-size:10px;font-weight:600;padding:6px 12px;background:var(--bg3);border:1px solid var(--bo);border-radius:6px;color:var(--t3);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--qb)';this.style.color='var(--qb)'" onmouseout="this.style.borderColor='var(--bo)';this.style.color='var(--t3)'">Clear all</button>
+    </div>
+  </div>
+  <div class="comp-tiles">
+    <div class="comp-tile c-em" data-comp="em" onclick="selComp('em')">
+      <div class="comp-th"><span class="comp-flag">AE</span><div><div class="comp-tname">Emirates</div><div class="comp-thub">DXB - Dubai</div></div></div>
+      <div class="comp-tb"><div class="comp-tlbl">Backend cache status</div><div class="comp-tstat">No static competitor facts shown.</div><div class="comp-tstat">Load saved backend/cache intelligence only.</div><div class="comp-tprog"><div class="comp-tpbar"><div class="comp-tpfill" id="cprog-em" style="width:0%"></div></div><span class="comp-tscore pending" id="cscore-em">No data</span></div><button class="comp-load-btn" id="cbtn-em" onclick="event.stopPropagation();loadComp('em')">No data</button></div>
+    </div>
+    <div class="comp-tile c-tk" data-comp="tk" onclick="selComp('tk')">
+      <div class="comp-th"><span class="comp-flag">TR</span><div><div class="comp-tname">Turkish Airlines</div><div class="comp-thub">IST - Istanbul</div></div></div>
+      <div class="comp-tb"><div class="comp-tlbl">Backend cache status</div><div class="comp-tstat">No static competitor facts shown.</div><div class="comp-tstat">Load saved backend/cache intelligence only.</div><div class="comp-tprog"><div class="comp-tpbar"><div class="comp-tpfill" id="cprog-tk" style="width:0%"></div></div><span class="comp-tscore pending" id="cscore-tk">No data</span></div><button class="comp-load-btn" id="cbtn-tk" onclick="event.stopPropagation();loadComp('tk')">No data</button></div>
+    </div>
+    <div class="comp-tile c-et" data-comp="et" onclick="selComp('et')">
+      <div class="comp-th"><span class="comp-flag">AE</span><div><div class="comp-tname">Etihad Airways</div><div class="comp-thub">AUH - Abu Dhabi</div></div></div>
+      <div class="comp-tb"><div class="comp-tlbl">Backend cache status</div><div class="comp-tstat">No static competitor facts shown.</div><div class="comp-tstat">Load saved backend/cache intelligence only.</div><div class="comp-tprog"><div class="comp-tpbar"><div class="comp-tpfill" id="cprog-et" style="width:0%"></div></div><span class="comp-tscore pending" id="cscore-et">No data</span></div><button class="comp-load-btn" id="cbtn-et" onclick="event.stopPropagation();loadComp('et')">No data</button></div>
+    </div>
+    <div class="comp-tile c-sg" data-comp="sg" onclick="selComp('sg')">
+      <div class="comp-th"><span class="comp-flag">SG</span><div><div class="comp-tname">Singapore Airlines</div><div class="comp-thub">SIN - Singapore</div></div></div>
+      <div class="comp-tb"><div class="comp-tlbl">Backend cache status</div><div class="comp-tstat">No static competitor facts shown.</div><div class="comp-tstat">Load saved backend/cache intelligence only.</div><div class="comp-tprog"><div class="comp-tpbar"><div class="comp-tpfill" id="cprog-sg" style="width:0%"></div></div><span class="comp-tscore pending" id="cscore-sg">No data</span></div><button class="comp-load-btn" id="cbtn-sg" onclick="event.stopPropagation();loadComp('sg')">No data</button></div>
+    </div>
+    <div class="comp-tile c-ai" data-comp="ai" onclick="selComp('ai')">
+      <div class="comp-th"><span class="comp-flag">IN</span><div><div class="comp-tname">Air India</div><div class="comp-thub">DEL - Delhi - Tata</div></div></div>
+      <div class="comp-tb"><div class="comp-tlbl">Backend cache status</div><div class="comp-tstat">No static competitor facts shown.</div><div class="comp-tstat">Load saved backend/cache intelligence only.</div><div class="comp-tprog"><div class="comp-tpbar"><div class="comp-tpfill" id="cprog-ai" style="width:0%"></div></div><span class="comp-tscore pending" id="cscore-ai">No data</span></div><button class="comp-load-btn" id="cbtn-ai" onclick="event.stopPropagation();loadComp('ai')">No data</button></div>
+    </div>
+    <div class="comp-tile c-ea" data-comp="ea" onclick="selComp('ea')">
+      <div class="comp-th"><span class="comp-flag">ET</span><div><div class="comp-tname">Ethiopian Airlines</div><div class="comp-thub">ADD - Addis Ababa</div></div></div>
+      <div class="comp-tb"><div class="comp-tlbl">Backend cache status</div><div class="comp-tstat">No static competitor facts shown.</div><div class="comp-tstat">Load saved backend/cache intelligence only.</div><div class="comp-tprog"><div class="comp-tpbar"><div class="comp-tpfill" id="cprog-ea" style="width:0%"></div></div><span class="comp-tscore pending" id="cscore-ea">No data</span></div><button class="comp-load-btn" id="cbtn-ea" onclick="event.stopPropagation();loadComp('ea')">No data</button></div>
+    </div>
+  </div>
+  <div id="compDetail">
+    <div style="padding:32px;text-align:center;color:var(--t3);background:var(--su);border:1px solid var(--bo);border-radius:var(--r3)">
+      <div style="font-size:28px;margin-bottom:10px;font-weight:700;color:var(--qb)">TARGET</div>
+      <div style="font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Select a competitor above to view cache-backed intelligence</div>
+      <div style="font-size:11px;max-width:420px;margin:0 auto;line-height:1.6">Each analysis shows weaknesses to exploit, opportunities their moves create for QR, and specific actions for the B2C team. Results are derived from backend/cache evidence and saved locally.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER SENTIMENT INTELLIGENCE PAGE -->
+

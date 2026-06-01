@@ -1,0 +1,206 @@
+﻿<div class="ci-page" id="ciPage">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px">
+    <div style="flex:1">
+      <div class="ci-hdr-t">Customer Intelligence <span style="font-size:11px;font-weight:500;color:var(--qg);margin-left:8px;vertical-align:middle">Decisioning Layer</span></div>
+      <div class="ci-hdr-s" style="margin-bottom:8px">Traveller-centric orchestration intelligence across 6 segments. Structured as a decisioning asset aligned to Adobe CJA, RTCDP, Journey Optimizer, and loyalty activation. Each analysis surfaces external signals and internal activation opportunities.</div>
+      <div class="ci-header-pills">
+        <span class="ci-header-pill">Identity confidence</span>
+        <span class="ci-header-pill">Trip intent</span>
+        <span class="ci-header-pill">Customer value</span>
+        <span class="ci-header-pill">Premiumity</span>
+        <span class="ci-header-pill warn">Service risk</span>
+        <span class="ci-header-pill ok">Next-best action</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0;margin-top:4px">
+      <button onclick="loadAllCustomerSegments()" style="font-size:10px;font-weight:700;padding:6px 12px;background:var(--qb);border:1px solid var(--qb);border-radius:6px;color:#fff;cursor:pointer">Load all</button>
+      <button onclick="clearCICache()" style="font-size:10px;font-weight:600;padding:6px 12px;background:var(--bg3);border:1px solid var(--bo);border-radius:6px;color:var(--t3);cursor:pointer">&#8635; Clear all</button>
+    </div>
+  </div>
+
+  <!-- Segment tiles -->
+  <div class="ci-segs">
+    <div class="ci-seg" data-seg="diaspora" onclick="selCI('diaspora')">
+      <div class="ci-seg-icon">&#127758;</div>
+      <div class="ci-seg-name">Diaspora Traveller</div>
+      <div class="ci-seg-sub">Highest LTV segment</div>
+      <div class="ci-seg-bar"><div class="ci-seg-fill" id="cibar-diaspora" style="width:0%"></div></div>
+      <div class="ci-seg-row"><span>Opportunity</span><span id="ciscore-diaspora">-</span></div>
+      <button class="ci-seg-btn" id="cibtn-diaspora" onclick="event.stopPropagation();loadCI('diaspora')">No data</button>
+    </div>
+    <div class="ci-seg" data-seg="business" onclick="selCI('business')">
+      <div class="ci-seg-icon">&#128188;</div>
+      <div class="ci-seg-name">Business Traveller</div>
+      <div class="ci-seg-sub">Premium yield driver</div>
+      <div class="ci-seg-bar"><div class="ci-seg-fill" id="cibar-business" style="width:0%"></div></div>
+      <div class="ci-seg-row"><span>Opportunity</span><span id="ciscore-business">-</span></div>
+      <button class="ci-seg-btn" id="cibtn-business" onclick="event.stopPropagation();loadCI('business')">No data</button>
+    </div>
+    <div class="ci-seg" data-seg="leisure" onclick="selCI('leisure')">
+      <div class="ci-seg-icon">&#127774;</div>
+      <div class="ci-seg-name">Leisure Traveller</div>
+      <div class="ci-seg-sub">Volume and conversion</div>
+      <div class="ci-seg-bar"><div class="ci-seg-fill" id="cibar-leisure" style="width:0%"></div></div>
+      <div class="ci-seg-row"><span>Opportunity</span><span id="ciscore-leisure">-</span></div>
+      <button class="ci-seg-btn" id="cibtn-leisure" onclick="event.stopPropagation();loadCI('leisure')">No data</button>
+    </div>
+    <div class="ci-seg" data-seg="loyalty" onclick="selCI('loyalty')">
+      <div class="ci-seg-icon">&#127942;</div>
+      <div class="ci-seg-name">Privilege Club Member</div>
+      <div class="ci-seg-sub">Retention priority</div>
+      <div class="ci-seg-bar"><div class="ci-seg-fill" id="cibar-loyalty" style="width:0%"></div></div>
+      <div class="ci-seg-row"><span>Opportunity</span><span id="ciscore-loyalty">-</span></div>
+      <button class="ci-seg-btn" id="cibtn-loyalty" onclick="event.stopPropagation();loadCI('loyalty')">No data</button>
+    </div>
+    <div class="ci-seg" data-seg="transit" onclick="selCI('transit')">
+      <div class="ci-seg-icon">&#128740;</div>
+      <div class="ci-seg-name">Transit Passenger</div>
+      <div class="ci-seg-sub">Hub conversion play</div>
+      <div class="ci-seg-bar"><div class="ci-seg-fill" id="cibar-transit" style="width:0%"></div></div>
+      <div class="ci-seg-row"><span>Opportunity</span><span id="ciscore-transit">-</span></div>
+      <button class="ci-seg-btn" id="cibtn-transit" onclick="event.stopPropagation();loadCI('transit')">No data</button>
+    </div>
+    <div class="ci-seg ci-seg-luxury" data-seg="luxury" onclick="selCI('luxury')">
+      <div class="ci-seg-new">New</div>
+      <div class="ci-seg-icon">&#10024;</div>
+      <div class="ci-seg-name">Luxury &amp; Premium</div>
+      <div class="ci-seg-sub">Ultra high-value segment</div>
+      <div class="ci-seg-bar"><div class="ci-seg-fill" id="cibar-luxury" style="width:0%"></div></div>
+      <div class="ci-seg-row"><span>Opportunity</span><span id="ciscore-luxury">-</span></div>
+      <button class="ci-seg-btn" id="cibtn-luxury" onclick="event.stopPropagation();loadCI('luxury')">No data</button>
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  <div id="ciDetail">
+    <div style="padding:36px;text-align:center;color:var(--t3);background:var(--su);border:1px solid var(--bo);border-radius:var(--r3)">
+      <div style="font-size:40px;margin-bottom:12px">&#128101;</div>
+      <div style="font-size:14px;font-weight:500;color:var(--t2);margin-bottom:6px">Select a customer segment to begin</div>
+      <div style="font-size:11px;max-width:520px;margin:0 auto;line-height:1.7">Each analysis uses live web research to surface who this segment is, what drives their booking decisions, what they value in a loyalty programme, and the specific personalisation and targeting opportunities available to the QR B2C team right now.</div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- â•â•â• CUSTOMER INTELLIGENCE OS PAGE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<div class="cios-page" id="ciosPage">
+
+  <!-- MASTHEAD -->
+  <div class="cios-mast">
+    <div class="cios-mast-top">
+      <div>
+        <div class="cios-eyebrow">Qatar Airways &middot; Intelligence OS &middot; External Only</div>
+        <div class="cios-title">Customer Intelligence<br>Operating System</div>
+        <div class="cios-sub">Voice-of-customer from 8 live public platforms &mdash; no NPS or internal data required. Every insight derived from what passengers say publicly, classified and ranked for commercial action.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <div class="cios-live-pill"><div class="cios-live-dot"></div><span class="cios-live-txt">Live &middot; 8 sources</span></div>
+        <div class="cios-nps-pill"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="rgba(100,220,160,.85)" stroke-width="2" aria-hidden="true"><path d="M13 5l-7 7-3-3"/></svg><span class="cios-nps-txt">No NPS required &mdash; external only</span></div>
+        <button class="cios-gen-btn" onclick="loadCIOSAll()" style="margin-top:4px">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v4l3-3"/><circle cx="8" cy="10" r="4"/></svg>
+          Generate full analysis
+        </button>
+      </div>
+    </div>
+    <div class="cios-score-strip">
+      <div class="cios-ss-cell">
+        <div class="cios-big-n" id="ciosOverallScore">-</div>
+        <div class="cios-big-l">Overall &middot; /100</div>
+      </div>
+      <div class="cios-bar-wrap">
+        <div class="cios-bar-track"><div class="cios-bar-fill" id="ciosBarFill" style="width:0%"></div></div>
+        <div class="cios-bar-labels"><span>Very negative</span><span>Neutral</span><span>Very positive</span></div>
+      </div>
+      <div class="cios-stat"><div class="cios-stat-n" id="ciosCritCount" style="color:var(--red)">-</div><div class="cios-big-l" style="color:rgba(255,255,255,.3)">Critical</div></div>
+      <div class="cios-stat"><div class="cios-stat-n" id="ciosSigCount" style="color:var(--qg)">-</div><div class="cios-big-l" style="color:rgba(255,255,255,.3)">Signals</div></div>
+      <div class="cios-stat"><div class="cios-stat-n" id="ciosSrcCount" style="color:rgba(255,255,255,.5)">0/8</div><div class="cios-big-l" style="color:rgba(255,255,255,.3)">Sources</div></div>
+    </div>
+  </div>
+
+  <!-- INNER TABS -->
+  <div class="cios-tabs" id="ciosTabs">
+    <div class="cios-tab on" data-ctab="heatmap" onclick="switchCIOSTab('heatmap',this)">Complaint heatmap <span class="cios-tb" id="ciosTabCount-heatmap">0</span></div>
+    <div class="cios-tab" data-ctab="audience" onclick="switchCIOSTab('audience',this)">Audience intel <span class="cios-tb" id="ciosTabCount-audience">0</span></div>
+    <div class="cios-tab" data-ctab="keywords" onclick="switchCIOSTab('keywords',this)">Keywords <span class="cios-tb" id="ciosTabCount-keywords">0</span></div>
+    <div class="cios-tab" data-ctab="growing" onclick="switchCIOSTab('growing',this)">Growing conversations</div>
+    <div class="cios-tab" data-ctab="competitor" onclick="switchCIOSTab('competitor',this)">Competitor perception</div>
+    <div class="cios-tab" data-ctab="requests" onclick="switchCIOSTab('requests',this)">Product requests <span class="cios-tb" id="ciosTabCount-requests">0</span></div>
+    <div class="cios-tab" data-ctab="ota" onclick="switchCIOSTab('ota',this)">OTA leakage risk</div>
+    <div class="cios-tab" data-ctab="opps" onclick="switchCIOSTab('opps',this)">Opportunities</div>
+    <div class="cios-tab" data-ctab="narrative" onclick="switchCIOSTab('narrative',this)">Executive narrative</div>
+  </div>
+
+  <!-- TAB CONTENT PANELS -->
+  <div class="cios-body">
+
+    <!-- Generate strip -->
+    <div class="cios-gen-strip" id="ciosGenStrip">
+      <div class="cios-gen-info"><strong>Backend/cache-first analysis.</strong> This view loads only backend/Supabase cache or saved browser cache. Customer intelligence loads only from backend/cache data.</div>
+      <button class="cios-gen-btn" onclick="loadCIOSAll()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="5,3 14,8 5,13"/></svg>
+        Run full analysis
+      </button>
+    </div>
+
+    <!-- SOURCE TILES (backend/cache status only) -->
+    <div class="cios-sl" style="margin-top:0"><span class="cios-sl-t">Source breakdown</span><span class="cios-sl-m">Updated 06:00 DOH daily</span></div>
+    <div class="cios-src-grid" id="ciosSrcGrid">
+      <div class="cios-src" style="--cios-c:#FF4500;--cios-cb:rgba(255,69,0,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#128992;</div><div class="cios-src-nm">Reddit</div><div class="cios-src-pct" id="cscore-reddit" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-reddit" style="width:0%"></div></div><div class="cios-src-sub" id="csub-reddit">No data</div></div>
+      <div class="cios-src" style="--cios-c:#1a3a8a;--cios-cb:rgba(26,58,138,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#9992;&#65039;</div><div class="cios-src-nm">FlyerTalk</div><div class="cios-src-pct" id="cscore-flyertalk" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-flyertalk" style="width:0%;background:#1a3a8a"></div></div><div class="cios-src-sub" id="csub-flyertalk">No data</div></div>
+      <div class="cios-src" style="--cios-c:#00b67a;--cios-cb:rgba(0,182,122,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#11088;</div><div class="cios-src-nm">Trustpilot</div><div class="cios-src-pct" id="cscore-trustpilot" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-trustpilot" style="width:0%;background:#00b67a"></div></div><div class="cios-src-sub" id="csub-trustpilot">No data</div></div>
+      <div class="cios-src" style="--cios-c:#1a1a6a;--cios-cb:rgba(26,26,106,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#127942;</div><div class="cios-src-nm">Skytrax</div><div class="cios-src-pct" id="cscore-skytrax" style="color:var(--grn)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-skytrax" style="width:0%;background:#1a1a6a"></div></div><div class="cios-src-sub" id="csub-skytrax">No data</div></div>
+      <div class="cios-src" style="--cios-c:#34e0a1;--cios-cb:rgba(52,224,161,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#127807;</div><div class="cios-src-nm">TripAdvisor</div><div class="cios-src-pct" id="cscore-tripadvisor" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-tripadvisor" style="width:0%;background:#34e0a1"></div></div><div class="cios-src-sub" id="csub-tripadvisor">No data</div></div>
+      <div class="cios-src" style="--cios-c:#b92b27;--cios-cb:rgba(185,43,39,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#128172;</div><div class="cios-src-nm">Quora</div><div class="cios-src-pct" id="cscore-quora" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-quora" style="width:0%;background:#b92b27"></div></div><div class="cios-src-sub" id="csub-quora">No data</div></div>
+      <div class="cios-src" style="--cios-c:#1da1f2;--cios-cb:rgba(29,161,242,.1)"><div class="cios-src-hdr"><div class="cios-src-ic" style="font-size:10px;font-weight:700;color:#1da1f2">X</div><div class="cios-src-nm">X / Twitter</div><div class="cios-src-pct" id="cscore-twitter" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-twitter" style="width:0%;background:#1da1f2"></div></div><div class="cios-src-sub" id="csub-twitter">No data</div></div>
+      <div class="cios-src" style="--cios-c:#e67e22;--cios-cb:rgba(230,126,34,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#128203;</div><div class="cios-src-nm">Consumer Affairs</div><div class="cios-src-pct" id="cscore-consumer" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-consumer" style="width:0%;background:#e67e22"></div></div><div class="cios-src-sub" id="csub-consumer">No data</div></div>
+    </div>
+
+
+    <!-- BACKEND/CACHE-ONLY CIOS PANELS: static intelligence removed -->
+    <div id="ctab-heatmap">
+      <div class="cios-sl"><span class="cios-sl-t">Complaint heatmap</span><span class="cios-sl-m">Grouped by pain theme, with flat table fallback</span></div>
+      <div id="ciosPanel-heatmap" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-audience" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Audience intelligence</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-audience" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-keywords" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Keywords</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-keywords" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-growing" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Growing conversations</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-growing" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-competitor" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Competitor perception</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-competitor" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-requests" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Product requests</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-requests" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-ota" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">OTA leakage risk</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-ota" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-opps" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Opportunities</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-opps" class="cios-cache-panel"></div>
+    </div>
+    <div id="ctab-narrative" style="display:none">
+      <div class="cios-sl"><span class="cios-sl-t">Executive narrative</span><span class="cios-sl-m">Loaded from backend/cache only</span></div>
+      <div id="ciosPanel-narrative" class="cios-cache-panel"></div>
+    </div>
+
+
+  </div>
+</div>
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+
+
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• EXECUTIVE SUMMARY PAGE â€” backend/cache-derived premium command view â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+

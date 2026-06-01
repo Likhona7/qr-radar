@@ -1,0 +1,24 @@
+<!-- ACTION PLAN MODAL — inline, no redirect to Claude -->
+<div id="apOverlay" class="ap-overlay" style="display:none" onclick="if(event.target===this)closeAP()">
+  <div class="ap-modal">
+    <div class="ap-hdr">
+      <div class="ap-hdr-l">
+        <div class="ap-badge" id="apBadge">30-Day Action Plan</div>
+        <div class="ap-title" id="apTitle">Loading...</div>
+        <div class="ap-domain" id="apDomain"></div>
+      </div>
+      <button class="ap-close" onclick="closeAP()">×</button>
+    </div>
+    <div class="ap-body" id="apBody">
+      <div class="ap-loading">
+        <div class="ap-spin-lg"></div>
+        <div class="ap-load-txt">Building your action plan...</div>
+        <div class="ap-load-sub">Claude is analysing the signal and building a specific, costed 30-day plan for the B2C team.</div>
+      </div>
+    </div>
+    <div class="ap-footer">
+      <div class="ap-footer-note" id="apFooterNote">Generated from verified intelligence · For internal B2C team use</div>
+      <button class="ap-regenerate" onclick="regenerateAP()">↻ Regenerate</button>
+    </div>
+  </div>
+</div>

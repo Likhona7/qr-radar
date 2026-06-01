@@ -1,0 +1,224 @@
+<div class="exec-page" id="execPage">
+  <div class="exec-command-shell">
+    <aside class="exec-side-rail">
+      <div class="exec-side-brand">
+        <div class="exec-side-mark">R</div>
+        <div>
+          <div class="exec-side-title">Radar</div>
+          <div class="exec-side-sub">Executive Intelligence</div>
+        </div>
+      </div>
+      <button type="button" class="exec-side-item active" data-target="execSectionOverview">Executive Overview</button>
+      <button type="button" class="exec-side-item" data-target="execSectionSignals">Live Signals</button>
+      <button type="button" class="exec-side-item" data-target="execSectionRiskImpact">Risk and Impact</button>
+      <button type="button" class="exec-side-item" data-target="execSectionThemes">Intelligence Themes</button>
+      <button type="button" class="exec-side-item" data-target="execSectionActions">Recommended Actions</button>
+      <button type="button" class="exec-side-item" data-target="execSectionWatchlist">Watchlist</button>
+      <button type="button" class="exec-side-item" data-target="execSectionAllSignals">All Signals</button>
+      <div class="exec-side-foot">
+        <span>Settings</span>
+        <span>Help</span>
+      </div>
+    </aside>
+
+    <section class="exec-command-main">
+      <div class="exec-command-top exec-anchor" id="execSectionOverview">
+        <div>
+          <div class="exec-eyebrow-v2">Executive Intelligence Overview</div>
+          <h1 id="execCommandHeadline">Loading executive intelligence...</h1>
+          <p id="execCommandSubhead">Synthesising backend/cache signals across market, customer, competitor, digital and operational intelligence.</p>
+        </div>
+        <div class="exec-command-status">
+          <span class="exec-live-dot"></span>
+          <span id="execCommandFreshness">Backend/cache view</span>
+          <span class="exec-mini-link" id="execConfidenceChip">Confidence: --</span>
+          <span class="exec-mini-link" id="execScopeChip">Scope: --</span>
+          <button class="exec-refresh-v2" onclick="refreshExecutiveCommandView()">Refresh</button>
+          <button class="exec-refresh-v2 exec-export-btn" onclick="exportExecutiveBriefPpt()">Export Brief (PPT)</button>
+        </div>
+      </div>
+
+      <div class="exec-status-banner exec-status-banner-premium">
+        <div class="exec-status-left">
+          <div class="exec-status-icon">ST</div>
+          <div>
+            <div class="exec-status-header">
+              <span class="exec-status-label">Commercial Status</span>
+              <span class="exec-status-pill" id="execStatusState">Loading</span>
+            </div>
+            <div class="exec-status-verdict" id="execStatusVerdict">Preparing leadership verdict from backend/cache signals...</div>
+            <div class="exec-status-rule" id="execStatusRule">Status logic will appear after signal scoring is complete.</div>
+          </div>
+        </div>
+        <button class="exec-route-btn" id="execRouteDetailBtn" type="button">See route detail</button>
+      </div>
+
+      <div class="exec-kpi-row exec-summary-row" id="execSummaryKpis"></div>
+
+      <div class="exec-focus-grid exec-anchor" id="execSectionSignals">
+        <div class="exec-panel-v2 exec-focus-panel exec-anchor" id="execSectionWatchlist">
+          <div class="exec-panel-head-v2">
+            <div>
+              <div class="exec-panel-label-v2">Top 3 Signals</div>
+              <div class="exec-panel-copy-v2">Prioritized by urgency and commercial impact</div>
+            </div>
+            <button class="exec-mini-link exec-head-link" type="button" onclick="showMain()">See all signals</button>
+          </div>
+          <div id="execTopSignals"></div>
+        </div>
+
+        <div class="exec-panel-v2 exec-focus-panel exec-anchor" id="execSectionActions">
+          <div class="exec-panel-head-v2">
+            <div>
+              <div class="exec-panel-label-v2">Top 3 Actions</div>
+              <div class="exec-panel-copy-v2">Owner-ready actions with due dates and impact range</div>
+            </div>
+            <button class="exec-mini-link exec-head-link" type="button" onclick="showMain()">See all actions</button>
+          </div>
+          <div id="execActionQueue"></div>
+        </div>
+      </div>
+
+      <div class="exec-focus-grid exec-anchor" id="execSectionRiskImpact">
+        <div class="exec-panel-v2 exec-focus-panel">
+          <div class="exec-panel-head-v2">
+            <div>
+              <div class="exec-panel-label-v2">Pressure Breakdown</div>
+              <div class="exec-panel-copy-v2">Sorted by pressure score (higher is worse)</div>
+            </div>
+            <button class="exec-mini-link exec-head-link" type="button" onclick="showMain()">Open model view</button>
+          </div>
+          <div class="exec-pressure-list" id="execPressureList"></div>
+        </div>
+
+        <div class="exec-panel-v2 exec-focus-panel">
+          <div class="exec-panel-head-v2">
+            <div>
+              <div class="exec-panel-label-v2">Opportunity Matrix</div>
+              <div class="exec-panel-copy-v2">Expected upside ($) by horizon and revenue lane</div>
+            </div>
+            <button class="exec-mini-link exec-head-link" type="button" onclick="showPredictive()">Open full matrix</button>
+          </div>
+          <div id="execRevenueHeatmap"></div>
+        </div>
+      </div>
+
+      <div class="exec-bottom-grid">
+        <div class="exec-panel-v2 exec-anchor" id="execSectionThemes">
+          <div class="exec-panel-head-v2">
+            <div>
+              <div class="exec-panel-label-v2">Intelligence Themes</div>
+              <div class="exec-panel-copy-v2">Theme strength and direction from loaded backend/cache data</div>
+            </div>
+          </div>
+          <div class="exec-theme-grid" id="execLeadershipLanes"></div>
+        </div>
+
+        <div class="exec-panel-v2 exec-anchor" id="execSectionAllSignals">
+          <div class="exec-panel-head-v2">
+            <div>
+              <div class="exec-panel-label-v2">Trust and Coverage</div>
+              <div class="exec-panel-copy-v2">Source breadth, confidence and signal-quality coverage</div>
+            </div>
+          </div>
+          <div class="exec-matrix" id="execImportantMetrics"></div>
+        </div>
+      </div>
+
+      <div class="exec-hidden-legacy" aria-hidden="true">
+        <div id="execDecisionCards"></div>
+        <div id="execContextTrail"></div>
+        <div id="execCrossTabSummary"></div>
+        <div id="execOverallPressurePill"></div>
+        <div id="execRadarVisual"></div>
+        <div id="execRecentChanges"></div>
+        <div id="execCommercialImpact"></div>
+        <div id="execImmediateThreats"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="exec-drawer-backdrop" id="execDrawerBackdrop" onclick="closeExecDetailDrawer()" hidden></div>
+<aside class="exec-detail-drawer" id="execDetailDrawer" aria-hidden="true">
+  <div class="exec-detail-head">
+    <div>
+      <div class="exec-detail-eyebrow" id="execDrawerType">Signal Detail</div>
+      <h3 id="execDrawerTitle">Executive evidence</h3>
+    </div>
+    <button type="button" class="exec-detail-close" onclick="closeExecDetailDrawer()">Close</button>
+  </div>
+  <div class="exec-detail-meta" id="execDrawerMeta"></div>
+  <div class="exec-detail-body" id="execDrawerBody"></div>
+  <div class="exec-detail-links">
+    <button type="button" class="exec-deep-chip" onclick="showComp()">Open Competitor View</button>
+    <button type="button" class="exec-deep-chip" onclick="showSent()">Open Sentiment View</button>
+    <button type="button" class="exec-deep-chip" onclick="showCI()">Open Customer Intelligence</button>
+  </div>
+</aside>
+
+<!-- Predictive Intelligence Page -->
+<div class="predict-page" id="predictPage">
+  <div class="predict-hero">
+    <div class="exec-eyebrow">Future market anticipation</div>
+    <div class="predict-title">Predictive Intelligence & Innovation Radar</div>
+    <div class="predict-sub">A forward-looking tab designed to help Qatar Airways identify future customer behaviours, revenue opportunities, market shifts, competitor moves and service innovations before the industry reacts. Current version derives opportunity themes from backend/cache signals; backend predictive models can be connected next.</div>
+    <div class="exec-aud"><span>Beyond dashboarding</span><span>Decision acceleration</span><span>Innovation pipeline</span><span>Revenue futures</span></div>
+  </div>
+  <div class="predict-tabs-note"><strong>Backend integration note:</strong> this frontend is ready for future backend endpoints such as <code>/api/executive-summary</code>, <code>/api/predictive-intel</code>, <code>/api/opportunity-simulation</code> and <code>/api/innovation-radar</code>. Until those are connected, the page only uses loaded Radar cache and clearly labels derived intelligence.</div>
+  <div class="predict-grid" id="predictiveCategories"></div>
+  <div class="exec-panel" style="margin-bottom:18px">
+    <div class="exec-panel-h"><div><div class="exec-panel-t">Predictive signals from current cache</div><div class="exec-panel-m">Forward-looking opportunities and risk windows</div></div><button class="exec-refresh" onclick="renderPredictivePage()">Refresh view</button></div>
+    <div id="predictiveSignals"></div>
+  </div>
+  <div class="exec-panel">
+    <div class="exec-panel-h"><div><div class="exec-panel-t">Opportunity simulation concepts</div><div class="exec-panel-m">Frontend-ready concepts for backend modelling</div></div></div>
+    <div class="sim-grid" id="simulationConcepts"></div>
+  </div>
+  <div class="predict-operating-grid">
+    <div class="predict-op-panel">
+      <div class="predict-op-ey">Future opportunity pipeline</div>
+      <div class="predict-op-sub">Ideas that can become experiments, pilots or business cases once backend models are connected.</div>
+      <div id="futureOpportunityPipeline"></div>
+    </div>
+    <div class="predict-op-panel">
+      <div class="predict-op-ey">Customer future signals</div>
+      <div class="predict-op-sub">Forward-looking expectations detected from the current intelligence cache.</div>
+      <div id="customerFutureSignals"></div>
+    </div>
+    <div class="predict-op-panel wide">
+      <div class="predict-op-ey">Strategic simulation backlog</div>
+      <div class="predict-op-sub">Frontend-ready business questions for the future backend simulation engine.</div>
+      <div id="strategicSimulationBacklog"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Roadmap / Progress Tracker Page -->
+<div class="roadmap-page" id="roadmapPage">
+  <div class="roadmap-hero">
+    <div class="roadmap-ey">Enterprise delivery control</div>
+    <h1>Radar Roadmap & Evidence Tracker</h1>
+    <p>Tracks what is completed, what needs backend work, and what evidence is required before each capability can be considered production-ready.</p>
+  </div>
+  <div class="roadmap-kpis" id="roadmapKpis"></div>
+  <div class="roadmap-updates-panel">
+    <div class="roadmap-panel-title">Latest updates</div>
+    <div class="roadmap-updates-list" id="roadmapUpdates"></div>
+  </div>
+  <div class="roadmap-sections" id="roadmapSections"></div>
+  <div class="roadmap-evidence-panel">
+    <div class="roadmap-panel-title">Evidence rules</div>
+    <div class="roadmap-evidence-grid">
+      <div><strong>Frontend proof</strong><span>Screenshot, visible UI, console check, responsive check.</span></div>
+      <div><strong>Backend proof</strong><span>API response, logs, successful Supabase read/write, no 500/CORS errors.</span></div>
+      <div><strong>Data proof</strong><span>Non-empty backend/cache payload, normalized schema, source timestamp and confidence metadata.</span></div>
+      <div><strong>Leadership proof</strong><span>Executive-ready interpretation, action recommendation and business implication.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="fl">Qatar Airways - Radar v11 - Executive Intelligence Command Center</span>
+  <span class="fr2">v11.4.14 - Executive Intelligence OS - Predictive Radar - Roadmap Tracker - 2026</span>
+</div>
