@@ -218,25 +218,128 @@
     });
     var grand = colTotals[0] + colTotals[1] + colTotals[2];
     var grandHigh = grand * 1.33;
+    var laneTotals = rows.map(function (r) {
+      return ((r.windows && r.windows[0]) || 0) + ((r.windows && r.windows[1]) || 0) + ((r.windows && r.windows[2]) || 0);
+    });
+    var dominantLaneIdx = laneTotals.length ? laneTotals.indexOf(Math.max.apply(Math, laneTotals)) : -1;
+    var dominantLane = dominantLaneIdx >= 0 ? rows[dominantLaneIdx] : null;
+    var dominantWindowIdx = colTotals.indexOf(Math.max.apply(Math, colTotals));
+    var windowLabels = ['0-30 Days', '31-90 Days', '91-180 Days'];
+    var strongestWindow = windowLabels[dominantWindowIdx] || '0-30 Days';
 
     function fmtMoney(v) {
-      return '$' + v.toFixed(1) + 'M';
+      return '$' + Number(v || 0).toFixed(1) + 'M';
     }
 
-    var body = rows.map(function (r) {
-      var t = ((r.windows && r.windows[0]) || 0) + ((r.windows && r.windows[1]) || 0) + ((r.windows && r.windows[2]) || 0);
-      return '<tr><th>' + safeEsc(r.name) + '</th><td>' + fmtMoney((r.windows && r.windows[0]) || 0) + '</td><td>' + fmtMoney((r.windows && r.windows[1]) || 0) + '</td><td>' + fmtMoney((r.windows && r.windows[2]) || 0) + '</td><td class="exec-opp-total">' + fmtMoney(t) + '</td></tr>';
+    function laneOwner(name) {
+      var n = String(name || '').toLowerCase();
+      if (/direct/.test(n)) return 'Digital Marketing';
+      if (/premium/.test(n)) return 'Revenue + Loyalty';
+      if (/ancillary/.test(n)) return 'Product';
+      if (/loyalty/.test(n)) return 'Privilege Club';
+      return 'Revenue Strategy';
+    }
+
+    function laneAction(name) {
+      var n = String(name || '').toLowerCase();
+      if (/direct/.test(n)) return 'Protect direct share with route offers, SEM, and loyalty nudges.';
+      if (/premium/.test(n)) return 'Package premium demand with lounge, Qsuite, stopover, and upgrade messaging.';
+      if (/ancillary/.test(n)) return 'Bundle seats, bags, lounge, and fast-track where purchase intent is highest.';
+      if (/loyalty/.test(n)) return 'Convert the demand into Avios earn, tier progress, and member-only offers.';
+      return 'Create an owner-ready commercial playbook for this lane.';
+    }
+
+    function laneStatus(total) {
+      if (total >= 4) return { label: 'Priority', cls: 'priority' };
+      if (total >= 1.5) return { label: 'Build', cls: 'build' };
+      return { label: 'Monitor', cls: 'monitor' };
+    }
+
+    var maxLaneTotal = Math.max.apply(Math, laneTotals.concat([1]));
+    var laneCards = rows.map(function (r, idx) {
+      var windows = r.windows || [0, 0, 0];
+      var total = laneTotals[idx] || 0;
+      var bestIdx = windows.indexOf(Math.max.apply(Math, windows.concat([0])));
+      var bestWindow = windowLabels[bestIdx] || strongestWindow;
+      var status = laneStatus(total);
+      var totalPct = Math.max(4, Math.min(100, Math.round((total / maxLaneTotal) * 100)));
+      var bars = windows.map(function (v, i) {
+        var pct = total ? Math.max(4, Math.round((v / total) * 100)) : 4;
+        return '<div class="exec-opp-window"><div class="exec-opp-window-label"><span>' + safeEsc(windowLabels[i]) + '</span><strong>' + fmtMoney(v) + '</strong></div><div class="exec-opp-mini-track"><span style="width:' + pct + '%"></span></div></div>';
+      }).join('');
+      return '<article class="exec-opp-lane-card">' +
+        '<div class="exec-opp-lane-head">' +
+          '<div><div class="exec-opp-lane-title">' + safeEsc(r.name || 'Opportunity lane') + '</div><div class="exec-opp-lane-sub">' + safeEsc(laneOwner(r.name)) + ' - strongest in ' + safeEsc(bestWindow) + '</div></div>' +
+          '<div class="exec-opp-lane-value"><strong>' + fmtMoney(total) + '</strong><span class="exec-opp-state ' + status.cls + '">' + status.label + '</span></div>' +
+        '</div>' +
+        '<div class="exec-opp-total-track"><span style="width:' + totalPct + '%"></span></div>' +
+        '<div class="exec-opp-windows">' + bars + '</div>' +
+        '<div class="exec-opp-next"><strong>Next move:</strong> ' + safeEsc(laneAction(r.name)) + '</div>' +
+      '</article>';
     }).join('');
 
     el.innerHTML =
-      '<div class="exec-opp-wrap">' +
-        '<table class="exec-opp-table">' +
-          '<thead><tr><th>Lane</th><th>0-30 Days</th><th>31-90 Days</th><th>91-180 Days</th><th>Total (12-18M)</th></tr></thead>' +
-          '<tbody>' + body + '</tbody>' +
-          '<tfoot><tr><th>Total</th><td>' + fmtMoney(colTotals[0]) + '</td><td>' + fmtMoney(colTotals[1]) + '</td><td>' + fmtMoney(colTotals[2]) + '</td><td class="exec-opp-grand">' + fmtMoney(grand) + '-' + fmtMoney(grandHigh) + '</td></tr></tfoot>' +
-        '</table>' +
-        '<div class="exec-opp-legend"><span><i class="l-low"></i>Low ($0-$0.2M)</span><span><i class="l-mid"></i>Medium ($0.2M-$0.7M)</span><span><i class="l-high"></i>High ($0.7M-$1.5M)</span><span><i class="l-vhigh"></i>Very High (>$1.5M)</span></div>' +
+      '<div class="exec-opp-action-view">' +
+        '<div class="exec-opp-verdict">' +
+          '<div><span>Best commercial lane</span><strong>' + safeEsc((dominantLane && dominantLane.name) || 'Direct') + ' - ' + fmtMoney(dominantLaneIdx >= 0 ? laneTotals[dominantLaneIdx] : 0) + '</strong></div>' +
+          '<div><span>Best timing window</span><strong>' + safeEsc(strongestWindow) + ' - ' + fmtMoney(colTotals[dominantWindowIdx] || 0) + '</strong></div>' +
+          '<div><span>Total upside</span><strong>' + fmtMoney(grand) + '-' + fmtMoney(grandHigh) + '</strong></div>' +
+        '</div>' +
+        '<div class="exec-opp-lane-list">' + laneCards + '</div>' +
+        '<div class="exec-opp-summary-note">Source: live backend/cache opportunity rows. Values are directional until linked to internal booking and conversion data.</div>' +
       '</div>';
+  }
+
+  function renderOpportunityMatrixV2(rows) {
+    var el = document.getElementById('execRevenueHeatmap');
+    if (!el) return;
+    var safeRows = Array.isArray(rows) ? rows : [];
+    if (!safeRows.length) {
+      el.innerHTML = '<div class="exec-empty">No backend/cache opportunity lanes loaded yet.</div>';
+      return;
+    }
+    try {
+      renderHeat('execRevenueHeatmap', safeRows);
+    } catch (e) {
+      var colTotals = [0, 0, 0];
+      safeRows.forEach(function (r) {
+        colTotals[0] += ((r.windows && r.windows[0]) || 0);
+        colTotals[1] += ((r.windows && r.windows[1]) || 0);
+        colTotals[2] += ((r.windows && r.windows[2]) || 0);
+      });
+      var total = colTotals[0] + colTotals[1] + colTotals[2];
+      var totalHigh = total * 1.33;
+      var laneTotals = safeRows.map(function (r) {
+        return ((r.windows && r.windows[0]) || 0) + ((r.windows && r.windows[1]) || 0) + ((r.windows && r.windows[2]) || 0);
+      });
+      var dominantLaneIdx = laneTotals.length ? laneTotals.indexOf(Math.max.apply(Math, laneTotals)) : -1;
+      var dominantLane = dominantLaneIdx >= 0 ? safeRows[dominantLaneIdx] : null;
+      var dominantWindowIdx = colTotals.indexOf(Math.max.apply(Math, colTotals));
+      var windowLabels = ['0-30 Days', '31-90 Days', '91-180 Days'];
+      var strongestWindow = windowLabels[dominantWindowIdx] || '0-30 Days';
+      var fmtMoney = function (v) { return '$' + Number(v || 0).toFixed(1) + 'M'; };
+      el.innerHTML =
+        '<div class="exec-opp-wrap">' +
+          '<div class="exec-opp-summary">' +
+            '<span class="exec-opp-summary-chip"><strong>Dominant lane</strong> ' + safeEsc((dominantLane && dominantLane.name) || 'Direct') + ' <em>' + fmtMoney((dominantLaneIdx >= 0 ? laneTotals[dominantLaneIdx] : 0)) + '</em></span>' +
+            '<span class="exec-opp-summary-chip"><strong>Strongest horizon</strong> ' + safeEsc(strongestWindow) + ' <em>' + fmtMoney(colTotals[dominantWindowIdx] || 0) + '</em></span>' +
+            '<span class="exec-opp-summary-chip"><strong>Total upside</strong> <em>' + fmtMoney(total) + '-' + fmtMoney(totalHigh) + '</em></span>' +
+            '<div class="exec-opp-summary-note">Source: live backend/cache opportunity rows</div>' +
+          '</div>' +
+          '<table class="exec-opp-table">' +
+            '<thead><tr><th>Lane</th><th>0-30 Days</th><th>31-90 Days</th><th>91-180 Days</th><th>Total (12-18M)</th></tr></thead>' +
+            '<tbody>' + safeRows.map(function (r) {
+              var w0 = ((r.windows && r.windows[0]) || 0);
+              var w1 = ((r.windows && r.windows[1]) || 0);
+              var w2 = ((r.windows && r.windows[2]) || 0);
+              var rowTotal = w0 + w1 + w2;
+              return '<tr><th>' + safeEsc(r.name || 'Lane') + '</th><td>' + fmtMoney(w0) + '</td><td>' + fmtMoney(w1) + '</td><td>' + fmtMoney(w2) + '</td><td class="exec-opp-total">' + fmtMoney(rowTotal) + '</td></tr>';
+            }).join('') + '</tbody>' +
+            '<tfoot><tr><th>Total</th><td>' + fmtMoney(colTotals[0]) + '</td><td>' + fmtMoney(colTotals[1]) + '</td><td>' + fmtMoney(colTotals[2]) + '</td><td class="exec-opp-grand">' + fmtMoney(total) + '-' + fmtMoney(totalHigh) + '</td></tr></tfoot>' +
+          '</table>' +
+          '<div class="exec-opp-legend"><span><i class="l-low"></i>Low ($0-$0.2M)</span><span><i class="l-mid"></i>Medium ($0.2M-$0.7M)</span><span><i class="l-high"></i>High ($0.7M-$1.5M)</span><span><i class="l-vhigh"></i>Very High (>$1.5M)</span></div>' +
+        '</div>';
+    }
   }
 
   function scoreBucket(score) {
@@ -303,6 +406,90 @@
     var low = Math.max(0.6, (score / 100) * 1.2);
     var high = low * 1.28;
     return '$' + low.toFixed(1) + 'M-$' + high.toFixed(1) + 'M';
+  }
+
+  function actionEvidenceCount(s) {
+    if (!s) return 0;
+    var count = 0;
+    ['sourceUrl', 'source_url', 'url', 'source', 'sourceDate', 'source_date', 'firstSeenAt', 'first_seen_at', 'createdAt', 'created_at'].forEach(function (key) {
+      if (s[key]) count += 1;
+    });
+    if (s.verified) count += 1;
+    if (s.confidence || s.confidenceLabel) count += 1;
+    if (Array.isArray(s.evidenceIds)) count += s.evidenceIds.length;
+    return Math.max(1, Math.min(9, count));
+  }
+
+  function actionDecisionStatus(score) {
+    if (score >= 90) return { label: 'Act now', cls: 'act-now' };
+    if (score >= 70) return { label: 'Assign this week', cls: 'assign-week' };
+    return { label: 'Monitor with owner', cls: 'monitor-owner' };
+  }
+
+  function actionOutcomeStatus(s) {
+    var txt = String((s && (s.outcomeStatus || s.outcome_status || s.status)) || '').toLowerCase();
+    if (/done|complete|resolved|improved/.test(txt)) return 'Outcome recorded';
+    if (/progress|review|assigned/.test(txt)) return 'In progress';
+    return 'Outcome not recorded';
+  }
+
+  function actionBriefText(a) {
+    var evidence = actionEvidenceCount(a.signal);
+    var signal = a.signal || {};
+    return [
+      'Action: ' + (a.title || 'Recommended action'),
+      '',
+      'Why this matters:',
+      a.body || 'No additional backend/cache detail available.',
+      '',
+      'Owner role: ' + (a.owner || 'Owner TBC'),
+      'Due: ' + (a.due || 'Due TBC'),
+      'Expected impact: ' + (a.impact || 'Impact TBC'),
+      'Evidence loaded: ' + evidence + ' supporting signal field' + (evidence === 1 ? '' : 's'),
+      'Outcome status: ' + actionOutcomeStatus(signal),
+      '',
+      'Next step:',
+      'Assign a named business owner, confirm the evidence, execute the action, then record the outcome so Radar can learn whether the signal improved, stayed stable, or worsened.'
+    ].join('\n');
+  }
+
+  function renderActionLayerSummaryV2(sigs, q) {
+    var el = document.getElementById('execActionLayerSummary');
+    if (!el) return;
+    var actions = q || [];
+    var topSignals = sigs || [];
+    var ownerReady = actions.filter(function (a) { return !!a.owner; }).length;
+    var dueSoon = actions.filter(function (a) { return /Act now|Assign this week/.test((a.status && a.status.label) || ''); }).length;
+    var evidence = actions.reduce(function (acc, a) { return acc + actionEvidenceCount(a.signal); }, 0);
+    var outcomeMissing = actions.filter(function (a) { return actionOutcomeStatus(a.signal) === 'Outcome not recorded'; }).length;
+    var headline = topSignals.length
+      ? 'Action readiness: ' + ownerReady + '/' + actions.length + ' priority actions have owner roles.'
+      : 'Action readiness will appear once backend/cache signals are loaded.';
+    el.innerHTML =
+      '<div class="exec-action-layer-copy">' +
+        '<div class="exec-panel-label-v2">Action Operating Layer</div>' +
+        '<div class="exec-panel-copy-v2">' + safeEsc(headline) + '</div>' +
+      '</div>' +
+      '<div class="exec-action-layer-metrics">' +
+        '<span><strong>' + ownerReady + '/' + actions.length + '</strong> owner-ready</span>' +
+        '<span><strong>' + dueSoon + '</strong> urgent this week</span>' +
+        '<span><strong>' + evidence + '</strong> evidence points</span>' +
+        '<span><strong>' + outcomeMissing + '</strong> outcomes open</span>' +
+        '<button type="button" class="exec-action-ai-btn" id="execAskRadarActionBtn">Ask Radar for brief</button>' +
+      '</div>';
+    var btn = document.getElementById('execAskRadarActionBtn');
+    if (btn) {
+      btn.onclick = function () {
+        if (typeof openExecDetailDrawer === 'function') {
+          openExecDetailDrawer({
+            type: 'Radar AI Brief Prompt',
+            title: 'Ask Radar about the action layer',
+            body: 'Suggested question: Summarise the top priority signal, what changed, the owner-ready action, evidence strength, and what outcome should be recorded after execution.',
+            meta: ['Context loaded', actions.length + ' actions', topSignals.length + ' signals']
+          });
+        }
+      };
+    }
   }
 
   function renderSummaryCards(sigs) {
@@ -391,6 +578,7 @@
   function renderActionQueue() {
     var el = document.getElementById('execActionQueue');
     if (!el) return;
+    var ownerPhotoUrl = '/assets/exec-owner-photo.jpg?v=3';
     var q = queueFromSignals(allSignals().sort(function (a, b) { return sscore(b) - sscore(a); }));
     if (!q.length) {
       el.innerHTML = '<div class="exec-empty">Action queue will populate from backend/cache signals.</div>';
@@ -398,7 +586,7 @@
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Impact (12-18M)</label><strong>' + safeEsc(x.impact) + '</strong></div>' +
@@ -585,6 +773,9 @@
         owner: inferOwner(s),
         due: (score >= 90 ? fmtDateAdd(7) : score >= 70 ? fmtDateAdd(14) : fmtDateAdd(21)),
         impact: impactRangeFromScore(score),
+        status: actionDecisionStatus(score),
+        evidenceCount: actionEvidenceCount(s),
+        outcomeStatus: actionOutcomeStatus(s),
         signal: s
       };
     });
@@ -593,6 +784,7 @@
   function renderActionQueueV2(sigs) {
     var el = document.getElementById('execActionQueue');
     if (!el) return;
+    var ownerPhotoUrl = '/assets/exec-owner-photo.jpg?v=3';
     var q = queueFromSignalsV2(sigs);
     if (!q.length) {
       el.innerHTML = '<div class="exec-empty">Action queue will populate from backend/cache signals.</div>';
@@ -600,11 +792,11 @@
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
-        '<div class="exec-action-meta"><label>Impact (12-18M)</label><strong>' + safeEsc(x.impact) + '</strong></div>' +
-        '<div class="exec-action-controls"><button type="button" class="exec-assign-btn">Assign owner</button><button type="button" class="exec-ghost-btn">...</button></div>' +
+        '<div class="exec-action-meta"><label>Proof</label><span>' + safeEsc(x.evidenceCount) + ' evidence point' + (x.evidenceCount === 1 ? '' : 's') + '</span><em>' + safeEsc(x.outcomeStatus) + '</em></div>' +
+        '<div class="exec-action-controls"><button type="button" class="exec-assign-btn">Open brief</button><button type="button" class="exec-ghost-btn" title="Outcome recording needs backend persistence">...</button></div>' +
       '</article>';
     }).join('');
     Array.prototype.forEach.call(el.querySelectorAll('.exec-action-row.exec-clickable'), function (row) {
@@ -612,7 +804,7 @@
         var idx = Number(row.getAttribute('data-action-index'));
         var a = q[idx] || {};
         if (typeof openExecDetailDrawer === 'function') {
-          openExecDetailDrawer({ type: 'Action Brief', title: a.title || 'Action', body: (a.body || '') + ' Owner: ' + (a.owner || 'TBC') + '. Target: ' + (a.due || 'TBC') + '.', meta: [a.tag || 'RADAR', a.owner || 'Owner TBC', 'Due ' + (a.due || 'TBC')] });
+          openExecDetailDrawer({ type: 'Action Brief', title: a.title || 'Action', body: actionBriefText(a), meta: [a.tag || 'RADAR', a.owner || 'Owner TBC', 'Due ' + (a.due || 'TBC'), a.outcomeStatus || 'Outcome pending'] });
         }
       });
     });
@@ -622,18 +814,40 @@
     var sigs = activeSignalsForExecutive();
     renderSummaryCardsV2(sigs);
     renderTopSignalsPanelV2(sigs);
-    renderActionQueueV2(sigs);
-    var routeBtn = document.getElementById('execRouteDetailBtn');
-    if (routeBtn) {
-      routeBtn.onclick = function () {
-        var s = sigs[0] || {};
-        if (typeof openExecDetailDrawer === 'function') {
-          openExecDetailDrawer({ type: 'Route Detail', title: titleOf(s) || 'No route signal selected', body: bodyOf(s), meta: [domainOf(s), s.impactLabel || s.demandImpact || 'Signal', s.confidence || 'Medium'] });
-        }
-      };
+    var rows = [];
+    try {
+      var live = initExecLiveState();
+      rows = simulationRowsFromPayload(live && live.simulation, sigs);
+    } catch (e) {
+      rows = simulationRowsFromPayload(null, sigs);
     }
-    var rows = simulationRowsFromPayload(initExecLiveState().simulation, sigs);
-    renderHeat('execRevenueHeatmap', rows);
+    try {
+      renderOpportunityMatrixV2(rows);
+    } catch (e) {
+      console.warn('Opportunity matrix render skipped', e);
+    }
+    try {
+      renderActionQueueV2(sigs);
+      renderActionLayerSummaryV2(sigs, queueFromSignalsV2(sigs));
+    } catch (e) {
+      console.warn('Action queue render skipped', e);
+      var aq = document.getElementById('execActionQueue');
+      if (aq) aq.innerHTML = '<div class="exec-empty">Action queue temporarily unavailable.</div>';
+      renderActionLayerSummaryV2(sigs, []);
+    }
+    try {
+      var routeBtn = document.getElementById('execRouteDetailBtn');
+      if (routeBtn) {
+        routeBtn.onclick = function () {
+          var s = sigs[0] || {};
+          if (typeof openExecDetailDrawer === 'function') {
+            openExecDetailDrawer({ type: 'Route Detail', title: titleOf(s) || 'No route signal selected', body: bodyOf(s), meta: [domainOf(s), s.impactLabel || s.demandImpact || 'Signal', s.confidence || 'Medium'] });
+          }
+        };
+      }
+    } catch (e) {
+      console.warn('Route detail wiring skipped', e);
+    }
   }
 
   window.refreshExecutiveCommandView = function () {
@@ -771,6 +985,97 @@
     ];
   }
 
+  function roadmapItemsFlat(model) {
+    return (model || []).reduce(function (acc, sec) {
+      (sec.tasks || []).forEach(function (task) {
+        acc.push({
+          section: sec.s,
+          title: task[0],
+          status: task[1],
+          evidence: task[2]
+        });
+      });
+      return acc;
+    }, []);
+  }
+
+  function roadmapReadinessCards(model) {
+    var flat = roadmapItemsFlat(model);
+    var buckets = [
+      {
+        key: 'done',
+        title: 'Frontend-shippable now',
+        tone: 'done',
+        summary: 'These are already implemented in the UI/runtime and can be reviewed end to end from this frontend.',
+        note: 'Layout, tab wiring, cache-first rendering, smoke coverage and visible decision cards belong here.'
+      },
+      {
+        key: 'progress',
+        title: 'Needs live proof',
+        tone: 'progress',
+        summary: 'These are visible in the UI, but still need backend data or proof endpoints to close the loop.',
+        note: 'Good for parity checks, but not yet a full end-to-end business release without the live backend feed.'
+      },
+      {
+        key: 'backend',
+        title: 'Blocked end to end here',
+        tone: 'backend',
+        summary: 'These require backend API, schema or data work before Radar can honestly mark them production-ready.',
+        note: 'The frontend can frame them, but it cannot complete the full loop without server-side support.'
+      }
+    ];
+
+    return buckets.map(function (bucket) {
+      var rows = flat.filter(function (item) { return item.status === bucket.key; });
+      return {
+        key: bucket.key,
+        title: bucket.title,
+        tone: bucket.tone,
+        count: rows.length,
+        summary: bucket.summary,
+        note: bucket.note,
+        examples: rows.slice(0, 3)
+      };
+    });
+  }
+
+  function renderRoadmapReadiness(model) {
+    var el = document.getElementById('roadmapReadiness');
+    if (!el) return;
+    var cards = roadmapReadinessCards(model);
+    el.innerHTML = [
+      '<div class="roadmap-readiness-head">',
+        '<div>',
+          '<div class="roadmap-panel-title">Implementation map</div>',
+          '<div class="roadmap-readiness-sub">What can be finished in this frontend now, what needs live backend proof, and what cannot be completed end to end without API/schema work.</div>',
+        '</div>',
+        '<div class="roadmap-readiness-badge">Frontend-first reality check</div>',
+      '</div>',
+      '<div class="roadmap-readiness-grid">',
+        cards.map(function (card) {
+          var cls = 'tone-' + card.tone;
+          var examples = card.examples.length
+            ? '<div class="roadmap-readiness-examples">' + card.examples.map(function (item) {
+                return '<div class="roadmap-readiness-example"><strong>' + safeEsc(item.title) + '</strong><span>' + safeEsc(item.evidence) + '</span></div>';
+              }).join('') + '</div>'
+            : '<div class="roadmap-readiness-empty">No tasks in this bucket yet.</div>';
+          return '<div class="roadmap-readiness-card ' + cls + '">' +
+            '<div class="roadmap-readiness-top">' +
+              '<div>' +
+                '<div class="roadmap-readiness-kv">' + safeEsc(card.count) + '</div>' +
+                '<div class="roadmap-readiness-label">' + safeEsc(card.title) + '</div>' +
+              '</div>' +
+              '<span class="roadmap-readiness-pill">' + safeEsc(card.key === 'done' ? 'Can ship now' : card.key === 'progress' ? 'Needs proof' : 'Backend needed') + '</span>' +
+            '</div>' +
+            '<div class="roadmap-readiness-summary">' + safeEsc(card.summary) + '</div>' +
+            '<div class="roadmap-readiness-note">' + safeEsc(card.note) + '</div>' +
+            examples +
+          '</div>';
+        }).join(''),
+      '</div>'
+    ].join('');
+  }
+
   function applyLiveProof(data) {
     var model = roadmapData();
     var byId = {};
@@ -825,7 +1130,8 @@
       { date: '28 May 2026', tag: 'Production', title: 'Backend runtime is live', body: 'Render deployment is healthy and endpoint smoke checks are passing.' },
       { date: '28 May 2026', tag: 'Validation', title: 'Core smoke checks passed', body: 'Health, cache, diagnostics, ranking and predictive routes are returning success.' },
       { date: '28 May 2026', tag: 'UX Upgrade', title: 'Executive Summary redesigned for glanceable decisions', body: 'First-screen verdict now prioritizes status, cause, impact and recommended move with clearer drill-down paths.' },
-      { date: '28 May 2026', tag: 'Roadmap', title: 'Tracker moved to live-proof mode', body: 'Roadmap now hydrates statuses from backend proof endpoints for review parity.' }
+      { date: '28 May 2026', tag: 'Roadmap', title: 'Tracker moved to live-proof mode', body: 'Roadmap now hydrates statuses from backend proof endpoints for review parity.' },
+      { date: '02 Jun 2026', tag: 'Planning', title: 'Frontend-shippable vs backend-blocked split added', body: 'Roadmap now shows what can be finished in the UI and what still needs server-side proof or schema work.' }
     ];
     if (roadmapState.proof && roadmapState.proof.summary) {
       cards.unshift({
@@ -851,6 +1157,8 @@
     var flat = data.reduce(function (acc, sec) { return acc.concat(sec.tasks); }, []);
     var counts = { done: 0, progress: 0, backend: 0, todo: 0 };
     flat.forEach(function (t) { counts[t[1]] = (counts[t[1]] || 0) + 1; });
+
+    renderRoadmapReadiness(data);
 
     var k = document.getElementById('roadmapKpis');
     if (k) {

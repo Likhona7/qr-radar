@@ -5,7 +5,7 @@ var CIOS_STORE = 'qr_cios_v1_';
 var CIOS_DATA = {};
 var CIOS_ACTIVE_TAB = 'heatmap';
 var CIOS_SOURCES_LOADED = 0;
-var CIOS_SOURCES = ['reddit','flyertalk','trustpilot','skytrax','tripadvisor','quora','twitter','consumer'];
+var CIOS_SOURCES = ['reddit','flyertalk','trustpilot','skytrax','tripadvisor','quora','twitter','consumer','appstore','googleplay'];
 
 function cacheOnlyNotice(title){
   return '<div class="empty-d"><div class="er"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><div class="et"><strong>'+esc(title || 'No backend/cache data loaded')+'</strong><br>Connect to the backend server and click <strong>Refresh all</strong> to populate this section with live intelligence. Data is fetched from the Render backend and cached in Supabase.</div></div>';
@@ -15,7 +15,7 @@ function switchCIOSTab(tab, el) {
   CIOS_ACTIVE_TAB = tab;
   document.querySelectorAll('.cios-tab').forEach(function(t){ t.classList.remove('on'); });
   if(el) el.classList.add('on');
-  var panels = ['heatmap','audience','keywords','growing','competitor','requests','ota','opps','narrative'];
+  var panels = ['heatmap','audience','keywords','growing','competitor','requests','appratings','ota','opps','narrative'];
   panels.forEach(function(p){
     var panel = document.getElementById('ctab-' + p);
     if(panel) panel.style.display = (p === tab) ? 'block' : 'none';
@@ -210,7 +210,7 @@ function updateCIOSOverall() {
     return /risk|critical|delay|refund|complaint|failure|negative|fraud|abandon|leakage/i.test((p.impact || '') + ' ' + (p.title || '') + ' ' + (p.detail || ''));
   }).length || '-';
   if(sigEl) sigEl.textContent = issues.length || '-';
-  if(srcEl) srcEl.textContent = data.length + '/8';
+  if(srcEl) srcEl.textContent = data.length + '/' + CIOS_SOURCES.length;
 }
 
 async function loadCIOSSource(src) {
@@ -299,6 +299,7 @@ function ciosSourceSummary(items){
 
 function ciosThemeKey(i){
   var t = (ciosItemTitle(i) + ' ' + ciosItemDetail(i)).toLowerCase();
+  if(/app store|google play|play store|app rating|ratings|review score|ios|android/.test(t)) return 'apprating';
   if(/app|digital|booking|checkout|payment|website|boarding pass|session/.test(t)) return 'app';
   if(/refund|compensation|chargeback|claim|backlog/.test(t)) return 'refund';
   if(/ancillary|baggage|seat|lounge|upgrade|fast track|pricing/.test(t)) return 'ancillary';
@@ -310,6 +311,7 @@ function ciosThemeKey(i){
 
 function ciosThemeLabel(key){
   var map = {
+    apprating: 'App store ratings and review friction',
     app: 'App and digital booking friction',
     refund: 'Refund delays and compensation backlog',
     ancillary: 'Ancillary pricing and pre-purchase gaps',
@@ -519,7 +521,24 @@ function ciosNarrative(sources, issues, improvements, strengths){
   var topRisk = issues[0] ? ciosItemTitle(issues[0]) : 'No dominant risk signal loaded';
   var topAction = improvements[0] ? ciosItemTitle(improvements[0]) : 'No action item loaded';
   var topStrength = strengths[0] ? ciosItemTitle(strengths[0]) : 'No strength signal loaded';
-  return '<div class="cios-narr"><div class="cios-narr-ey">Executive narrative - backend/cache only</div><div class="cios-narr-txt">Customer intelligence currently shows <strong>' + esc(topRisk) + '</strong> as the most visible risk signal. The strongest recommended action is <strong>' + esc(topAction) + '</strong>, while <strong>' + esc(topStrength) + '</strong> should be used to balance the leadership narrative with verified signs of brand strength.</div><div class="cios-narr-rec"><strong>Coverage:</strong> ' + sources.length + ' of 8 sources loaded - ' + issues.length + ' risk signals - ' + improvements.length + ' action requests - ' + strengths.length + ' strength signals.</div></div>';
+  return '<div class="cios-narr"><div class="cios-narr-ey">Executive narrative - backend/cache only</div><div class="cios-narr-txt">Customer intelligence currently shows <strong>' + esc(topRisk) + '</strong> as the most visible risk signal. The strongest recommended action is <strong>' + esc(topAction) + '</strong>, while <strong>' + esc(topStrength) + '</strong> should be used to balance the leadership narrative with verified signs of brand strength.</div><div class="cios-narr-rec"><strong>Coverage:</strong> ' + sources.length + ' sources loaded - ' + issues.length + ' risk signals - ' + improvements.length + ' action requests - ' + strengths.length + ' strength signals.</div></div>';
+}
+
+function ciosAppRatings(items){
+  items = ciosLimit(items, 8);
+  if(!items.length) return ciosEmpty('No app rating intelligence loaded from backend/cache.');
+  var cards = items.map(function(i){
+    var score = ciosScoreFromItem(i);
+    var title = ciosItemTitle(i);
+    var detail = ciosItemDetail(i);
+    var source = ciosItemSource(i);
+    var impact = ciosImpactLabel(i);
+    var volume = ciosEstimatePostCount(i);
+    var topCallout = /apple|ios/i.test(source + ' ' + title) ? 'iPhone review stream' : /google|android/i.test(source + ' ' + title) ? 'Android review stream' : 'App review stream';
+    var action = score >= 75 ? 'Escalate product fixes and review response.' : score >= 60 ? 'Track rating movement and recurring complaint themes.' : 'Monitor the app rating trend weekly.';
+    return '<div class="cios-app-card"><div class="cios-app-top"><div><div class="cios-app-title">' + esc(title) + '</div><div class="cios-app-sub">' + esc(source) + '</div></div><div class="cios-app-score">' + score + '/100</div></div><div class="cios-app-body">' + esc(detail) + '</div><div class="cios-app-tags"><span class="cios-chip ' + ciosChipClass(i) + '">' + esc(impact) + '</span><span class="cios-chip cc-stable">' + esc(topCallout) + '</span><span class="cios-chip cc-med">' + (volume ? esc(volume) + ' reviews' : 'reviews n/a') + '</span></div><div class="cios-app-action">' + esc(action) + '</div></div>';
+  }).join('');
+  return '<div class="cios-app-grid">' + cards + '</div>';
 }
 
 function updateCIOSTabBadges(ctx){
@@ -531,6 +550,7 @@ function updateCIOSTabBadges(ctx){
   setCount('ciosTabCount-audience', (ctx.audience || []).length);
   setCount('ciosTabCount-keywords', Math.min(24, (ctx.keywords || 0)));
   setCount('ciosTabCount-requests', (ctx.improvements || []).length);
+  setCount('ciosTabCount-appratings', (ctx.appRatings || []).length);
 }
 
 function renderCIOSPanels(){
@@ -547,6 +567,8 @@ function renderCIOSPanels(){
   if(!competitor.length) competitor = allSignals.slice(0, 8);
   var ota = issues.concat(improvements).filter(function(x){ return /ota|direct|booking|agent|rebook|search|conversion|website|app|digital|checkout|abandon|refund/i.test((x.title || '') + ' ' + (x.detail || '')); });
   if(!ota.length) ota = issues.slice(0, 8);
+  var appRatings = allSignals.filter(function(x){ return /app store|google play|play store|app rating|ratings|review score|ios|android/i.test((x.title || '') + ' ' + (x.detail || '') + ' ' + (x.source || '')); });
+  if(!appRatings.length) appRatings = (window.radarData && window.radarData.sentiment) ? CIOS_SOURCES.map(getSentimentSource).filter(function(d){ return d && /appstore|googleplay/i.test(String(d.source || '')); }) : [];
 
   var keywordCounts = {};
   allSignals.forEach(function(i){
@@ -563,6 +585,7 @@ function renderCIOSPanels(){
   set('ciosPanel-growing', ciosGrowing(growing));
   set('ciosPanel-competitor', ciosCompetitor(competitor));
   set('ciosPanel-requests', ciosProductRequests(improvements));
+  set('ciosPanel-appratings', ciosAppRatings(appRatings));
   set('ciosPanel-ota', ciosOta(ota));
   set('ciosPanel-opps', ciosOpportunities(improvements.concat(strengths)));
   set('ciosPanel-narrative', ciosNarrative(sources, issues, improvements, strengths));
@@ -571,7 +594,8 @@ function renderCIOSPanels(){
     issues: issues,
     audience: audience,
     keywords: keywordTotal,
-    improvements: improvements
+    improvements: improvements,
+    appRatings: appRatings
   });
 
   if(CIOS_ACTIVE_TAB === 'heatmap'){
@@ -583,4 +607,3 @@ setTimeout(function(){
   CIOS_SOURCES.forEach(function(src){ loadCIOSSource(src); });
   renderCIOSPanels();
 }, 800);
-

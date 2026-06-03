@@ -55,6 +55,16 @@
 
       <div class="exec-kpi-row exec-summary-row" id="execSummaryKpis"></div>
 
+      <div class="exec-action-layer" id="execActionLayerSummary">
+        <div class="exec-action-layer-copy">
+          <div class="exec-panel-label-v2">Action Operating Layer</div>
+          <div class="exec-panel-copy-v2">Every priority signal must become an owner-ready action, monitor decision, or recorded outcome.</div>
+        </div>
+        <div class="exec-action-layer-metrics">
+          <span>Loading action readiness...</span>
+        </div>
+      </div>
+
       <div class="exec-focus-grid exec-anchor" id="execSectionSignals">
         <div class="exec-panel-v2 exec-focus-panel exec-anchor" id="execSectionWatchlist">
           <div class="exec-panel-head-v2">
@@ -71,7 +81,7 @@
           <div class="exec-panel-head-v2">
             <div>
               <div class="exec-panel-label-v2">Top 3 Actions</div>
-              <div class="exec-panel-copy-v2">Owner-ready actions with due dates and impact range</div>
+              <div class="exec-panel-copy-v2">Signal to owner, due date, evidence and outcome status</div>
             </div>
             <button class="exec-mini-link exec-head-link" type="button" onclick="showMain()">See all actions</button>
           </div>
@@ -94,8 +104,8 @@
         <div class="exec-panel-v2 exec-focus-panel">
           <div class="exec-panel-head-v2">
             <div>
-              <div class="exec-panel-label-v2">Opportunity Matrix</div>
-              <div class="exec-panel-copy-v2">Expected upside ($) by horizon and revenue lane</div>
+              <div class="exec-panel-label-v2">Opportunity Action Lanes</div>
+              <div class="exec-panel-copy-v2">Expected upside, best timing, owner, and next move</div>
             </div>
             <button class="exec-mini-link exec-head-link" type="button" onclick="showPredictive()">Open full matrix</button>
           </div>
@@ -107,8 +117,8 @@
         <div class="exec-panel-v2 exec-anchor" id="execSectionThemes">
           <div class="exec-panel-head-v2">
             <div>
-              <div class="exec-panel-label-v2">Intelligence Themes</div>
-              <div class="exec-panel-copy-v2">Theme strength and direction from loaded backend/cache data</div>
+              <div class="exec-panel-label-v2">Pressure to Action Themes</div>
+              <div class="exec-panel-copy-v2">Each theme explains the implication and the move to make</div>
             </div>
           </div>
           <div class="exec-theme-grid" id="execLeadershipLanes"></div>
@@ -152,6 +162,8 @@
   <div class="exec-detail-body" id="execDrawerBody"></div>
   <div class="exec-detail-links">
     <button type="button" class="exec-deep-chip" onclick="showComp()">Open Competitor View</button>
+    <button type="button" class="exec-deep-chip" onclick="showPartner()">Open Partner Network</button>
+    <button type="button" class="exec-deep-chip" onclick="showAIDiscovery()">Open AI Discovery</button>
     <button type="button" class="exec-deep-chip" onclick="showSent()">Open Sentiment View</button>
     <button type="button" class="exec-deep-chip" onclick="showCI()">Open Customer Intelligence</button>
   </div>
@@ -201,6 +213,7 @@
     <h1>Radar Roadmap & Evidence Tracker</h1>
     <p>Tracks what is completed, what needs backend work, and what evidence is required before each capability can be considered production-ready.</p>
   </div>
+  <div class="roadmap-readiness-panel" id="roadmapReadiness"></div>
   <div class="roadmap-kpis" id="roadmapKpis"></div>
   <div class="roadmap-updates-panel">
     <div class="roadmap-panel-title">Latest updates</div>

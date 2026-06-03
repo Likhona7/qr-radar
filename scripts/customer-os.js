@@ -201,7 +201,9 @@ var SENT_META = {
   skytrax:    { name:'Skytrax', icon:'&#127942;', color:'#1a1a6a', sources:'Skytrax verified reviews', note:'Industry benchmark reviews. Premium experience focus.' },
   quora:      { name:'Quora', icon:'&#128172;', color:'#b92b27', sources:'Quora Qatar Airways questions', note:'Long-form passenger experience sharing. Good for booking and loyalty pain points.' },
   twitter:    { name:'X/Twitter', icon:'X', color:'#1da1f2', sources:'X/Twitter @qatarairways mentions', note:'Real-time complaints and viral service failures.' },
-  consumer:   { name:'Consumer Affairs', icon:'&#128203;', color:'#e67e22', sources:'ConsumerAffairs, PissedConsumer, AirlineQuality', note:'Formal complaint platforms with highest severity issues.' }
+  consumer:   { name:'Consumer Affairs', icon:'&#128203;', color:'#e67e22', sources:'ConsumerAffairs, PissedConsumer, AirlineQuality', note:'Formal complaint platforms with highest severity issues.' },
+  appstore:   { name:'Apple App Store', icon:'&#127822;', color:'#111827', sources:'iPhone airline ratings and reviews', note:'iOS app reviews reveal booking flow, crash, and boarding-pass friction.' },
+  googleplay: { name:'Google Play', icon:'&#128241;', color:'#4285f4', sources:'Android airline ratings and reviews', note:'Android reviews reveal app stability, login, and checkout issues.' }
 };
 
 
@@ -251,7 +253,9 @@ function domainCacheSignalsForSentiment(src){
     tripadvisor:['prd','rep','loy'],
     skytrax:['prd','rep','loy'],
     quora:['agt','dig','loy','prd'],
-    consumer:['rep','ops','prd','reg']
+    consumer:['rep','ops','prd','reg'],
+    appstore:['dig','prd','loy','rep'],
+    googleplay:['dig','prd','loy','rep']
   };
   var sourceTerms = {
     twitter:/\bx\b|twitter|tweet|retweet|mention|social|viral|trend/i,
@@ -261,7 +265,9 @@ function domainCacheSignalsForSentiment(src){
     tripadvisor:/tripadvisor|traveler|traveller|holiday|family trip|cabin|food/i,
     skytrax:/skytrax|world airline awards|airline rating|premium cabin|five star|5-star/i,
     quora:/quora|question|answer|how to|why does|can i/i,
-    consumer:/consumer affairs|consumeraffairs|pissedconsumer|airlinequality|formal complaint|case id|chargeback/i
+    consumer:/consumer affairs|consumeraffairs|pissedconsumer|airlinequality|formal complaint|case id|chargeback/i,
+    appstore:/app store|ios|iphone|app rating|star rating|review|boarding pass|booking flow|crash/i,
+    googleplay:/google play|android|app rating|star rating|review|login|checkout|crash/i
   };
   var themeTerms = {
     twitter:/social|viral|tweet|mention|trend|x\/twitter|realtime/i,
@@ -271,13 +277,17 @@ function domainCacheSignalsForSentiment(src){
     tripadvisor:/cabin|crew|food|seat|comfort|traveller review/i,
     skytrax:/award|premium|service quality|cabin crew|business class|first class/i,
     quora:/question|answer|how to|why|booking advice|loyalty advice/i,
-    consumer:/complaint|case|refund|chargeback|escalation|compensation/i
+    consumer:/complaint|case|refund|chargeback|escalation|compensation/i,
+    appstore:/app|ios|iphone|booking flow|boarding pass|crash|login|checkout|rating/i,
+    googleplay:/app|android|booking flow|boarding pass|crash|login|checkout|rating/i
   };
   var sentimentTerms = /customer|passenger|review|complaint|sentiment|refund|delay|app|website|loyalty|service|booking|baggage|cabin|social|brand|reputation/i;
   var personaTerms = {
     reddit:/ota|agent|fare|price|refund|delay|complaint|support|cancel|baggage|app|website|booking|churn|leakage|outage|friction/i,
     tripadvisor:/cabin|crew|seat|food|comfort|service|lounge|airport|check-?in|experience|holiday|family|destination/i,
-    quora:/booking|policy|visa|avios|loyalty|upgrade|award|status|change|tips|guide|how to|why|can i/i
+    quora:/booking|policy|visa|avios|loyalty|upgrade|award|status|change|tips|guide|how to|why|can i/i,
+    appstore:/app|ios|iphone|booking flow|crash|login|checkout|boarding pass|review/i,
+    googleplay:/app|android|booking flow|crash|login|checkout|boarding pass|review/i
   };
   var domains = (domainMap[src] || ['sml','rep','prd','ops'])
     .map(function(id){
@@ -521,6 +531,7 @@ function hydrateSentimentFromDomainCache(){
 var CI_DATA = {};
 var CI_STORE = 'qr_v10_ci_';
 var ACTIVE_CI = null;
+var CI_BACKEND_SEGMENT_ENDPOINT_AVAILABLE = true;
 
 var CI_META = {
   diaspora:{
@@ -558,6 +569,13 @@ var CI_META = {
     size:'~60% of total QR passengers transit via DOH',
     qrContext:'Transit passengers represent 38% of DOH throughput. Doha Stopover conversion and lounge satisfaction are the primary commercial levers for this segment.'
   },
+  digitalNomad:{
+    name:'Digital Nomad', icon:'&#128187;', color:'#2E86DE',
+    desc:'Remote and hybrid workers taking longer-stay, multi-city journeys. They combine work utility with lifestyle and are highly digital in planning and servicing.',
+    routes:'DOH-LIS, DOH-BKK, DOH-DPS, DOH-BCN, DOH-CPT, DOH-MLE',
+    size:'~3-5M high-flex travellers in relevant long-stay corridors',
+    qrContext:'Digital nomads influence premium economy, ancillary mix, and repeat direct bookings when work-friendly products and stay partnerships are clear.'
+  },
   luxury:{
     name:'Luxury & Premium Traveller', icon:'&#10024;', color:'#C8A050',
     desc:'Ultra-high-value travellers choosing QR for Qsuite privacy, premium amenities, luxury stopovers, and curated experiences. Behavioural signals matter more than spend alone.',
@@ -572,6 +590,270 @@ var CI_META = {
   }
 };
 
+function syncCustomerIntelSegmentBadge(){
+  var badge = document.getElementById('ciSegmentsBadge');
+  if(!badge) return;
+  var count = Object.keys(CI_META || {}).length;
+  badge.textContent = count + ' segments';
+}
+setTimeout(syncCustomerIntelSegmentBadge, 80);
+
+var CI_ACTION_DOMAIN_MAP = {
+  diaspora:'rev',
+  business:'dig',
+  leisure:'rev',
+  loyalty:'loy',
+  transit:'ops',
+  digitalNomad:'dig',
+  luxury:'prd'
+};
+
+var CI_STRATEGIC_LENSES = {
+  diaspora:[
+    {name:'Family Multi-Pax Planner', priority:'High', why:'Higher basket size and seat-together pressure. This lens protects conversion where one failure can lose multiple passengers.', move:'Bundle family-seat + baggage certainty and proactive disruption support.'},
+    {name:'Student & Young Professional', priority:'Medium', why:'Early loyalty capture on long-haul corridors compounds lifetime value over multiple years.', move:'Launch first-job/student starter fares with loyalty acceleration and app onboarding.'},
+    {name:'Disruption-Recovery Customers', priority:'High', why:'Service recovery quality in this segment directly impacts repeat purchase and referral trust.', move:'Trigger instant re-accommodation + compensation journeys when disruption signals appear.'}
+  ],
+  business:[
+    {name:'SME / Self-Employed Business Traveler', priority:'High', why:'Frequent trips without managed contracts create direct-share upside if we simplify repeat booking and servicing.', move:'Offer SME direct bundles with flexible changes, loyalty bonuses and fast service lanes.'},
+    {name:'Disruption-Recovery Customers', priority:'High', why:'Business retention drops quickly after poor disruption handling.', move:'Activate executive service recovery workflow with owner accountability in 24 hours.'}
+  ],
+  leisure:[
+    {name:'Direct-Recovery from OTA Shoppers', priority:'High', why:'Users discover via OTA/metasearch but can still convert direct with timing, pricing clarity and loyalty hooks.', move:'Run OTA-exposed retargeting play: direct perks, app-only benefits and limited-time conversion nudges.'},
+    {name:'Family Multi-Pax Planner', priority:'High', why:'Group leisure trips drive ancillary value but are very sensitive to baggage and seating friction.', move:'Push family trip bundles with transparent total-trip pricing and seat assurance.'},
+    {name:'Student & Young Professional', priority:'Medium', why:'Price-sensitive now, high lifetime value later when captured into owned channels.', move:'Deploy youth fare + loyalty onboarding + referral mechanics across app and social journeys.'}
+  ],
+  loyalty:[
+    {name:'Direct-Recovery from OTA Shoppers', priority:'High', why:'Members who begin off-channel are at risk of value leakage unless pulled back to direct journeys.', move:'Use member-level offer recovery flows tied to tier progress and redemption nudges.'},
+    {name:'Disruption-Recovery Customers', priority:'High', why:'Tier members penalize inconsistency faster than non-members.', move:'Guarantee priority recovery path for disrupted loyalty members within 2 hours.'}
+  ],
+  transit:[
+    {name:'Family Multi-Pax Planner', priority:'High', why:'Multi-leg family transit creates outsized risk around misconnects, baggage and visa clarity.', move:'Publish transfer-safe family itineraries with baggage continuity and clear visa guidance.'},
+    {name:'Disruption-Recovery Customers', priority:'High', why:'Transit disruption amplifies support load and social visibility.', move:'Auto-trigger transit rescue playbook with proactive comms and rebooking pathways.'}
+  ],
+  digitalNomad:[
+    {name:'Direct-Recovery from OTA Shoppers', priority:'High', why:'Nomads often start in comparison channels and need a direct reason to complete with QR.', move:'Retarget flexible-fare researchers with direct-only work-travel bundles and loyalty boosts.'},
+    {name:'Student & Young Professional', priority:'Medium', why:'Emerging professionals overlap with remote-work segments and can become high-frequency future value.', move:'Create entry-tier growth journey with wallet setup, points education and app habit loops.'},
+    {name:'Disruption-Recovery Customers', priority:'High', why:'Long-stay remote travelers face outsized trust loss when schedules break work continuity.', move:'Deploy proactive disruption playbooks with fast rebooking and transparent service recovery updates.'}
+  ],
+  luxury:[
+    {name:'Disruption-Recovery Customers', priority:'High', why:'Premium travelers judge brand value on recovery precision during irregular operations.', move:'Enable concierge recovery triggers with premium service restoration and loyalty reinforcement.'}
+  ]
+};
+
+function ciParseDateValue(v){
+  if(!v) return null;
+  var direct = Date.parse(v);
+  if(Number.isFinite(direct)) return direct;
+  var txt = String(v).trim();
+  var iso = txt.match(/\b(\d{4})-(\d{2})-(\d{2})\b/);
+  if(iso){
+    var d1 = Date.parse(iso[0] + 'T00:00:00Z');
+    if(Number.isFinite(d1)) return d1;
+  }
+  var dmy = txt.match(/\b(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})\b/);
+  if(dmy){
+    var d2 = Date.parse(dmy[1] + ' ' + dmy[2] + ' ' + dmy[3]);
+    if(Number.isFinite(d2)) return d2;
+  }
+  return null;
+}
+function ciSignalTimestamp(signal){
+  if(!signal || typeof signal !== 'object') return null;
+  var candidates = [
+    signal.sourceDate, signal.source_date,
+    signal.eventDate, signal.event_date,
+    signal.lastVerifiedAt, signal.last_verified_at,
+    signal.lastSeenAt, signal.last_seen_at,
+    signal.createdAt, signal.created_at,
+    signal.firstSeenAt, signal.first_seen_at,
+    signal.refreshed_at
+  ];
+  for(var i=0;i<candidates.length;i++){
+    var ts = ciParseDateValue(candidates[i]);
+    if(Number.isFinite(ts)) return ts;
+  }
+  return null;
+}
+function ciSourceReliabilityPoints(source){
+  var t = String(source || '').toLowerCase();
+  if(!t) return 14;
+  if(/qatar airways|official|newsroom|press release|regulator|civil aviation|airport|iata|icao|government|app store|apple|google play/.test(t)) return 29;
+  if(/reuters|bloomberg|ft|financial times|wsj|cnn|bbc|forbes|skift|aerotime|gulf times|qatar tribune|industry/.test(t)) return 23;
+  if(/flyertalk|trustpilot|tripadvisor|skytrax|review/.test(t)) return 19;
+  if(/reddit|twitter|x\/|x |quora|consumer/.test(t)) return 14;
+  return 16;
+}
+function ciConfidenceBand(score){
+  if(score >= 85) return 'High';
+  if(score >= 70) return 'Medium-High';
+  if(score >= 55) return 'Medium';
+  return 'Low';
+}
+function ciComputeConfidence(seg, data){
+  data = data || {};
+  var evidence = [];
+  var pushEvidence = function(source, title, detail){
+    evidence.push({
+      source: String(source || '').trim(),
+      title: String(title || '').trim(),
+      detail: String(detail || '').trim()
+    });
+  };
+  (data.bookingBehaviour || []).forEach(function(row){
+    pushEvidence(row.source, row.insight, row.detail + ' ' + (row.implication || ''));
+  });
+  (data.painPoints || []).forEach(function(row){
+    pushEvidence(row.competitorAdvantage || 'pain signal', row.pain, row.detail);
+  });
+  (data.loyaltyDrivers || []).forEach(function(row){
+    pushEvidence(row.strength || 'loyalty signal', row.driver, row.detail);
+  });
+  (data.externalSignals || []).forEach(function(row){
+    pushEvidence(row.source, row.signal, row.implication);
+  });
+  if(!evidence.length){
+    pushEvidence('segment-intel', data.segmentName || seg, data.topInsight || '');
+  }
+
+  var srcCounts = {};
+  evidence.forEach(function(item){
+    var key = item.source || 'unknown';
+    srcCounts[key] = (srcCounts[key] || 0) + 1;
+  });
+  var uniqueSources = Object.keys(srcCounts).length;
+  var reliabilityTotal = 0;
+  Object.keys(srcCounts).forEach(function(src){
+    reliabilityTotal += ciSourceReliabilityPoints(src);
+  });
+  var sourceReliability = uniqueSources ? Math.round(reliabilityTotal / uniqueSources) : 10;
+
+  var corroboration = 0;
+  if(uniqueSources >= 4) corroboration = 25;
+  else if(uniqueSources === 3) corroboration = 22;
+  else if(uniqueSources === 2) corroboration = 16;
+  else if(uniqueSources === 1) corroboration = 10;
+
+  var now = Date.now();
+  var ts = ciParseDateValue(data.latestEvidenceAt);
+  var ageDays = null;
+  if(Number.isFinite(ts)){
+    ageDays = Math.max(0, (now - ts) / 86400000);
+  }
+  var recency = 10;
+  var freshnessState = 'Aging';
+  if(ageDays === null){
+    recency = 10;
+    freshnessState = 'Unknown';
+  } else if(ageDays <= 3){
+    recency = 20;
+    freshnessState = 'Fresh';
+  } else if(ageDays <= 7){
+    recency = 17;
+    freshnessState = 'Fresh';
+  } else if(ageDays <= 30){
+    recency = 13;
+    freshnessState = 'Aging';
+  } else {
+    recency = 7;
+    freshnessState = 'Stale';
+  }
+
+  var specificityHits = 0;
+  evidence.forEach(function(item){
+    var txt = (item.title + ' ' + item.detail).toLowerCase();
+    if(/\d/.test(txt) || /\$|qar|usd|%|bn|million|m\b/.test(txt) || /\b\d{4}-\d{2}-\d{2}\b/.test(txt) || /https?:\/\//.test(txt)){
+      specificityHits++;
+    }
+  });
+  var specificityRatio = evidence.length ? (specificityHits / evidence.length) : 0;
+  var specificity = specificityRatio >= 0.65 ? 14 : specificityRatio >= 0.35 ? 10 : specificityRatio > 0 ? 7 : 4;
+  if((data.topInsight || '').length > 55) specificity = Math.min(15, specificity + 1);
+
+  var bizText = [
+    data.topInsight,
+    data.serviceRiskReason,
+    data.customerValueReason,
+    data.decisionReadinessReason,
+    data.nextBestAction && data.nextBestAction.action
+  ].filter(Boolean).join(' ').toLowerCase();
+  var businessHitCount = (bizText.match(/booking|conversion|revenue|yield|loyalty|retention|direct|ota|app|web|premium|ancillary|churn|disruption|service|trust/g) || []).length;
+  var businessRelevance = Math.max(3, Math.min(10, 3 + businessHitCount));
+
+  var penalties = 0;
+  if(uniqueSources <= 1) penalties -= 6;
+  var dominantShare = 0;
+  Object.keys(srcCounts).forEach(function(src){
+    dominantShare = Math.max(dominantShare, srcCounts[src] / Math.max(1, evidence.length));
+  });
+  if(dominantShare >= 0.7 && evidence.length >= 4) penalties -= 4;
+  if(freshnessState === 'Stale') penalties -= 4;
+
+  var score = Math.max(0, Math.min(100, sourceReliability + corroboration + recency + specificity + businessRelevance + penalties));
+  var band = ciConfidenceBand(score);
+  var caveat = '';
+  if(uniqueSources <= 1) caveat = 'Single-source heavy; treat as directional until corroborated.';
+  else if(freshnessState === 'Stale') caveat = 'Evidence is aging; re-verify before executive escalation.';
+  else if(freshnessState === 'Unknown') caveat = 'Missing explicit timestamps; keep a verification checkpoint.';
+
+  return {
+    score: score,
+    band: band,
+    sourceCount: uniqueSources,
+    corroborationCount: Math.min(uniqueSources, 3),
+    freshnessState: freshnessState,
+    breakdown: [
+      {label:'Source reliability', score:sourceReliability, max:30},
+      {label:'Corroboration', score:corroboration, max:25},
+      {label:'Recency', score:recency, max:20},
+      {label:'Evidence specificity', score:specificity, max:15},
+      {label:'Business relevance', score:businessRelevance, max:10}
+    ],
+    caveat: caveat
+  };
+}
+
+function ciActionDomain(seg){
+  return CI_ACTION_DOMAIN_MAP[seg] || 'dig';
+}
+function ciActionTitle(seg, data){
+  var action = (data && data.nextBestAction && data.nextBestAction.action) ? data.nextBestAction.action : '';
+  if(!action && data && Array.isArray(data.personalisationOpps) && data.personalisationOpps[0]){
+    action = data.personalisationOpps[0].title || '';
+  }
+  if(!action && data && data.topInsight){
+    action = 'Convert segment signal into action: ' + data.topInsight;
+  }
+  if(!action){
+    var fallbackName = (data && data.segmentName) || ((CI_META[seg] && CI_META[seg].name) ? CI_META[seg].name : seg);
+    action = 'Activate ' + fallbackName + ' growth and retention play';
+  }
+  var tags = [];
+  if(data && data.customerValuePotential) tags.push('Value ' + data.customerValuePotential);
+  if(data && data.decisionReadiness) tags.push('Readiness ' + data.decisionReadiness);
+  if(data && data.serviceRiskLevel) tags.push('Risk ' + data.serviceRiskLevel);
+  var withTags = tags.length ? (action + ' | ' + tags.join(' | ')) : action;
+  return String(withTags).slice(0, 180);
+}
+function ciActionDomainLabel(domainId){
+  if(typeof DOM_LABELS !== 'undefined' && DOM_LABELS && DOM_LABELS[domainId]) return DOM_LABELS[domainId];
+  var map = {dig:'Digital & direct', rev:'Revenue & pricing', loy:'Loyalty', ops:'Operations', prd:'Product & experience'};
+  return map[domainId] || domainId;
+}
+function openCIActionPlan(seg){
+  var data = normalizeCIData(seg, CI_DATA[seg] || emptyCI(seg));
+  var domainId = ciActionDomain(seg);
+  var segName = (data && data.segmentName) ? data.segmentName : ((CI_META[seg] && CI_META[seg].name) ? CI_META[seg].name : seg);
+  var domainTitle = 'Customer Intelligence - ' + segName + ' (' + ciActionDomainLabel(domainId) + ')';
+  var action = ciActionTitle(seg, data);
+  if(typeof window.openAP === 'function'){
+    window.openAP(action, domainTitle, domainId);
+    return;
+  }
+  console.warn('[Radar] Action-plan overlay is not available yet.');
+}
+window.openCIActionPlan = openCIActionPlan;
+
 
 function ciPriorityScore(seg, data){
   let score = Number(data?.opportunityScore) || 0;
@@ -579,7 +861,7 @@ function ciPriorityScore(seg, data){
   score += (data?.personalisationOpps || []).filter(o => /quick win|revenue|conversion|loyalty|retention|app|web|ucp|personalisation|personalization|ancillary/.test(JSON.stringify(o).toLowerCase())).length * 8;
   score += (data?.painPoints || []).filter(p => /competitor|emirates|turkish|air india|ethiopian|churn|loyalty|price|refund|app|web|direct/.test(JSON.stringify(p).toLowerCase())).length * 6;
   if(/highest ltv|premium yield|retention|conversion|loyalty|direct booking/.test(joined)) score += 12;
-  const base = {diaspora:14, luxury:15, loyalty:13, business:12, transit:9, leisure:8};
+  const base = {diaspora:14, luxury:15, loyalty:13, business:12, digitalNomad:11, transit:9, leisure:8};
   score += (base[seg] || 0);
   return Math.max(0, Math.min(100, score));
 }
@@ -604,6 +886,7 @@ function customerIntelFromDomainCache(seg){
     leisure:['spt','geo','sml','rev'],
     loyalty:['loy','dig','prd','rev'],
     transit:['ops','geo','spt','dig'],
+    digitalNomad:['dig','agt','rev','geo','sml'],
     luxury:['prd','loy','rep','spt','cmp']
   };
   var ids = domainMap[seg] || ['dig','loy','rev'];
@@ -614,6 +897,16 @@ function customerIntelFromDomainCache(seg){
     (d && Array.isArray(d.signals) ? d.signals : []).forEach(function(s){ rows.push({domain:id, signal:s, data:d}); });
   });
   if(!rows.length) return null;
+  var sourceKeys = {};
+  var latestEvidenceTs = null;
+  rows.forEach(function(r){
+    var srcKey = String((r.signal && (r.signal.source || r.signal.sourceName)) || r.domain || 'cache').trim().toLowerCase();
+    if(srcKey) sourceKeys[srcKey] = true;
+    var ts = ciSignalTimestamp(r.signal);
+    if(Number.isFinite(ts) && (!latestEvidenceTs || ts > latestEvidenceTs)) latestEvidenceTs = ts;
+  });
+  var sourceCount = Object.keys(sourceKeys).length;
+  var latestEvidenceAt = latestEvidenceTs ? new Date(latestEvidenceTs).toISOString() : '';
   var meta = CI_META[seg] || {};
   var avg = Math.round(rows.reduce(function(a,r){ return a + (Number(r.signal.commercialImpactScore || 6) * 10); },0) / rows.length);
   avg = Math.max(45, Math.min(95, avg));
@@ -621,7 +914,104 @@ function customerIntelFromDomainCache(seg){
   var opps = rows.filter(function(r){return /opportun|growth|direct|loyalty|conversion|premium|ancillary|capture|personal/i.test((r.signal.title||'')+' '+(r.signal.body||'')+' '+(r.signal.captureStrategy||''));});
   var riskLevel = risks.length >= 5 ? 'Critical' : risks.length >= 3 ? 'High' : risks.length ? 'Medium' : 'Low';
   var topSignal = rows[0] && rows[0].signal ? rows[0].signal : {};
-  var intentBySeg = { diaspora:'shopping', business:'in-trip', leisure:'inspiration', loyalty:'post-trip', transit:'day-of', luxury:'pre-trip' };
+  var intentBySeg = {
+    diaspora:'shopping',
+    business:'in-trip',
+    leisure:'inspiration',
+    loyalty:'post-trip',
+    transit:'day-of',
+    digitalNomad:'shopping',
+    luxury:'pre-trip'
+  };
+  var missionBySeg = {
+    diaspora:['VFR','Leisure'],
+    business:['Business'],
+    leisure:['Leisure','Event'],
+    loyalty:['Business','Leisure'],
+    transit:['Business','Leisure','VFR'],
+    digitalNomad:['Business','Leisure'],
+    luxury:['Leisure','Business']
+  };
+  var partyTypeBySeg = {
+    diaspora:['Family','Solo','Group'],
+    business:['Solo','Couple'],
+    leisure:['Couple','Family','Group'],
+    loyalty:['Solo','Couple'],
+    transit:['Solo','Couple','Family'],
+    digitalNomad:['Solo','Couple'],
+    luxury:['Couple','Solo','Family']
+  };
+  var digitalBehaviourBySeg = {
+    diaspora:{channel:'Web-first', note:'Long itinerary and baggage complexity drive desktop-first comparison and planning.'},
+    business:{channel:'App-first', note:'Frequent schedules, check-in, and disruption handling prioritize mobile speed.'},
+    leisure:{channel:'OTA-influenced', note:'Metasearch and OTA discovery shape early fare and destination consideration.'},
+    loyalty:{channel:'App-first', note:'Members react to tier, wallet, and redemption nudges in owned app flows.'},
+    transit:{channel:'Web-first', note:'Connection and visa checks often begin on larger-screen planning journeys.'},
+    digitalNomad:{channel:'OTA-influenced', note:'Nomads often start with open-ended search tools before moving to direct booking.'},
+    luxury:{channel:'App-first', note:'High-value travelers engage with concierge-like mobile servicing and upgrade flows.'}
+  };
+  var valuePotentialBySeg = {
+    diaspora:{level:'High', reason:'High frequency travel and family-size itineraries sustain repeat direct value.'},
+    business:{level:'High', reason:'Yield and loyalty lift are strongest when disruption friction stays low.'},
+    leisure:{level:'Medium', reason:'Volume is large, but conversion and margin vary by campaign seasonality.'},
+    loyalty:{level:'High', reason:'Retention and share-of-wallet leverage remain outsized in this segment.'},
+    transit:{level:'Medium', reason:'Hub scale is large, but value depends on stopover and ancillary conversion.'},
+    digitalNomad:{level:'High', reason:'Longer-stay patterns and repeat bookings can compound lifetime value.'},
+    luxury:{level:'High', reason:'Premium service and loyalty pathways influence disproportionate revenue share.'}
+  };
+  var readinessBySeg = {
+    diaspora:{stage:'Comparing options', reason:'Price, baggage and family flexibility checks dominate final decision loops.'},
+    business:{stage:'Ready to book', reason:'Clear schedules and low-friction servicing accelerate confirmation.'},
+    leisure:{stage:'Researching', reason:'Destination inspiration and campaign timing drive longer consideration windows.'},
+    loyalty:{stage:'Ready to book', reason:'Tier and redemption triggers reduce friction at checkout.'},
+    transit:{stage:'Researching', reason:'Connection confidence and visa certainty are prerequisites before purchase.'},
+    digitalNomad:{stage:'Comparing options', reason:'They compare stay-work value, flexibility and total trip economics.'},
+    luxury:{stage:'Ready to buy now', reason:'When prestige, privacy and curated benefits align, conversion is fast.'}
+  };
+  var riskTagBySeg = {
+    diaspora:[
+      {tag:'MISCONNECT', note:'Tight multi-leg itineraries increase disruption sensitivity.'},
+      {tag:'VISA', note:'Visa policy shifts can break planning and create support spikes.'},
+      {tag:'BAGGAGE', note:'Family travel and long stays drive higher baggage complexity.'},
+      {tag:'DISRUPTION', note:'Schedule changes quickly cascade into support and loyalty risk.'}
+    ],
+    business:[
+      {tag:'MISCONNECT', note:'Missed connections create outsized trust and productivity impact.'},
+      {tag:'VISA', note:'Documentation friction can collapse short-window business travel.'},
+      {tag:'BAGGAGE', note:'Lower primary risk versus schedule and servicing certainty.'},
+      {tag:'DISRUPTION', note:'Delay and rebooking quality directly affect corporate preference.'}
+    ],
+    leisure:[
+      {tag:'MISCONNECT', note:'Connection anxiety rises around peak season itineraries.'},
+      {tag:'VISA', note:'Entry rule confusion depresses conversion for first-time routes.'},
+      {tag:'BAGGAGE', note:'Family and event travel increase baggage issue visibility.'},
+      {tag:'DISRUPTION', note:'Holiday disruptions trigger high social and review amplification.'}
+    ],
+    loyalty:[
+      {tag:'MISCONNECT', note:'Service recovery quality determines retention under disruption.'},
+      {tag:'VISA', note:'Policy friction can weaken confidence in premium trip planning.'},
+      {tag:'BAGGAGE', note:'Priority handling failures damage tier-value perception.'},
+      {tag:'DISRUPTION', note:'Benefit inconsistency during disruption is a core churn trigger.'}
+    ],
+    transit:[
+      {tag:'MISCONNECT', note:'Hub transfer reliability is the top conversion determinant.'},
+      {tag:'VISA', note:'Transit and stopover visa clarity is essential for confidence.'},
+      {tag:'BAGGAGE', note:'Through-check issues can break onward journey trust.'},
+      {tag:'DISRUPTION', note:'Irregular operations rapidly increase call-center pressure.'}
+    ],
+    digitalNomad:[
+      {tag:'MISCONNECT', note:'Multi-city planning needs resilient rebooking options.'},
+      {tag:'VISA', note:'Long-stay documentation and eligibility shifts drive hesitation.'},
+      {tag:'BAGGAGE', note:'Remote-work gear increases baggage sensitivity and cost concerns.'},
+      {tag:'DISRUPTION', note:'Schedule instability directly impacts work continuity.'}
+    ],
+    luxury:[
+      {tag:'MISCONNECT', note:'Premium travelers expect seamless handoffs at every touchpoint.'},
+      {tag:'VISA', note:'High-value itineraries need concierge-grade documentation guidance.'},
+      {tag:'BAGGAGE', note:'Premium expectations make handling failures highly damaging.'},
+      {tag:'DISRUPTION', note:'Service-recovery quality can make or break loyalty economics.'}
+    ]
+  };
   var extSignals = rows.slice(0, 3).map(function(r){
     var title = r.signal.title || r.signal.body || 'Customer signal';
     return {
@@ -637,6 +1027,19 @@ function customerIntelFromDomainCache(seg){
     timeline: 'This quarter',
     owner: 'Digital/B2C'
   };
+  if(seg === 'digitalNomad'){
+    extSignals = [
+      { signal:'Flexible fare and long-stay demand discussion rising', source:'Travel communities', direction:'rising', implication:'Highlight flexibility, productivity and stopover value in direct messaging.' },
+      { signal:'Remote-work trip planning starts on metasearch', source:'Search and OTA patterns', direction:'rising', implication:'Strengthen direct retargeting from comparison journeys.' },
+      { signal:'Work-friendly cabin and Wi-Fi quality drive review impact', source:'App and social reviews', direction:'stable', implication:'Tie product reliability signals to conversion messaging and loyalty value.' }
+    ];
+    genericNba = {
+      action:'Launch a nomad journey: flexible fare + stopover + loyalty accelerator bundle',
+      adobeProduct:'Journey Optimizer',
+      timeline:'This quarter',
+      owner:'Digital Marketing + Product'
+    };
+  }
   if(seg === 'luxury'){
     extSignals = [
       { signal:'Premium cabin comfort and privacy sentiment', source:'FlyerTalk', direction:'rising', implication:'Privacy-first service tailoring can lift direct premium conversion.' },
@@ -650,6 +1053,9 @@ function customerIntelFromDomainCache(seg){
       owner:'Digital Product + Loyalty'
     };
   }
+  var valuePotential = valuePotentialBySeg[seg] || {level:'Medium', reason:'Value profile needs more direct segment evidence.'};
+  var readiness = readinessBySeg[seg] || {stage:'Researching', reason:'Readiness defaults to research without clearer intent signals.'};
+  var strategicLenses = CI_STRATEGIC_LENSES[seg] || [];
   return normalizeCIData(seg, {
     segment: seg,
     segmentName: meta.name || seg,
@@ -659,15 +1065,27 @@ function customerIntelFromDomainCache(seg){
     topInsight: rows[0].signal.title || rows[0].signal.body || 'Domain cache signals available for this segment.',
     identityConfidence: 'Medium',
     tripIntentState: intentBySeg[seg] || 'shopping',
+    customerValuePotential: valuePotential.level,
+    customerValueReason: valuePotential.reason,
+    decisionReadiness: readiness.stage,
+    decisionReadinessReason: readiness.reason,
+    tripMission: missionBySeg[seg] || ['Leisure'],
+    partyType: partyTypeBySeg[seg] || ['Solo'],
+    digitalBehaviour: digitalBehaviourBySeg[seg] || {channel:'Web-first', note:'Default digital behavior profile.'},
     serviceRiskLevel: riskLevel,
     serviceRiskReason: risks[0] ? (risks[0].signal.title || 'Customer friction trend detected').slice(0, 80) : 'No dominant risk signal',
+    serviceRiskTags: riskTagBySeg[seg] || [],
     bookingBehaviour: rows.slice(0,4).map(function(r){return {insight:r.signal.title||'Behaviour signal', detail:r.signal.body||r.signal.whyItMattersNow||'', source:(r.domain||'').toUpperCase(), implication:r.signal.captureStrategy||r.signal.impactLabel||''};}),
     loyaltyDrivers: opps.slice(0,4).map(function(r){return {driver:r.signal.title||'Value driver', detail:r.signal.whyItMattersNow||r.signal.body||'', strength:r.signal.confidence||'Medium'};}),
     painPoints: risks.slice(0,4).map(function(r){return {pain:r.signal.title||'Customer pain point', detail:r.signal.body||r.signal.whyItMattersNow||'', competitorAdvantage:r.signal.impactLabel||r.signal.demandImpact||''};}),
     personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Use customer context to prioritise this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both'};}),
     externalSignals: extSignals,
     nextBestAction: genericNba,
+    strategicLenses: strategicLenses,
     luxuryPersonas: meta.luxuryPersonas || [],
+    sourceCount: sourceCount,
+    corroborationCount: Math.min(sourceCount, 3),
+    latestEvidenceAt: latestEvidenceAt,
     kpis:[
       {metric:'Signals', qrCurrent:String(rows.length), benchmark:'Domain cache'},
       {metric:'Risks', qrCurrent:String(risks.length), benchmark:'Monitor'},
@@ -708,7 +1126,7 @@ async function loadCI(seg){
   selCI(seg);
 
   // 1 - Try backend first
-  if(typeof BACKEND_URL !== 'undefined' && BACKEND_URL){
+  if(typeof BACKEND_URL !== 'undefined' && BACKEND_URL && CI_BACKEND_SEGMENT_ENDPOINT_AVAILABLE){
     try{
       setBtn('Checking backend...', false);
       var viewMode = (typeof VIEW_MODE !== 'undefined' && VIEW_MODE) ? VIEW_MODE : 'enterprise';
@@ -716,6 +1134,9 @@ async function loadCI(seg){
         BACKEND_URL+'/api/cache/customer-intel/'+encodeURIComponent(seg)+'?viewMode='+encodeURIComponent(viewMode),
         { signal: AbortSignal.timeout ? AbortSignal.timeout(12000) : undefined }
       );
+      if(resp.status === 404){
+        CI_BACKEND_SEGMENT_ENDPOINT_AVAILABLE = false;
+      }
       if(resp.ok){
         var payload = await resp.json();
         var backendData = (payload && payload.data) ? payload.data : payload;
@@ -736,6 +1157,7 @@ async function loadCI(seg){
   }
 
   // 2 - Fall back to localStorage cache
+  setBtn('Using cache...', false);
   var saved = loadCIFromStorage(seg);
   if(saved && saved.data){
     setBtn('Stale', true);
@@ -774,13 +1196,16 @@ async function loadCI(seg){
         '. Use web search signals and return ONLY valid JSON with: '+
         '{"segment":"'+seg+'","segmentName":"'+(meta.name||seg)+'","opportunityScore":75,"opportunityLabel":"High","size":"'+(meta.size||'')+'","topInsight":"string",'+
         '"identityConfidence":"High|Medium|Low","tripIntentState":"inspiration|shopping|pre-trip|day-of|in-trip|disruption|post-trip","serviceRiskLevel":"Critical|High|Medium|Low","serviceRiskReason":"string",'+
+        '"customerValuePotential":"High|Medium|Low","customerValueReason":"string","decisionReadiness":"Researching|Comparing options|Ready to book|Ready to buy now|Post-booking support","decisionReadinessReason":"string",'+
+        '"tripMission":["Leisure|VFR|Business|Religious|Event"],"partyType":["Solo|Couple|Family|Group"],"digitalBehaviour":{"channel":"App-first|Web-first|OTA-influenced","note":"string"},"serviceRiskTags":[{"tag":"MISCONNECT|VISA|BAGGAGE|DISRUPTION","note":"string"}],'+
         '"bookingBehaviour":[{"insight":"string","detail":"string","source":"string","implication":"string"}],'+
         '"loyaltyDrivers":[{"driver":"string","detail":"string","strength":"Strong|Medium|Weak"}],'+
         '"painPoints":[{"pain":"string","detail":"string","competitorAdvantage":"string"}],'+
         '"personalisationOpps":[{"title":"string","detail":"string","ucpUseCase":"string","adobeProduct":"CJA|RTCDP|Journey Optimizer|Brand Concierge|Journey Optimizer Loyalty","value":"string","effort":"Quick win|Medium|Strategic","owner":"string","persona":"all|privacy|curator|status","dataSource":"external|internal|both"}],'+
         '"kpis":[{"metric":"string","qrCurrent":"string","benchmark":"string","gap":"string"}],'+
         '"externalSignals":[{"signal":"string","source":"string","direction":"rising|falling|stable","implication":"string"}],'+
-        '"nextBestAction":{"action":"string","adobeProduct":"string","timeline":"This week|This quarter|6 months","owner":"string"}}';
+        '"nextBestAction":{"action":"string","adobeProduct":"string","timeline":"This week|This quarter|6 months","owner":"string"},'+
+        '"strategicLenses":[{"name":"string","priority":"High|Medium|Low","why":"string","move":"string"}]}';
       var claudeBody = {
         model: 'claude-sonnet-4-5-20250929',
         max_tokens: 2200,
@@ -860,6 +1285,18 @@ function renderCI(seg,data){
   var meta=CI_META[seg]||{};
   var sc=data.opportunityScore||70;
   var scColor=sc>=80?'#1abc9c':sc>=60?'#C8A050':'#e74c3c';
+  var computedConfidence = ciComputeConfidence(seg, data);
+  var confScore = Number(data.confidenceScore);
+  if(!Number.isFinite(confScore)) confScore = computedConfidence.score;
+  var confBand = data.confidenceBand || computedConfidence.band;
+  var confBreakdown = (Array.isArray(data.confidenceBreakdown) && data.confidenceBreakdown.length)
+    ? data.confidenceBreakdown
+    : computedConfidence.breakdown;
+  var confSourceCount = Number.isFinite(Number(data.sourceCount)) ? Number(data.sourceCount) : computedConfidence.sourceCount;
+  var confCorroborationCount = Number.isFinite(Number(data.corroborationCount)) ? Number(data.corroborationCount) : computedConfidence.corroborationCount;
+  var confCaveat = data.confidenceCaveat || computedConfidence.caveat;
+  var confFreshness = computedConfidence.freshnessState;
+  var confClass = confScore >= 85 ? 'ci-conf-high' : confScore >= 70 ? 'ci-conf-medh' : confScore >= 55 ? 'ci-conf-med' : 'ci-conf-low';
 
   var kpiH=(data.kpis||[]).map(function(k){
     var gap = k && k.gap ? '<div style="font-size:9px;color:var(--t3);margin-top:2px">Gap: '+esc(k.gap)+'</div>' : '';
@@ -893,10 +1330,30 @@ function renderCI(seg,data){
   var decisionStrip = '<div class="ci-decision-strip">';
   if(data.identityConfidence) decisionStrip += '<span class="ci-pill ci-pill-id">Identity: '+esc(data.identityConfidence)+'</span>';
   if(data.tripIntentState) decisionStrip += '<span class="ci-pill ci-pill-intent">Intent: '+esc(data.tripIntentState)+'</span>';
+  if(data.customerValuePotential){
+    decisionStrip += '<span class="ci-pill ci-pill-value">Value: '+esc(data.customerValuePotential)+'</span>';
+  }
+  if(data.decisionReadiness){
+    decisionStrip += '<span class="ci-pill ci-pill-readiness">Readiness: '+esc(data.decisionReadiness)+'</span>';
+  }
   if(data.serviceRiskLevel){
     decisionStrip += '<span class="ci-pill '+riskClass+'">Service risk: '+esc(data.serviceRiskLevel)+(data.serviceRiskReason ? ' - '+esc(String(data.serviceRiskReason).slice(0, 48)) : '')+'</span>';
   }
   decisionStrip += '</div>';
+  var confBreakHtml = (confBreakdown || []).map(function(row){
+    var score = Number(row && row.score);
+    var max = Number(row && row.max);
+    var text = (Number.isFinite(score) && Number.isFinite(max) && max > 0) ? (score + '/' + max) : 'n/a';
+    return '<span class="ci-conf-chip">'+esc((row && row.label) || 'Confidence')+': '+esc(text)+'</span>';
+  }).join('');
+  var confidencePanel = '<div class="ci-confidence '+confClass+'">'+
+    '<div class="ci-conf-top">'+
+      '<div class="ci-conf-score">Evidence confidence '+esc(confBand)+' ('+esc(confScore)+'/100)</div>'+
+      '<div class="ci-conf-meta">'+esc(confSourceCount)+' sources • '+esc(confCorroborationCount)+' corroborated • '+esc(confFreshness)+'</div>'+
+    '</div>'+
+    '<div class="ci-conf-break">'+confBreakHtml+'</div>'+
+    (confCaveat ? '<div class="ci-conf-caveat">'+esc(confCaveat)+'</div>' : '')+
+  '</div>';
 
   var nbaH = '';
   if(data.nextBestAction && data.nextBestAction.action){
@@ -905,12 +1362,64 @@ function renderCI(seg,data){
       (data.nextBestAction.owner ? '<span>Owner: '+esc(data.nextBestAction.owner)+'</span>' : '')+
       '</div></div>';
   }
+  var planActionSummary = ciActionTitle(seg, data);
+  var planOwner = (data.nextBestAction && data.nextBestAction.owner) ? data.nextBestAction.owner : 'Digital/B2C owner';
+  var planTimeline = (data.nextBestAction && data.nextBestAction.timeline) ? data.nextBestAction.timeline : '30-day execution';
+  var actionPlanBlock = '<div class="ci-plan">'+
+    '<div class="ci-plan-h">Action plan</div>'+
+    '<div class="ci-plan-t">'+esc(planActionSummary)+'</div>'+
+    '<div class="ci-plan-meta"><span>Owner: '+esc(planOwner)+'</span><span>'+esc(planTimeline)+'</span></div>'+
+    '<button type="button" class="ci-plan-btn" onclick="openCIActionPlan(\''+seg+'\')">Open 30-day action plan</button>'+
+  '</div>';
 
   var externalRows = (data.externalSignals||[]).map(function(s){
     var glyph = s.direction === 'rising' ? '&#8593;' : s.direction === 'falling' ? '&#8595;' : '&#8212;';
     return '<div class="ci-item"><div class="ci-dot" style="background:var(--grn)"></div><div class="ci-item-b"><strong>'+esc(s.signal || '')+'</strong> <span style="font-size:10px;color:var(--t3)">'+glyph+'</span><div style="font-size:10px;color:var(--t3)">'+esc(s.source || '')+' - '+esc(s.implication || '')+'</div></div></div>';
   }).join('');
   var externalSection = externalRows ? '<div class="ci-external-wrap"><div class="ci-col-t" style="color:var(--grn)">External Signals</div>'+externalRows+'</div>' : '';
+
+  var missionTags = (Array.isArray(data.tripMission) ? data.tripMission : []).map(function(m){
+    return '<span class="ci-dim-pill ci-dim-mission">'+esc(m)+'</span>';
+  }).join('');
+  var partyTags = (Array.isArray(data.partyType) ? data.partyType : []).map(function(p){
+    return '<span class="ci-dim-pill ci-dim-party">'+esc(p)+'</span>';
+  }).join('');
+  var riskTags = (Array.isArray(data.serviceRiskTags) ? data.serviceRiskTags : []).map(function(r){
+    var tag = (r && r.tag) ? r.tag : '';
+    var note = (r && r.note) ? r.note : '';
+    return '<span class="ci-dim-pill ci-dim-risk" title="'+esc(note)+'">'+esc(tag)+'</span>';
+  }).join('');
+  var digitalBehaviourLabel = (data.digitalBehaviour && data.digitalBehaviour.channel) ? data.digitalBehaviour.channel : '';
+  var digitalBehaviourNote = (data.digitalBehaviour && data.digitalBehaviour.note) ? data.digitalBehaviour.note : '';
+  var customerValueReason = data.customerValueReason ? '<div class="ci-dim-note">'+esc(data.customerValueReason)+'</div>' : '';
+  var readinessReason = data.decisionReadinessReason ? '<div class="ci-dim-note">'+esc(data.decisionReadinessReason)+'</div>' : '';
+  var dimensionSection = '<div class="ci-dims">'+
+    '<div class="ci-dim"><div class="ci-dim-t">Trip mission</div><div class="ci-dim-v">'+(missionTags || '<span class="ci-dim-empty">No data</span>')+'</div></div>'+
+    '<div class="ci-dim"><div class="ci-dim-t">Party type</div><div class="ci-dim-v">'+(partyTags || '<span class="ci-dim-empty">No data</span>')+'</div></div>'+
+    '<div class="ci-dim"><div class="ci-dim-t">Digital behaviour</div><div class="ci-dim-v">'+(digitalBehaviourLabel ? '<span class="ci-dim-pill ci-dim-digital">'+esc(digitalBehaviourLabel)+'</span>' : '<span class="ci-dim-empty">No data</span>')+'</div>'+(digitalBehaviourNote ? '<div class="ci-dim-note">'+esc(digitalBehaviourNote)+'</div>' : '')+'</div>'+
+    '<div class="ci-dim"><div class="ci-dim-t">Service risk tags</div><div class="ci-dim-v">'+(riskTags || '<span class="ci-dim-empty">No data</span>')+'</div></div>'+
+    '<div class="ci-dim"><div class="ci-dim-t">Customer value potential</div><div class="ci-dim-v">'+(data.customerValuePotential ? '<span class="ci-dim-pill ci-dim-value">'+esc(data.customerValuePotential)+'</span>' : '<span class="ci-dim-empty">No data</span>')+'</div>'+customerValueReason+'</div>'+
+    '<div class="ci-dim"><div class="ci-dim-t">Decision readiness</div><div class="ci-dim-v">'+(data.decisionReadiness ? '<span class="ci-dim-pill ci-dim-readiness">'+esc(data.decisionReadiness)+'</span>' : '<span class="ci-dim-empty">No data</span>')+'</div>'+readinessReason+'</div>'+
+  '</div>';
+
+  var lensList = (Array.isArray(data.strategicLenses) && data.strategicLenses.length)
+    ? data.strategicLenses
+    : (CI_STRATEGIC_LENSES[seg] || []);
+  var lensSection = '';
+  if(lensList.length){
+    lensSection = '<div class="ci-lens-wrap"><div class="ci-lens-title">Strategic segment lenses</div><div class="ci-lens-grid">'+
+      lensList.slice(0, 3).map(function(l){
+        var pr = (l.priority || 'Medium').toLowerCase();
+        var prClass = pr === 'high' ? 'ci-lens-pr-high' : pr === 'low' ? 'ci-lens-pr-low' : 'ci-lens-pr-med';
+        var lensAction = l.move || l.action || 'Define a focused play and owner.';
+        return '<div class="ci-lens-card">'+
+          '<div class="ci-lens-row"><div class="ci-lens-name">'+esc(l.name || 'Segment lens')+'</div><span class="ci-lens-pr '+prClass+'">'+esc(l.priority || 'Medium')+'</span></div>'+
+          '<div class="ci-lens-why">'+esc(l.why || '')+'</div>'+
+          '<div class="ci-lens-move">'+esc(lensAction)+'</div>'+
+        '</div>';
+      }).join('')+
+      '</div></div>';
+  }
 
   var luxuryPersonas = (data.luxuryPersonas && data.luxuryPersonas.length) ? data.luxuryPersonas : (meta.luxuryPersonas || []);
   var luxuryPanel = '';
@@ -934,9 +1443,13 @@ function renderCI(seg,data){
           '<div style="font-size:10px;color:var(--t3)">'+esc(data.opportunityLabel || 'Loaded')+' opportunity</div>'+
         '</div>'+
       '</div>'+
-      decisionStrip+
-      nbaH+
       '<div class="ci-kpis">'+kpiH+'</div>'+
+      decisionStrip+
+      confidencePanel+
+      nbaH+
+      actionPlanBlock+
+      dimensionSection+
+      lensSection+
       '<div class="ci-body">'+
         '<div class="ci-col"><div class="ci-col-t" style="color:#7BA7E8">Booking Behaviour</div>'+bookH+'</div>'+
         '<div class="ci-col"><div class="ci-col-t" style="color:#1abc9c">Loyalty Drivers</div>'+loyH+'</div>'+
@@ -971,6 +1484,7 @@ function clearCICache(){
 
 // Restore on load
 setTimeout(function(){
+  syncCustomerIntelSegmentBadge();
   Object.keys(CI_META).forEach(function(seg){
     var saved=loadCIFromStorage(seg);
     if(saved){
@@ -1000,7 +1514,9 @@ setTimeout(function(){
     tripadvisor: ['tripadvisor', 'trip_advisor'],
     skytrax: ['skytrax'],
     quora: ['quora'],
-    consumer: ['consumer', 'consumer_affairs', 'consumeraffairs']
+    consumer: ['consumer', 'consumer_affairs', 'consumeraffairs'],
+    appstore: ['appstore', 'app_store', 'apple_app_store', 'ios'],
+    googleplay: ['googleplay', 'google_play', 'play_store', 'android']
   };
 
   function metaName(src){
@@ -1112,7 +1628,9 @@ setTimeout(function(){
       tripadvisor:/tripadvisor|traveler review|traveller review|trip advisor/i,
       skytrax:/skytrax|airline awards|world.?best airline/i,
       quora:/quora|question|answer/i,
-      consumer:/consumer affairs|consumeraffairs|pissedconsumer|airlinequality|formal complaint/i
+      consumer:/consumer affairs|consumeraffairs|pissedconsumer|airlinequality|formal complaint/i,
+      appstore:/app store|apple|ios|iphone|booking flow|boarding pass|rating|review/i,
+      googleplay:/google play|android|booking flow|boarding pass|rating|review/i
     };
     var rule = sourceRules[src];
     if(!rule) return false;

@@ -4,8 +4,10 @@ const components = [
   '01-top-shell.html',
   '02-main-dashboard.html',
   '03-competitors.html',
+  '03-partners.html',
   '04-sentiment.html',
   '05-customer-intelligence.html',
+  '06-ai-discovery.html',
   '06-executive-pages-footer.html',
   '07-action-plan-overlay.html'
 ];
@@ -41,5 +43,10 @@ const html =
   '\n</body>\n</html>\n';
 
 await fs.mkdir(new URL('../dist/', import.meta.url), { recursive: true });
+try {
+  await fs.cp(new URL('../assets/', import.meta.url), new URL('../dist/assets/', import.meta.url), { recursive: true });
+} catch (err) {
+  if (err && err.code !== 'ENOENT') throw err;
+}
 await fs.writeFile(new URL('../dist/qr_radar_v11_4_14_modular_bundle.html', import.meta.url), html, 'utf8');
 console.log('Built dist/qr_radar_v11_4_14_modular_bundle.html');

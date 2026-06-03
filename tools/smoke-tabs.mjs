@@ -12,22 +12,26 @@ function addCheck(name, pass, detail) {
 }
 
 const requiredIds = [
-  'navMain', 'navComp', 'navSent', 'navCI', 'navCIOS', 'navExec', 'navPredict', 'navRoadmap',
-  'compPage', 'sentPage', 'ciPage', 'ciosPage', 'execPage', 'predictPage', 'roadmapPage'
+  'navMain', 'navComp', 'navPartner', 'navSent', 'navCI', 'navCIOS', 'navExec', 'navPredict', 'navAI', 'navRoadmap',
+  'compPage', 'partnerPage', 'sentPage', 'ciPage', 'ciosPage', 'execPage', 'predictPage', 'aiDiscoveryPage', 'roadmapPage'
 ];
 requiredIds.forEach(id => addCheck(`id:${id}`, bundle.includes(`id="${id}"`), 'Required tab/page id'));
 
 const requiredFns = [
   'function showMain(',
   'function showComp(',
+  'function showPartner(',
   'function showSent(',
   'function showCI(',
   'function showCIOS(',
   'function showExecSummary(',
   'function showPredictive(',
+  'function showAIDiscovery(',
   'window.showRoadmap=function(',
   'function loadComp(',
-  'function loadCI('
+  'function loadCI(',
+  'function updatePartnerBadgeCount(',
+  'function renderAIDiscoveryPage('
 ];
 requiredFns.forEach(fn => addCheck(`fn:${fn}`, bundle.includes(fn), 'Required navigation/load function'));
 
@@ -59,6 +63,21 @@ addCheck(
   'competitor:alias-fetch',
   bundle.includes('COMP_CACHE_ALIASES') && bundle.includes('competitorPayloadMatches'),
   'Competitor alias and payload matching logic present'
+);
+addCheck(
+  'roadmap:readiness-panel',
+  bundle.includes('roadmapReadiness') && bundle.includes('Frontend-shippable now') && bundle.includes('Blocked end to end here'),
+  'Roadmap readiness split is rendered in the frontend'
+);
+addCheck(
+  'partner:catalog',
+  bundle.includes('Partner Network') && bundle.includes('Partner airlines'),
+  'Partner network tab and catalog present'
+);
+addCheck(
+  'ai-discovery:tab',
+  bundle.includes('AI Discovery Intelligence') && bundle.includes('AI referral traffic') && bundle.includes('AI referral traffic'),
+  'AI Discovery tab and useful-metrics framework present'
 );
 addCheck(
   'devserver:use-stubs',

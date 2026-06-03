@@ -2,8 +2,10 @@ const componentFiles = [
   '01-top-shell.html',
   '02-main-dashboard.html',
   '03-competitors.html',
+  '03-partners.html',
   '04-sentiment.html',
   '05-customer-intelligence.html',
+  '06-ai-discovery.html',
   '06-executive-pages-footer.html',
   '07-action-plan-overlay.html'
 ];

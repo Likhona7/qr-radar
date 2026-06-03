@@ -491,6 +491,144 @@ function competitorPayloadMatches(id, data){
   const acts = asArray(data && data.actions).map(competitorSignalText).join(' ');
   return meta.terms.test((weak + ' ' + opp + ' ' + acts).toLowerCase());
 }
+function compParseDateValue(v){
+  if(!v) return null;
+  const ts = Date.parse(v);
+  if(Number.isFinite(ts)) return ts;
+  const txt = String(v).trim();
+  const iso = txt.match(/\b(\d{4})-(\d{2})-(\d{2})\b/);
+  if(iso){
+    const d1 = Date.parse(iso[0] + 'T00:00:00Z');
+    if(Number.isFinite(d1)) return d1;
+  }
+  const dmy = txt.match(/\b(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})\b/);
+  if(dmy){
+    const d2 = Date.parse(dmy[1] + ' ' + dmy[2] + ' ' + dmy[3]);
+    if(Number.isFinite(d2)) return d2;
+  }
+  return null;
+}
+function compSourceReliabilityPoints(source, sourceUrl){
+  const src = String(source || '').toLowerCase();
+  const host = urlHostName(sourceUrl);
+  const joined = (src + ' ' + host).trim();
+  if(/official|newsroom|press|regulator|airport|iata|icao|app store|google play|qatar airways/.test(joined)) return 29;
+  if(/reuters|bloomberg|ft|financial times|wsj|cnn|bbc|forbes|skift|aerotime|gulf times|qatar tribune|industry/.test(joined)) return 23;
+  if(/flyertalk|trustpilot|tripadvisor|skytrax|review/.test(joined)) return 19;
+  if(/reddit|twitter|x\/|x |quora|consumer/.test(joined)) return 14;
+  return 16;
+}
+function compConfidenceBand(score){
+  if(score >= 85) return 'High';
+  if(score >= 70) return 'Medium-High';
+  if(score >= 55) return 'Medium';
+  return 'Low';
+}
+function computeCompetitorConfidence(meta, weak, opp, acts, selectedSignals, hasExplicitCache, newsEvidence){
+  const evidenceRows = []
+    .concat(asArray(weak))
+    .concat(asArray(opp))
+    .concat(asArray(acts))
+    .concat(asArray(selectedSignals));
+  const srcCounts = {};
+  let reliabilityTotal = 0;
+  const seenSources = {};
+  let latestTs = null;
+  let specificityHits = 0;
+  evidenceRows.forEach(function(row){
+    const source = firstText(row, ['source','publisher','name'], 'cache');
+    const sourceUrl = safeUrl(firstText(row, ['sourceUrl','url'], ''));
+    const srcKey = (source + '|' + (urlHostName(sourceUrl) || '')).toLowerCase();
+    srcCounts[srcKey] = (srcCounts[srcKey] || 0) + 1;
+    if(!seenSources[srcKey]){
+      seenSources[srcKey] = true;
+      reliabilityTotal += compSourceReliabilityPoints(source, sourceUrl);
+    }
+    const rowTs = compParseDateValue(firstText(row, ['sourceDate','source_date','eventDate','event_date','lastVerifiedAt','last_verified_at','created_at'], ''));
+    if(Number.isFinite(rowTs) && (!latestTs || rowTs > latestTs)) latestTs = rowTs;
+    const joined = [
+      firstText(row, ['title','detail','body','description','summary'], ''),
+      source,
+      sourceUrl
+    ].join(' ').toLowerCase();
+    if(/\d/.test(joined) || /\$|qar|usd|%|bn|million|m\b/.test(joined) || /\b\d{4}-\d{2}-\d{2}\b/.test(joined) || /https?:\/\//.test(joined)){
+      specificityHits++;
+    }
+  });
+  const sourceCount = Math.max(0, Object.keys(srcCounts).length);
+  const sourceReliability = sourceCount ? Math.round(reliabilityTotal / sourceCount) : 10;
+  let corroboration = 0;
+  if(sourceCount >= 4) corroboration = 25;
+  else if(sourceCount === 3) corroboration = 22;
+  else if(sourceCount === 2) corroboration = 16;
+  else if(sourceCount === 1) corroboration = 10;
+
+  const ageDays = Number.isFinite(latestTs) ? Math.max(0, (Date.now() - latestTs) / 86400000) : null;
+  let recency = 10;
+  let freshnessState = 'Unknown';
+  if(ageDays === null){
+    recency = 10;
+    freshnessState = 'Unknown';
+  }else if(ageDays <= 3){
+    recency = 20;
+    freshnessState = 'Fresh';
+  }else if(ageDays <= 7){
+    recency = 17;
+    freshnessState = 'Fresh';
+  }else if(ageDays <= 30){
+    recency = 13;
+    freshnessState = 'Aging';
+  }else{
+    recency = 7;
+    freshnessState = 'Stale';
+  }
+
+  const specificityRatio = evidenceRows.length ? (specificityHits / evidenceRows.length) : 0;
+  let specificity = specificityRatio >= 0.65 ? 14 : specificityRatio >= 0.35 ? 10 : specificityRatio > 0 ? 7 : 4;
+  if(newsEvidence && newsEvidence.length >= 2) specificity = Math.min(15, specificity + 1);
+
+  const bizText = evidenceRows.map(function(row){
+    return [
+      firstText(row, ['title','detail','body','description','summary'], ''),
+      firstText(row, ['impact','value','b2cAngle'], '')
+    ].join(' ');
+  }).join(' ').toLowerCase();
+  const businessHitCount = (bizText.match(/booking|conversion|revenue|yield|loyalty|retention|direct|ota|app|web|premium|ancillary|churn|disruption|fare|pricing|network/g) || []).length;
+  const businessRelevance = Math.max(3, Math.min(10, 3 + businessHitCount));
+
+  let penalties = 0;
+  if(sourceCount <= 1) penalties -= 6;
+  let dominantShare = 0;
+  Object.keys(srcCounts).forEach(function(k){
+    dominantShare = Math.max(dominantShare, srcCounts[k] / Math.max(1, evidenceRows.length));
+  });
+  if(dominantShare >= 0.7 && evidenceRows.length >= 4) penalties -= 4;
+  if(freshnessState === 'Stale') penalties -= 4;
+  if(!hasExplicitCache) penalties -= 5;
+
+  const score = Math.max(0, Math.min(100, sourceReliability + corroboration + recency + specificity + businessRelevance + penalties));
+  const band = compConfidenceBand(score);
+  let caveat = '';
+  if(!hasExplicitCache) caveat = 'Derived from matched cache signals; refresh source-specific competitor cache for stronger proof.';
+  else if(sourceCount <= 1) caveat = 'Single-source heavy; verify with at least one independent source before escalation.';
+  else if(freshnessState === 'Stale') caveat = 'Evidence is aging; refresh before relying on this as current competitor posture.';
+
+  return {
+    score: score,
+    band: band,
+    sourceCount: sourceCount,
+    corroborationCount: Math.min(sourceCount, 3),
+    freshnessState: freshnessState,
+    caveat: caveat,
+    breakdown: [
+      {label:'Source reliability', score:sourceReliability, max:30},
+      {label:'Corroboration', score:corroboration, max:25},
+      {label:'Recency', score:recency, max:20},
+      {label:'Evidence specificity', score:specificity, max:15},
+      {label:'Business relevance', score:businessRelevance, max:10}
+    ]
+  };
+}
 function normalizeCompData(id, data){
   const meta = (typeof CMETA !== 'undefined' && CMETA[id]) ? CMETA[id] : {};
   data = data || {};
@@ -534,12 +672,20 @@ function normalizeCompData(id, data){
   const scoreSource = data.overallThreat || data.threat || data.score || derivedThreat || (selectedSignals.length ? domain.score : null);
   const newsPages = competitorNewsPages(meta);
   const newsEvidence = collectCompetitorNewsEvidence(meta, data, selectedSignals);
+  const confidence = computeCompetitorConfidence(meta, weak, opp, acts, selectedSignals, hasExplicitCache, newsEvidence);
   return {
     competitor: data.competitor || id,
     name: data.name || meta.name || id,
     why: data.why || meta.why || '',
     newsPages: newsPages,
     newsEvidence: newsEvidence,
+    confidenceScore: confidence.score,
+    confidenceBand: confidence.band,
+    confidenceBreakdown: confidence.breakdown,
+    confidenceCaveat: confidence.caveat,
+    sourceCount: confidence.sourceCount,
+    corroborationCount: confidence.corroborationCount,
+    freshnessState: confidence.freshnessState,
     overallThreat: hasSpecificCache ? safeScore(scoreSource, derivedThreat || 70) : null,
     summary: hasExplicitCache
       ? firstText(data, ['summary','topInsight'], (meta.name||id)+' intelligence loaded from backend cache.')
@@ -640,7 +786,41 @@ function normalizeSentimentData(src, data){
 }
 function emptyCI(seg){
   const meta = (typeof CI_META !== 'undefined' && CI_META[seg]) ? CI_META[seg] : {name:seg};
-  return {segment:seg, segmentName:meta.name || seg, opportunityScore:null, opportunityLabel:'No data', size:'', topInsight:'', identityConfidence:'', tripIntentState:'', serviceRiskLevel:'', serviceRiskReason:'', bookingBehaviour:[], loyaltyDrivers:[], painPoints:[], personalisationOpps:[], externalSignals:[], nextBestAction:null, kpis:[]};
+  return {
+    segment:seg,
+    segmentName:meta.name || seg,
+    opportunityScore:null,
+    opportunityLabel:'No data',
+    size:'',
+    topInsight:'',
+    identityConfidence:'',
+    tripIntentState:'',
+    customerValuePotential:'',
+    customerValueReason:'',
+    decisionReadiness:'',
+    decisionReadinessReason:'',
+    tripMission:[],
+    partyType:[],
+    digitalBehaviour:{channel:'', note:''},
+    serviceRiskLevel:'',
+    serviceRiskReason:'',
+    serviceRiskTags:[],
+    bookingBehaviour:[],
+    loyaltyDrivers:[],
+    painPoints:[],
+    personalisationOpps:[],
+    externalSignals:[],
+    nextBestAction:null,
+    strategicLenses:[],
+    confidenceScore:null,
+    confidenceBand:'',
+    confidenceBreakdown:[],
+    confidenceCaveat:'',
+    sourceCount:null,
+    corroborationCount:null,
+    latestEvidenceAt:'',
+    kpis:[]
+  };
 }
 function normalizeCIData(seg, data){
   data = data && data.data ? data.data : (data || null);
@@ -655,8 +835,19 @@ function normalizeCIData(seg, data){
     topInsight: firstText(data, ['topInsight','summary'], ''),
     identityConfidence: firstText(data, ['identityConfidence'], ''),
     tripIntentState: firstText(data, ['tripIntentState'], ''),
+    customerValuePotential: firstText(data, ['customerValuePotential'], ''),
+    customerValueReason: firstText(data, ['customerValueReason'], ''),
+    decisionReadiness: firstText(data, ['decisionReadiness'], ''),
+    decisionReadinessReason: firstText(data, ['decisionReadinessReason'], ''),
+    tripMission: asArray(data.tripMission).map(v => String(v || '').trim()).filter(Boolean),
+    partyType: asArray(data.partyType).map(v => String(v || '').trim()).filter(Boolean),
+    digitalBehaviour: {
+      channel: firstText(data.digitalBehaviour, ['channel'], ''),
+      note: firstText(data.digitalBehaviour, ['note'], '')
+    },
     serviceRiskLevel: firstText(data, ['serviceRiskLevel'], ''),
     serviceRiskReason: firstText(data, ['serviceRiskReason'], ''),
+    serviceRiskTags: asArray(data.serviceRiskTags).map(t => ({ tag:firstText(t,['tag'],''), note:firstText(t,['note'],'' )})).filter(t=>t.tag||t.note),
     bookingBehaviour: asArray(data.bookingBehaviour).map(b => ({insight:firstText(b,['insight','title','name'],''),detail:firstText(b,['detail','body','description'],''),source:firstText(b,['source'],''),implication:firstText(b,['implication','impact'],'')})).filter(b=>b.insight||b.detail),
     loyaltyDrivers: asArray(data.loyaltyDrivers).map(l => ({driver:firstText(l,['driver','title','name'],''),detail:firstText(l,['detail','body','description'],''),strength:firstText(l,['strength'],'')})).filter(l=>l.driver||l.detail),
     painPoints: asArray(data.painPoints).map(p => ({pain:firstText(p,['pain','title','issue','name'],''),detail:firstText(p,['detail','body','description'],''),competitorAdvantage:firstText(p,['competitorAdvantage','impact'],'')})).filter(p=>p.pain||p.detail),
@@ -670,6 +861,25 @@ function normalizeCIData(seg, data){
           owner: firstText(data.nextBestAction, ['owner'], '')
         }
       : null,
+    strategicLenses: asArray(data.strategicLenses).map(l => ({
+      name: firstText(l, ['name','title'], ''),
+      priority: firstText(l, ['priority'], ''),
+      why: firstText(l, ['why','reason','detail'], ''),
+      move: firstText(l, ['move','action'], '')
+    })).filter(l => l.name || l.why || l.move),
+    confidenceScore: safeScore(data.confidenceScore || data.confidence, null),
+    confidenceBand: firstText(data, ['confidenceBand','confidenceLabel'], ''),
+    confidenceBreakdown: asArray(data.confidenceBreakdown).map(function(row){
+      return {
+        label: firstText(row, ['label','name','metric'], ''),
+        score: safeScore(row && row.score, null),
+        max: safeScore(row && row.max, null)
+      };
+    }).filter(function(row){ return row.label; }),
+    confidenceCaveat: firstText(data, ['confidenceCaveat'], ''),
+    sourceCount: safeScore(data.sourceCount, null),
+    corroborationCount: safeScore(data.corroborationCount || data.corroboratedSources, null),
+    latestEvidenceAt: firstText(data, ['latestEvidenceAt','lastVerifiedAt','latestSourceDate'], ''),
     luxuryPersonas: asArray(data.luxuryPersonas),
     kpis: asArray(data.kpis)
   };
@@ -2754,6 +2964,61 @@ const CMETA={
     newsPages:[
       'https://corporate.ethiopianairlines.com/media/news'
     ]
+  },
+  lh:{
+    name:'Lufthansa',
+    flag:'DE',
+    hub:'Frankfurt FRA',
+    tier:'strategic',
+    terms:/\blufthansa\b|\bfrankfurt\b|\bfra\b|\bmunich\b|\bmuc\b/i,
+    why:'Major Europe network carrier competitor with strong premium-cabin presence and multi-brand feeder scale across EU flows.',
+    newsPages:[
+      'https://newsroom.lufthansagroup.com/en'
+    ]
+  },
+  ba:{
+    name:'British Airways',
+    flag:'UK',
+    hub:'London Heathrow LHR',
+    tier:'strategic',
+    terms:/\bbritish airways\b|\bba\b|\blondon heathrow\b|\blhr\b/i,
+    why:'Key UK long-haul competitor with direct overlap in premium and corporate travel demand on Europe-Americas corridors.',
+    newsPages:[
+      'https://mediacentre.britishairways.com/'
+    ]
+  },
+  sv:{
+    name:'Saudia',
+    flag:'SA',
+    hub:'Jeddah JED',
+    tier:'strategic',
+    terms:/\bsaudia\b|\bsaudi arabian airlines\b|\bjeddah\b|\bjed\b|\briyadh\b|\bruh\b/i,
+    why:'Regional Gulf-area competitor with accelerating network growth and relevance for pilgrimage, leisure and connecting traffic.',
+    newsPages:[
+      'https://www.saudia.com/pages/travel-with-saudia/news'
+    ]
+  },
+  cx:{
+    name:'Cathay Pacific',
+    flag:'HK',
+    hub:'Hong Kong HKG',
+    tier:'strategic',
+    terms:/\bcathay pacific\b|\bcathay\b|\bhong kong\b|\bhkg\b/i,
+    why:'Premium Asia-Pacific competitor with strong brand pull on long-haul business and high-value leisure segments.',
+    newsPages:[
+      'https://news.cathaypacific.com/'
+    ]
+  },
+  af:{
+    name:'Air France-KLM',
+    flag:'EU',
+    hub:'Paris CDG / Amsterdam AMS',
+    tier:'strategic',
+    terms:/\bair france\b|\bklm\b|\bair france-klm\b|\bcdg\b|\bams\b/i,
+    why:'Large dual-hub European competitor group with extensive alliance feed and pricing influence on Europe-bound demand.',
+    newsPages:[
+      'https://newsroom.airfranceklm.com/'
+    ]
   }
 };
 const COMP_CACHE_ALIASES = {
@@ -2762,8 +3027,544 @@ const COMP_CACHE_ALIASES = {
   et: ['et', 'ey', 'etihad'],
   sg: ['sg', 'sq', 'singapore'],
   ai: ['ai', 'airindia'],
-  ea: ['ea', 'eth', 'ethiopian']
+  ea: ['ea', 'eth', 'ethiopian'],
+  lh: ['lh', 'lufthansa'],
+  ba: ['ba', 'british', 'britishairways'],
+  sv: ['sv', 'saudia', 'saudi'],
+  cx: ['cx', 'cathay'],
+  af: ['af', 'airfrance', 'klm', 'airfranceklm']
 };
+
+const PMETA = {
+  aa: {
+    name: 'American Airlines',
+    code: 'AA',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Dallas / US network',
+    coverage: 'North America feed',
+    score: 96,
+    why: 'Extends Qatar Airways reach across North America and strengthens premium transatlantic feed into Doha.',
+    value: 'Useful for U.S. domestic feed, loyalty retention, and premium cabin demand.',
+    tags: ['North America', 'Feed', 'Loyalty'],
+    signals: [
+      'North America connectivity into Doha can improve itinerary choice and conversion.',
+      'Joint loyalty earn/spend can reduce churn on high-value U.S. travellers.',
+      'Premium itineraries can be packaged more effectively through connected journeys.'
+    ],
+    actions: [
+      'Promote connect itineraries on Doha gateways with a premium-value message.',
+      'Use partner-led loyalty prompts to encourage Avios earn/spend.',
+      'Track direct-vs-partner conversion on key North America corridors.'
+    ]
+  },
+  ba: {
+    name: 'British Airways',
+    code: 'BA',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'London / UK network',
+    coverage: 'UK and Europe feed',
+    score: 95,
+    why: 'Strong UK and Europe coverage with premium overlap on long-haul and corporate travel.',
+    value: 'Useful for premium flow, UK feed, and itinerary choice on Europe-Americas corridors.',
+    tags: ['UK', 'Premium', 'Corporate'],
+    signals: [
+      'London connectivity can support higher-yield business and leisure itineraries.',
+      'Shared loyalty messaging can help defend frequent-flyer preference.',
+      'Competition-sensitive corridors may respond well to joint offers and bundles.'
+    ],
+    actions: [
+      'Surface joint premium itineraries on UK-origin search journeys.',
+      'Test loyalty-led campaigns on frequent flyer corridors.',
+      'Monitor direct booking share on transatlantic routes where the overlap is strongest.'
+    ]
+  },
+  qf: {
+    name: 'Qantas',
+    code: 'QF',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Australia',
+    coverage: 'Australia and South Pacific feed',
+    score: 92,
+    why: 'Extends Qatar Airways reach into Australia and strengthens long-haul premium and leisure flows.',
+    value: 'Useful for Australia connections, premium uplift, and loyalty-linked itinerary value.',
+    tags: ['Australia', 'Long-haul', 'Premium'],
+    signals: [
+      'Australia itineraries can be sold as connected premium journeys through Doha.',
+      'Partner visibility can improve conversion where direct QR service is not the best fit.',
+      'Loyalty value can help defend high-value repeat travellers.'
+    ],
+    actions: [
+      'Promote partner-connected Australia journeys in executive and leisure search paths.',
+      'Track loyalty enrolment and repeat booking behaviour on Australia flows.',
+      'Use partner storylines in premium campaign creative.'
+    ]
+  },
+  cx: {
+    name: 'Cathay Pacific',
+    code: 'CX',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Hong Kong / Asia-Pacific',
+    coverage: 'Asia-Pacific premium flow',
+    score: 92,
+    why: 'Strong Asia-Pacific reach with premium cabin relevance and high-value long-haul traffic.',
+    value: 'Useful for premium Asian demand, high-value leisure, and business connectivity.',
+    tags: ['Asia-Pacific', 'Premium', 'Business'],
+    signals: [
+      'Hong Kong connectivity can unlock premium Asia-Pacific itineraries.',
+      'Brand alignment supports business and premium leisure demand.',
+      'Joint loyalty framing can strengthen repeat travel on long-haul flows.'
+    ],
+    actions: [
+      'Surface connected premium journeys on Asia-Pacific origin markets.',
+      'Use loyalty messaging on repeat business and premium leisure routes.',
+      'Watch for route-shift or demand-softening signals that affect this corridor.'
+    ]
+  },
+  jl: {
+    name: 'Japan Airlines',
+    code: 'JL',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Japan',
+    coverage: 'Japan and Northeast Asia feed',
+    score: 90,
+    why: 'Important for Japan-origin demand, premium business travel, and long-haul connecting itineraries.',
+    value: 'Useful for premium Japan demand and itinerary depth into the Middle East and beyond.',
+    tags: ['Japan', 'Premium', 'Business'],
+    signals: [
+      'Japan-origin customers often value schedule reliability and premium service depth.',
+      'Partner connections can improve conversion on long-haul business travel.',
+      'A strong network story helps position Qatar Airways for premium multi-leg itineraries.'
+    ],
+    actions: [
+      'Highlight partner-connected Japan itineraries in premium search flows.',
+      'Track loyalty engagement on repeat Japan business travel.',
+      'Use campaign creative that emphasises service consistency and reach.'
+    ]
+  },
+  ib: {
+    name: 'Iberia',
+    code: 'IB',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Madrid / Spain network',
+    coverage: 'Spain and Europe feed',
+    score: 90,
+    why: 'Supports Spain and wider Europe connectivity with useful premium and leisure coverage.',
+    value: 'Useful for Europe feed, leisure demand, and connected long-haul routes.',
+    tags: ['Spain', 'Europe', 'Leisure'],
+    signals: [
+      'Spain-origin traffic can be shaped into connected premium and leisure journeys.',
+      'Partner-led coverage improves route choice across Europe and beyond.',
+      'Loyalty value can lift repeat booking and reduce channel leakage.'
+    ],
+    actions: [
+      'Promote Spain-origin connect itineraries in leisure-heavy markets.',
+      'Measure repeat booking and Avios engagement on shared flows.',
+      'Use partner messaging in seasonal campaigns for Europe demand.'
+    ]
+  },
+  ay: {
+    name: 'Finnair',
+    code: 'AY',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Helsinki / Nordic network',
+    coverage: 'Nordic and Northern Europe feed',
+    score: 88,
+    why: 'Useful for Nordic connectivity and premium leisure/business journeys into Doha.',
+    value: 'Useful for Europe coverage, premium Nordic demand, and connected itineraries.',
+    tags: ['Nordics', 'Europe', 'Premium'],
+    signals: [
+      'Nordic connectivity can add useful feeder traffic into Qatar Airways long-haul network.',
+      'Premium customers often respond well to clear connection value and service consistency.',
+      'Strong partner coverage can reduce leakage to competing European hubs.'
+    ],
+    actions: [
+      'Promote Nordic connection value where Qatar Airways has strong long-haul coverage.',
+      'Use partner messaging around premium service and travel simplicity.',
+      'Track direct-booking conversion on Northern Europe itineraries.'
+    ]
+  },
+  mh: {
+    name: 'Malaysia Airlines',
+    code: 'MH',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Kuala Lumpur / Malaysia',
+    coverage: 'South-East Asia feed',
+    score: 88,
+    why: 'Extends South-East Asia reach and supports leisure, family, and premium demand through Doha.',
+    value: 'Useful for leisure, family travel, and connected long-haul itineraries.',
+    tags: ['Asia', 'Leisure', 'Family'],
+    signals: [
+      'South-East Asia flows benefit from clear connectivity and itinerary breadth.',
+      'Family and leisure customers may value easier through-ticketing and baggage continuity.',
+      'Premium and leisure mix can support better campaign targeting.'
+    ],
+    actions: [
+      'Surface partner-connected itineraries for leisure and family booking journeys.',
+      'Track baggage and connection-related feedback on these flows.',
+      'Use seasonal campaigns to lift connected demand.'
+    ]
+  },
+  om: {
+    name: 'Oman Air',
+    code: 'WY',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Muscat / Oman',
+    coverage: 'GCC and regional feed',
+    score: 87,
+    why: 'Regional partner that can strengthen GCC connectivity and business/leisure flow through Doha.',
+    value: 'Useful for short-haul feed, regional frequency, and premium regional journeys.',
+    tags: ['GCC', 'Regional', 'Feed'],
+    signals: [
+      'Regional connectivity is valuable for short-haul and multi-leg journeys.',
+      'GCC travellers often need simple connection paths and strong loyalty value.',
+      'The partner can help reduce direct leakage on regional corridors.'
+    ],
+    actions: [
+      'Highlight fast-connect regional journeys on GCC search paths.',
+      'Use loyalty prompts for repeat regional travellers.',
+      'Monitor regional corridor leakage and connection pain points.'
+    ]
+  },
+  rj: {
+    name: 'Royal Jordanian',
+    code: 'RJ',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Amman / Levant',
+    coverage: 'Levant and wider regional feed',
+    score: 86,
+    why: 'Adds useful regional connectivity and supports business, VFR, and multi-stop itineraries.',
+    value: 'Useful for Levant traffic, connected journeys, and loyalty retention.',
+    tags: ['Levant', 'Regional', 'VFR'],
+    signals: [
+      'Regional and VFR traffic often benefits from simplified itinerary options.',
+      'Doha connectivity can improve choice for stopover and multi-leg travel.',
+      'Loyalty messaging may help defend repeat journeys.'
+    ],
+    actions: [
+      'Promote connected itinerary options for VFR and business travellers.',
+      'Highlight loyalty value on repeat regional trips.',
+      'Track partner-related conversion and repeat behaviour.'
+    ]
+  },
+  at: {
+    name: 'Royal Air Maroc',
+    code: 'AT',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Casablanca / Morocco',
+    coverage: 'North and West Africa feed',
+    score: 84,
+    why: 'Extends Africa coverage and helps support long-haul itineraries into Doha from Africa and Europe.',
+    value: 'Useful for Africa connectivity and extended long-haul feed.',
+    tags: ['Africa', 'Feed', 'Connection'],
+    signals: [
+      'Africa-to-Doha connectivity can create attractive long-haul itineraries.',
+      'Leisure and VFR demand may value better network reach and scheduling.',
+      'Partner visibility can help convert traffic from nearby European and African markets.'
+    ],
+    actions: [
+      'Promote Africa-origin connection value in relevant markets.',
+      'Track conversion and connection satisfaction on Africa itineraries.',
+      'Use partner messaging in route and seasonal planning.'
+    ]
+  },
+  ul: {
+    name: 'SriLankan Airlines',
+    code: 'UL',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Colombo / Sri Lanka',
+    coverage: 'South Asia and Indian Ocean feed',
+    score: 84,
+    why: 'Useful for South Asia and Indian Ocean flows, including leisure and VFR traffic.',
+    value: 'Useful for VFR demand, family travel, and connected long-haul journeys.',
+    tags: ['South Asia', 'VFR', 'Leisure'],
+    signals: [
+      'South Asia flows can benefit from more direct partner connectivity and loyalty value.',
+      'VFR and family travel often needs baggage and connection simplicity.',
+      'A stronger partner story can lift route resilience and repeat bookings.'
+    ],
+    actions: [
+      'Surface connected South Asia journeys in family and VFR booking journeys.',
+      'Track baggage/connection satisfaction on these itineraries.',
+      'Use loyalty-led prompts for repeat South Asia travel.'
+    ]
+  },
+  fj: {
+    name: 'Fiji Airways',
+    code: 'FJ',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Fiji / South Pacific',
+    coverage: 'South Pacific leisure feed',
+    score: 83,
+    why: 'Extends South Pacific reach and supports long-haul leisure itineraries through Doha.',
+    value: 'Useful for premium leisure and destination-led long-haul flow.',
+    tags: ['South Pacific', 'Leisure', 'Long-haul'],
+    signals: [
+      'Leisure customers often need clear connection value and journey simplicity.',
+      'Long-haul itineraries can benefit from premium cabin positioning.',
+      'Partner messaging can help convert destination-led searches.'
+    ],
+    actions: [
+      'Promote connected leisure journeys for destination-led searches.',
+      'Highlight premium cabin value and journey simplicity.',
+      'Track leisure conversion and stopover interest on long-haul routes.'
+    ]
+  },
+  ha: {
+    name: 'Hawaiian Airlines',
+    code: 'HA',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Hawaii / US Pacific',
+    coverage: 'Pacific leisure feed',
+    score: 82,
+    why: 'Supports Pacific leisure flows and can improve route coverage for destination-led travel.',
+    value: 'Useful for leisure demand, premium itinerary mix, and route coverage.',
+    tags: ['Pacific', 'Leisure', 'Destination'],
+    signals: [
+      'Destination-led travel benefits from clear connection and service value.',
+      'Premium leisure travelers may respond well to a strong network story.',
+      'Partner feed can support itinerary depth without adding owned capacity.'
+    ],
+    actions: [
+      'Highlight destination-led connected journeys in leisure search.',
+      'Promote premium leisure and stopover value where relevant.',
+      'Measure partner-assisted conversion on Pacific itineraries.'
+    ]
+  },
+  as: {
+    name: 'Alaska Airlines',
+    code: 'AS',
+    group: 'core',
+    relationship: 'network partner',
+    hub: 'Seattle / US West Coast',
+    coverage: 'US West Coast feed',
+    score: 82,
+    why: 'Useful for West Coast feed and North America connectivity into Doha.',
+    value: 'Useful for U.S. West Coast demand and connected long-haul itineraries.',
+    tags: ['West Coast', 'Feed', 'North America'],
+    signals: [
+      'West Coast feed can support strong long-haul network coverage.',
+      'Connected journeys can improve itinerary choice for business and leisure travellers.',
+      'Loyalty value is especially useful on repeat North America travel.'
+    ],
+    actions: [
+      'Promote West Coast connect itineraries in long-haul search journeys.',
+      'Use loyalty cues to encourage repeat booking.',
+      'Track conversion and connection satisfaction on North America corridors.'
+    ]
+  },
+  ei: {
+    name: 'Aer Lingus',
+    code: 'EI',
+    group: 'growth',
+    relationship: 'strategic growth partner',
+    hub: 'Dublin / Ireland',
+    coverage: 'Ireland and transatlantic reach',
+    score: 86,
+    why: 'A useful growth partner for Ireland-origin traffic and transatlantic itineraries.',
+    value: 'Useful for selective corridor growth, loyalty, and connected premium flow.',
+    tags: ['Ireland', 'Growth', 'Transatlantic'],
+    signals: [
+      'Ireland-origin itineraries may respond well to clear connection and loyalty value.',
+      'Transatlantic flows can be monetised through connected premium journeys.',
+      'Partner awareness can improve route choice and reduce leakage.'
+    ],
+    actions: [
+      'Promote Ireland-linked connected itineraries in relevant searches.',
+      'Track premium and loyalty response on transatlantic flows.',
+      'Use campaign hooks to lift partner-assisted conversions.'
+    ]
+  },
+  va: {
+    name: 'Virgin Australia',
+    code: 'VA',
+    group: 'growth',
+    relationship: 'strategic growth partner',
+    hub: 'Australia',
+    coverage: 'Australia feed',
+    score: 86,
+    why: 'A strong growth partner for Australia-origin itineraries and high-value leisure travel.',
+    value: 'Useful for Australia route growth, premium leisure, and loyalty-led journeys.',
+    tags: ['Australia', 'Growth', 'Leisure'],
+    signals: [
+      'Australia demand can benefit from a clearer partner story and itinerary value.',
+      'Premium leisure and family travellers may value more flexible connection choices.',
+      'Joint loyalty messaging can lift repeat engagement.'
+    ],
+    actions: [
+      'Promote partner-connected Australia itineraries in leisure and premium search.',
+      'Track loyalty uptake and repeat booking on Australia flows.',
+      'Use seasonal campaigns for family and premium leisure segments.'
+    ]
+  },
+  mf: {
+    name: 'Xiamen Airlines',
+    code: 'MF',
+    group: 'growth',
+    relationship: 'strategic growth partner',
+    hub: 'Xiamen / China network',
+    coverage: 'China feed',
+    score: 84,
+    why: 'Useful for China connectivity and the ability to extend reach into multiple domestic markets.',
+    value: 'Useful for China-origin traffic, connection depth, and loyalty value.',
+    tags: ['China', 'Growth', 'Feed'],
+    signals: [
+      'China connectivity can be important for route depth and broader network reach.',
+      'Partner-led itineraries can improve conversion where direct service is limited.',
+      'A visible partner story helps defend high-value China flows.'
+    ],
+    actions: [
+      'Promote partner-connected China itineraries in relevant markets.',
+      'Monitor partner-assisted conversion and loyalty behaviour.',
+      'Use the partner story in market-facing route and campaign planning.'
+    ]
+  }
+};
+const AIDISCOVERY = {
+  kpis: [
+    { v: '5', l: 'trackable signal families', d: 'AI referrals, crawler visibility, citations, query gaps and conversion.' },
+    { v: '3', l: 'core data sources', d: 'Server logs, Adobe Analytics and citation monitoring.' },
+    { v: '4', l: 'AI engines to compare', d: 'ChatGPT, Claude, Perplexity and Gemini.' },
+    { v: '7', l: 'query families', d: 'Premium, business, family, route, app and loyalty questions.' },
+    { v: '1', l: 'weekly audit loop', d: 'Repeat the same query set to see movement and gaps.' }
+  ],
+  useful: [
+    {
+      title: 'AI referral traffic',
+      pill: 'Ready now',
+      tone: 'ai-good',
+      body: 'Measure sessions from chatgpt.com, perplexity.ai, claude.ai and gemini.google.com inside Adobe using a dedicated AI Assistant channel group.',
+      sub: 'Why it helps: shows whether AI engines are sending real visitors and bookings to QR.'
+    },
+    {
+      title: 'Crawler visibility',
+      pill: 'Ready now',
+      tone: 'ai-good',
+      body: 'Track GPTBot, OAI-SearchBot, ClaudeBot, Claude-SearchBot, PerplexityBot and Google-Extended in server logs.',
+      sub: 'Why it helps: shows which pages AI engines are reading and where depth is strongest.'
+    },
+    {
+      title: 'Citation share and position',
+      pill: 'Ready now',
+      tone: 'ai-good',
+      body: 'Run the same travel queries across Claude, ChatGPT, Perplexity and Gemini to see whether QR is cited, where it ranks, and which competitor appears instead.',
+      sub: 'Why it helps: turns AI visibility into a compare-and-improve score.'
+    },
+    {
+      title: 'Query gap analysis',
+      pill: 'High value',
+      tone: 'ai-mid',
+      body: 'Identify the travel questions where Emirates, Singapore Airlines or Delta are cited but QR is missing.',
+      sub: 'Why it helps: each gap becomes a content or SEO action.'
+    },
+    {
+      title: 'Landing page and conversion quality',
+      pill: 'Ready now',
+      tone: 'ai-good',
+      body: 'Measure which landing pages AI referrals choose, and compare bounce rate, conversion rate and revenue per session.',
+      sub: 'Why it helps: proves whether AI discovery is commercial or just noisy traffic.'
+    },
+    {
+      title: 'Dark AI traffic estimate',
+      pill: 'Exploratory',
+      tone: 'ai-mid',
+      body: 'Use trend matching to estimate AI sessions that arrive as Direct because referrer data is missing.',
+      sub: 'Why it helps: recovers part of the blind spot, but should be treated as directional rather than exact.'
+    }
+  ],
+  exclude: [
+    {
+      title: 'AI training-data inclusion',
+      tone: 'ai-bad',
+      body: 'Crawl frequency is only a proxy. It does not prove that QR content was used in training or how a model will answer tomorrow.'
+    },
+    {
+      title: 'Exact Google AI Mode traffic',
+      tone: 'ai-bad',
+      body: 'Google uses noreferrer in AI Mode links, so exact traffic attribution is not dependable in client-side analytics.'
+    },
+    {
+      title: 'Hype-only social counts',
+      tone: 'ai-bad',
+      body: 'YouTube, LinkedIn and generic hype posts are noisy unless they connect to a measurable referral, citation or conversion signal.'
+    },
+    {
+      title: 'Raw crawler totals without URL context',
+      tone: 'ai-bad',
+      body: 'Simple bot counts are less useful than page-level crawl depth, freshness and source-level pattern changes.'
+    }
+  ],
+  sources: [
+    {
+      name: 'Server logs',
+      status: 'No API key',
+      body: 'Filter known crawler user agents such as GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot, PerplexityBot and Google-Extended.'
+    },
+    {
+      name: 'Adobe Analytics',
+      status: 'Config only',
+      body: 'Add a regex channel group for AI referrals so sessions from chatgpt.com, perplexity.ai, claude.ai and gemini.google.com are captured cleanly.'
+    },
+    {
+      name: 'Citation monitor',
+      status: 'API or vendor',
+      body: 'Use a weekly Claude audit or a citation-monitoring tool to compare citation share, query gaps and engine position across brands.'
+    }
+  ],
+  queries: [
+    { q: 'best business class airline to London', engine: 'Multi-engine audit', gap: 'Gap watch', meta: 'Premium / long-haul' },
+    { q: 'Qatar Airways vs Emirates which is better', engine: 'Multi-engine audit', gap: 'Core benchmark', meta: 'Brand comparison' },
+    { q: 'best airline for Doha stopover', engine: 'Multi-engine audit', gap: 'Opportunity', meta: 'Stopover / destination' },
+    { q: 'best airline for premium family travel', engine: 'Multi-engine audit', gap: 'Gap watch', meta: 'Family / premium' },
+    { q: 'best airline for South Asia diaspora', engine: 'Multi-engine audit', gap: 'Gap watch', meta: 'VFR / regional' }
+  ],
+  actions: [
+    {
+      title: 'Create the AI visibility baseline',
+      body: 'Start the weekly query audit and store results so the business can see citation share, position and gaps over time.',
+      tags: ['Weekly', 'Fast start', 'High value']
+    },
+    {
+      title: 'Add the Adobe AI referral channel group',
+      body: 'Capture AI sessions in existing analytics first; this gives the team a cheap baseline before buying extra tools.',
+      tags: ['Adobe', 'No extra API', 'Direct value']
+    },
+    {
+      title: 'Publish a structured content and llms.txt plan',
+      body: 'Make QR easier for AI engines to read by tightening authoritative content, schema and machine-readable summaries.',
+      tags: ['SEO', 'Structured data', 'AI readable']
+    }
+  ]
+};
+let APARTNER = null;
+let AAIDISC = null;
+
+function updateCompetitorBadgeCount(){
+  const badge = document.getElementById('compRivalsBadge');
+  if(!badge) return;
+  const total = Object.keys(CMETA || {}).length;
+  badge.textContent = total + ' rivals';
+}
+
+function updatePartnerBadgeCount(){
+  const badge = document.getElementById('partnerNetworkBadge');
+  if(!badge) return;
+  const total = Object.keys(PMETA || {}).length;
+  badge.textContent = total + ' partners';
+}
 
 function urlHostName(v){
   const u = safeUrl(v);
@@ -2905,6 +3706,172 @@ function reorderCompetitors(){
   }).forEach(function(tile){
     wrap.appendChild(tile);
   });
+}
+
+function partnerEntriesByGroup(group){
+  return Object.entries(PMETA || {}).filter(function(entry){
+    return String(entry[1]?.group || 'core') === group;
+  });
+}
+function partnerCardHtml(id, meta){
+  const tags = asArray(meta.tags).map(function(tag, idx){
+    const cls = idx === 0 ? 'is-g' : idx === 1 ? 'is-a' : '';
+    return `<span class="${cls}">${esc(tag)}</span>`;
+  }).join('');
+  return `<button type="button" class="partner-card partner-card-${esc(meta.group||'core')}" data-partner="${esc(id)}" onclick="selectPartner('${esc(id)}')">
+    <div class="partner-card-top">
+      <div>
+        <div class="partner-code">${esc(meta.code || id.toUpperCase())}</div>
+        <div class="partner-meta">${esc(meta.coverage || meta.hub || '')}</div>
+      </div>
+      <span class="partner-score">${esc(String(meta.score || '0'))}/100</span>
+    </div>
+    <div class="partner-name">${esc(meta.name || id)}</div>
+    <div class="partner-body">${esc(meta.why || meta.value || '')}</div>
+    <div class="partner-tags">${tags}</div>
+  </button>`;
+}
+function renderPartnerSummaryKpis(){
+  const host = document.getElementById('partnerKpis');
+  if(!host) return;
+  const entries = Object.entries(PMETA || {});
+  const coreCount = entries.filter(([,meta]) => String(meta.group || 'core') === 'core').length;
+  const growthCount = entries.filter(([,meta]) => String(meta.group || 'core') === 'growth').length;
+  const themeCount = 4;
+  host.innerHTML = [
+    {v: entries.length, l: 'Partner airlines', d: 'Useful network routes and connectivity opportunities'},
+    {v: coreCount, l: 'Core network', d: 'High-value network partners and feed coverage'},
+    {v: growthCount, l: 'Strategic growth', d: 'Corridor-specific partners with growth upside'},
+    {v: themeCount + '', l: 'Opportunity themes', d: 'Connectivity, loyalty, premium flow and campaigns'}
+  ].map(function(card){
+    return `<div class="partner-kpi"><div class="partner-kv">${esc(card.v)}</div><div class="partner-kl">${esc(card.l)}</div><div class="partner-kd">${esc(card.d)}</div></div>`;
+  }).join('');
+}
+function renderPartnerCatalog(){
+  const coreHost = document.getElementById('partnerAllianceGrid');
+  const growthHost = document.getElementById('partnerStrategicGrid');
+  if(coreHost) coreHost.innerHTML = partnerEntriesByGroup('core').map(function(entry){
+    return partnerCardHtml(entry[0], entry[1]);
+  }).join('');
+  if(growthHost) growthHost.innerHTML = partnerEntriesByGroup('growth').map(function(entry){
+    return partnerCardHtml(entry[0], entry[1]);
+  }).join('');
+}
+function renderPartnerDetail(id){
+  const meta = PMETA[id];
+  const host = document.getElementById('partnerDetail');
+  if(!meta || !host) return;
+  const usefulFields = [
+    'Partner airline name',
+    'Relationship type',
+    'Coverage and hub',
+    'Opportunity score',
+    'Loyalty / Avios leverage',
+    'Recommended action'
+  ].map(function(label){ return `<li>${esc(label)}</li>`; }).join('');
+  const signalItems = asArray(meta.signals).map(function(text){ return `<li>${esc(text)}</li>`; }).join('');
+  const actionItems = asArray(meta.actions).map(function(text){ return `<li>${esc(text)}</li>`; }).join('');
+  const tags = asArray(meta.tags).map(function(tag){
+    return `<span class="partner-chip">${esc(tag)}</span>`;
+  }).join('');
+  host.innerHTML = `<div class="partner-detail-head">
+    <div>
+      <div class="partner-detail-badge">${esc(meta.relationship || meta.group || 'partner network')}</div>
+      <h3>${esc(meta.name || id)}</h3>
+      <div class="partner-detail-sub">${esc(meta.hub || '')} · ${esc(meta.coverage || '')}</div>
+    </div>
+    <span class="partner-score">${esc(String(meta.score || '0'))}/100</span>
+  </div>
+  <div class="partner-detail-sub">${esc(meta.why || '')}</div>
+  <div class="partner-detail-note">
+    <strong>Why it matters:</strong> ${esc(meta.value || '')}
+    <div style="margin-top:6px">This page deliberately excludes raw schedules, revenue-share terms, seat inventory, and internal commercial agreements.</div>
+  </div>
+  <div class="partner-chip-row" style="margin-top:12px">${tags}</div>
+  <div class="partner-detail-grid">
+    <div class="partner-detail-box">
+      <div class="partner-detail-box-title">Useful company fields</div>
+      <ul>${usefulFields}</ul>
+    </div>
+    <div class="partner-detail-box">
+      <div class="partner-detail-box-title">Signals to watch</div>
+      <ul>${signalItems}</ul>
+    </div>
+    <div class="partner-detail-box">
+      <div class="partner-detail-box-title">Recommended actions</div>
+      <ul>${actionItems}</ul>
+    </div>
+    <div class="partner-detail-box">
+      <div class="partner-detail-box-title">Radar rendering focus</div>
+      <ul>
+        <li>Partner name and relationship</li>
+        <li>Route and market coverage</li>
+        <li>Loyalty / Avios value</li>
+        <li>External news and connection signals</li>
+        <li>Actionable recommendation for Qatar Airways</li>
+      </ul>
+    </div>
+  </div>
+  <div class="partner-detail-actions">
+    <button type="button" class="partner-action" onclick="showExecSummary()">Open executive view</button>
+    <button type="button" class="partner-action" onclick="showComp()">Compare competitors</button>
+  </div>`;
+}
+function selectPartner(id){
+  if(!PMETA[id]) return;
+  APARTNER = id;
+  document.querySelectorAll('.partner-card').forEach(function(card){ card.classList.remove('on'); });
+  const active = document.querySelector('[data-partner="'+id+'"]');
+  if(active) active.classList.add('on');
+  renderPartnerDetail(id);
+}
+function renderPartnerPage(){
+  updatePartnerBadgeCount();
+  renderPartnerSummaryKpis();
+  renderPartnerCatalog();
+  if(!APARTNER || !PMETA[APARTNER]){
+    APARTNER = Object.keys(PMETA || {})[0] || null;
+  }
+  if(APARTNER) selectPartner(APARTNER);
+}
+
+function renderAIDiscoveryPage(){
+  const kpiHost = document.getElementById('aiDiscoveryKpis');
+  if(kpiHost){
+    kpiHost.innerHTML = AIDISCOVERY.kpis.map(function(card){
+      return '<div class="ai-kpi"><div class="ai-kpi-v">'+esc(card.v)+'</div><div class="ai-kpi-l">'+esc(card.l)+'</div><div class="ai-kpi-d">'+esc(card.d)+'</div></div>';
+    }).join('');
+  }
+  const usefulHost = document.getElementById('aiUsefulStack');
+  if(usefulHost){
+    usefulHost.innerHTML = AIDISCOVERY.useful.map(function(item){
+      return '<div class="ai-item"><div class="ai-item-head"><div class="ai-item-title">'+esc(item.title)+'</div><span class="ai-item-pill '+esc(item.tone)+'">'+esc(item.pill)+'</span></div><div class="ai-item-body">'+esc(item.body)+'</div><div class="ai-item-sub">'+esc(item.sub)+'</div></div>';
+    }).join('');
+  }
+  const excludeHost = document.getElementById('aiExcludeStack');
+  if(excludeHost){
+    excludeHost.innerHTML = AIDISCOVERY.exclude.map(function(item){
+      return '<div class="ai-item"><div class="ai-item-head"><div class="ai-item-title">'+esc(item.title)+'</div><span class="ai-item-pill '+esc(item.tone)+'">Exclude</span></div><div class="ai-item-body">'+esc(item.body)+'</div></div>';
+    }).join('');
+  }
+  const sourceHost = document.getElementById('aiSourceGrid');
+  if(sourceHost){
+    sourceHost.innerHTML = AIDISCOVERY.sources.map(function(item){
+      return '<div class="ai-source"><div class="ai-source-top"><div class="ai-source-name">'+esc(item.name)+'</div><span class="ai-source-status">'+esc(item.status)+'</span></div><div class="ai-source-body">'+esc(item.body)+'</div></div>';
+    }).join('');
+  }
+  const queryHost = document.getElementById('aiQueryTable');
+  if(queryHost){
+    queryHost.innerHTML = AIDISCOVERY.queries.map(function(row){
+      return '<div class="ai-query-row"><div><div class="ai-query-q">'+esc(row.q)+'</div><div class="ai-query-meta">'+esc(row.meta)+'</div></div><div class="ai-query-engine">'+esc(row.engine)+'</div><div><span class="ai-query-gap ai-gap-miss">'+esc(row.gap)+'</span></div><div class="ai-query-gain">Track whether QR is cited and in what position.</div></div>';
+    }).join('');
+  }
+  const actionHost = document.getElementById('aiActionGrid');
+  if(actionHost){
+    actionHost.innerHTML = AIDISCOVERY.actions.map(function(item){
+      return '<div class="ai-action"><div class="ai-action-title">'+esc(item.title)+'</div><div class="ai-action-body">'+esc(item.body)+'</div><div class="ai-action-tags">'+item.tags.map(function(tag){ return '<span>'+esc(tag)+'</span>'; }).join('')+'</div></div>';
+    }).join('');
+  }
 }
 
 function loadCfromStorage(id){
@@ -3097,12 +4064,12 @@ async function loadAllCompetitors(){
 function hideAllPrimaryPages(){
   var main = document.querySelector('.main');
   if(main) main.style.display='none';
-  ['compPage','sentPage','ciPage','ciosPage','execPage','predictPage'].forEach(function(id){
+  ['compPage','partnerPage','sentPage','ciPage','ciosPage','execPage','predictPage','aiDiscoveryPage'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('visible');
   });
 }
 function clearPrimaryNav(){
-  ['navMain','navComp','navSent','navCI','navCIOS','navExec','navPredict'].forEach(function(id){
+  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navExec','navPredict','navAI'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
 }
@@ -3135,6 +4102,7 @@ function showSent(){
   var nav=document.getElementById('navSent'); if(nav) nav.classList.add('active');
 }
 function showComp(){
+  updateCompetitorBadgeCount();
   ensureRadarRuntimeForTabs();
   hideAllPrimaryPages(); clearPrimaryNav();
   var el=document.getElementById('compPage'); if(el) el.classList.add('visible');
@@ -3178,6 +4146,13 @@ function showComp(){
   });
   reorderCompetitors();
 }
+function showPartner(){
+  ensureRadarRuntimeForTabs();
+  hideAllPrimaryPages(); clearPrimaryNav();
+  var el=document.getElementById('partnerPage'); if(el) el.classList.add('visible');
+  var nav=document.getElementById('navPartner'); if(nav) nav.classList.add('active');
+  renderPartnerPage();
+}
 function showExecSummary(){
   ensureRadarRuntimeForTabs();
   hideAllPrimaryPages(); clearPrimaryNav();
@@ -3191,6 +4166,13 @@ function showPredictive(){
   var el=document.getElementById('predictPage'); if(el) el.classList.add('visible');
   var nav=document.getElementById('navPredict'); if(nav) nav.classList.add('active');
   renderPredictivePage();
+}
+function showAIDiscovery(){
+  ensureRadarRuntimeForTabs();
+  hideAllPrimaryPages(); clearPrimaryNav();
+  var el=document.getElementById('aiDiscoveryPage'); if(el) el.classList.add('visible');
+  var nav=document.getElementById('navAI'); if(nav) nav.classList.add('active');
+  renderAIDiscoveryPage();
 }
 
 
@@ -3284,12 +4266,32 @@ function execFreshnessLabel(){
 function execPressureThemes(){
   return [
     {name:'OTA leakage', short:'OTA', icon:'OTA', re:/ota|agent|direct share|leak|pricing|parity/i},
-    {name:'App friction', short:'App', icon:'APP', re:/app|mobile|digital|website|payment|boarding|usability|friction/i},
+    {name:'App friction', short:'App', icon:'APP', re:/app|mobile|digital|website|payment|boarding|usability|friction|rating|review|app store|google play|play store/i},
     {name:'Loyalty risk', short:'Loyalty', icon:'LOY', re:/loyalty|privilege|avios|qpoints|member|tier|retention/i},
     {name:'Service disruption', short:'Service', icon:'OPS', re:/cancel|delay|refund|rebook|call|support|complaint|service|disruption/i},
     {name:'Route demand', short:'Demand', icon:'DEM', re:/route|network|capacity|demand|market|destination|schedule|frequency/i},
     {name:'Competitor pressure', short:'Rivals', icon:'RIV', re:/competitor|emirates|etihad|turkish|saudia|singapore|airline|market share/i}
   ].map(function(t){ return Object.assign({}, t, {score:execThemeScore(t.re)}); });
+}
+function execThemeActionForName(name){
+  var key=String(name||'').toLowerCase();
+  if(/ota leakage/.test(key)) return 'Protect direct share with pricing, loyalty and channel nudges.';
+  if(/app friction/.test(key)) return 'Fix app ratings, review pain points and booking flow drops.';
+  if(/loyalty risk/.test(key)) return 'Protect tier value, Avios utility and member retention.';
+  if(/service disruption/.test(key)) return 'Prioritise proactive recovery, rebooking and care routing.';
+  if(/route demand/.test(key)) return 'Allocate capacity and spend to the strongest demand windows.';
+  if(/competitor pressure/.test(key)) return 'Counter rival moves with targeted offer and message changes.';
+  return 'Turn the theme into a named owner action this cycle.';
+}
+function execThemeImplicationForName(name){
+  var key=String(name||'').toLowerCase();
+  if(/ota leakage/.test(key)) return 'Leakage pressure is pulling customers into comparison journeys and away from direct booking.';
+  if(/app friction/.test(key)) return 'Review sentiment and app-store ratings directly influence conversion and repeat use.';
+  if(/loyalty risk/.test(key)) return 'Program value and status clarity affect retention, upsell and repeat booking.';
+  if(/service disruption/.test(key)) return 'Service failures create immediate trust loss and downstream recovery cost.';
+  if(/route demand/.test(key)) return 'Demand shifts determine where to focus seats, spend and promotional effort.';
+  if(/competitor pressure/.test(key)) return 'Rival activity can steal share unless pricing, product and message respond quickly.';
+  return 'This theme should map to a visible business action, not just a score.';
 }
 function execPressureLevel(score){ if(score>=72) return 'High'; if(score>=46) return 'Medium'; if(score>0) return 'Monitor'; return 'No data'; }
 function execCommercialState(avg, risk, opp){
@@ -3499,6 +4501,7 @@ function execSparkBars(score){
 function renderExecutiveSummaryPage(){
   ensureRadarRuntimeForTabs();
   renderExecSideRailNav();
+  var ownerPhotoUrl = '/assets/exec-owner-photo.jpg?v=2';
   var all=getAllDomainSignals();
   var themes=execPressureThemes();
   var scopedSignals=getExecScopedSignals().slice().sort(function(a,b){ return scoreSignalForExec(b)-scoreSignalForExec(a); });
@@ -3631,8 +4634,10 @@ function renderExecutiveSummaryPage(){
   var metrics=document.getElementById('execImportantMetrics');
   if(metrics){
     var st=window.radarData||{};
+    var appRatingCount=['appstore','googleplay'].filter(function(src){ return !!(st.sentiment && st.sentiment[src]); }).length;
     var m=[
       {v:Object.keys(st.sentiment||{}).length, l:'Sentiment sources', d:'Customer voice coverage'},
+      {v:appRatingCount, l:'App ratings lanes', d:'Apple App Store and Google Play review coverage'},
       {v:Object.keys(st.cios||{}).length, l:'Customer OS sources', d:'Complaint and perception intelligence'},
       {v:execSourceCount(), l:'Total source layers', d:'Loaded cache-backed intelligence layers'},
       {v:countSignalsBy(function(s){return /ota|agent|direct share|leak/i.test((s.title||'')+' '+(s.body||'')+' '+(s.captureStrategy||''));}), l:'Direct-share pressure', d:'OTA, agent and recapture signals'}
@@ -3642,7 +4647,16 @@ function renderExecutiveSummaryPage(){
   var lanes=document.getElementById('execLeadershipLanes');
   if(lanes){
     lanes.innerHTML=themes.slice().sort(function(a,b){return b.score-a.score;}).slice(0,5).map(function(t){
-      return '<div class="exec-theme-card"><div class="exec-theme-title">'+esc(t.name)+'</div><div class="exec-theme-sub">'+esc(execThemeStateLabel(execThemeStateFromScore(t.score)))+' impact cluster</div>'+execSparkBars(t.score)+'<div class="exec-theme-impact">'+(t.score>=70?'High impact':t.score>=45?'Medium impact':'Monitor')+'</div></div>';
+      var state = execThemeStateFromScore(t.score);
+      return '<div class="exec-theme-card exec-theme-card-v2">'+
+        '<div class="exec-theme-top">'+
+          '<div><div class="exec-theme-title">'+esc(t.name)+'</div><div class="exec-theme-sub">'+esc(execThemeStateLabel(state))+' impact cluster</div></div>'+
+          '<span class="exec-theme-badge exec-theme-badge-'+state+'">'+esc(t.score)+'/100</span>'+
+        '</div>'+
+        '<div class="exec-theme-why">'+esc(execThemeImplicationForName(t.name))+'</div>'+
+        '<div class="exec-theme-spark">'+execSparkBars(t.score)+'</div>'+
+        '<div class="exec-theme-action">'+esc(execThemeActionForName(t.name))+'</div>'+
+      '</div>';
     }).join('');
   }
   var implication=document.getElementById('execCommercialImpact');
@@ -3685,6 +4699,70 @@ function renderExecutiveSummaryPage(){
   var top1=sigs[0]||{};
   var top2=sigs[1]||{};
   var top3=sigs[2]||{};
+  var ownerPhotoUrl='/assets/exec-owner-photo.jpg?v=3';
+
+  var actionQueue=document.getElementById('execActionQueue');
+  if(actionQueue){
+    var actionCards=[
+      {
+        title:(top1.captureStrategy||top1.title||'Protect direct share'),
+        body:(top1.whyItMattersNow||top1.body||'Protect revenue and customer trust using the strongest loaded signal.'),
+        owner:(top1.domain||'Digital').toString().toUpperCase(),
+        due:'This week',
+        impact:(top1.impactLabel||top1.demandImpact||'Priority action')
+      },
+      {
+        title:(top2.captureStrategy||top2.title||'Convert opportunity'),
+        body:(top2.whyItMattersNow||top2.body||'Use opportunity signals to capture direct demand and customer value.'),
+        owner:(top2.domain||'Revenue').toString().toUpperCase(),
+        due:'Next 2 weeks',
+        impact:(top2.impactLabel||top2.demandImpact||'Growth action')
+      },
+      {
+        title:(top3.captureStrategy||top3.title||'Reduce friction'),
+        body:(top3.whyItMattersNow||top3.body||'Convert repeated signals into repeatable playbooks and owner workflows.'),
+        owner:(top3.domain||'CX').toString().toUpperCase(),
+        due:'This month',
+        impact:(top3.impactLabel||top3.demandImpact||'Scale action')
+      }
+    ];
+    actionQueue.innerHTML=actionCards.map(function(a, idx){
+      return '<div class="exec-owner-row exec-clickable" data-owner-index="'+idx+'">'+
+        '<img class="exec-owner-avatar" src="'+ownerPhotoUrl+'" alt="Executive owner portrait" loading="eager" decoding="async">'+
+        '<div class="exec-owner-copy">'+
+          '<div class="exec-owner-title">'+esc(a.title)+'</div>'+
+          '<div class="exec-owner-body">'+esc(a.body)+'</div>'+
+          '<div class="exec-owner-meta">'+
+            '<span class="exec-chip">'+esc(a.owner)+'</span>'+
+            '<span class="exec-chip">'+esc(a.due)+'</span>'+
+            '<span class="exec-chip">'+esc(a.impact)+'</span>'+
+          '</div>'+
+        '</div>'+
+        '<div class="exec-owner-controls">'+
+          '<button type="button" class="exec-owner-assign">Assign owner</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    Array.prototype.forEach.call(actionQueue.querySelectorAll('.exec-owner-row'), function(row){
+      row.addEventListener('click', function(){
+        var idx=Number(row.getAttribute('data-owner-index'));
+        var a=actionCards[idx] || actionCards[0] || {};
+        openExecDetailDrawer({
+          type:'Action',
+          title:a.title || 'Recommended action',
+          body:a.body || 'Owner-ready task',
+          meta:[a.owner || 'OWNER', a.due || 'Due soon', a.impact || 'Priority']
+        });
+      });
+    });
+    Array.prototype.forEach.call(actionQueue.querySelectorAll('.exec-owner-assign'), function(btn){
+      btn.addEventListener('click', function(ev){
+        ev.stopPropagation();
+        var row=btn.closest('.exec-owner-row');
+        if(row) row.click();
+      });
+    });
+  }
   var oppLow=Math.max(0.8, Number(((opp*0.22)+(avg/220)).toFixed(1)));
   var oppHigh=Number((oppLow*1.45).toFixed(1));
   window.__execBriefModel={
@@ -3702,9 +4780,9 @@ function renderExecutiveSummaryPage(){
     trustLine:execSourceCount()+' source layers • '+domains+'/14 domains',
     topSignals:sigs.slice(0,3),
     topActions:[
-      {title:(top1.captureStrategy||top1.title||'Protect direct share'), owner:(top1.domain||'Digital').toString().toUpperCase()},
-      {title:(top2.captureStrategy||top2.title||'Convert opportunity'), owner:(top2.domain||'Revenue').toString().toUpperCase()},
-      {title:(top3.captureStrategy||top3.title||'Reduce friction'), owner:(top3.domain||'CX').toString().toUpperCase()}
+      {title:(top1.captureStrategy||top1.title||'Protect direct share'), owner:(top1.domain||'Digital').toString().toUpperCase(), due:'This week', impact:(top1.impactLabel||top1.demandImpact||'Priority action')},
+      {title:(top2.captureStrategy||top2.title||'Convert opportunity'), owner:(top2.domain||'Revenue').toString().toUpperCase(), due:'Next 2 weeks', impact:(top2.impactLabel||top2.demandImpact||'Growth action')},
+      {title:(top3.captureStrategy||top3.title||'Reduce friction'), owner:(top3.domain||'CX').toString().toUpperCase(), due:'This month', impact:(top3.impactLabel||top3.demandImpact||'Scale action')}
     ],
     themes:themes.slice().sort(function(a,b){return b.score-a.score;})
   };
@@ -3987,6 +5065,27 @@ function renderComp(id,data){
         return `<a href="${u}" target="_blank" rel="noopener" class="comp-pill cp-b" style="text-decoration:none">${esc(host)}</a>`;
       }).join('')}</div>`
     : '';
+  const confScore = Number(data.confidenceScore);
+  const confBand = data.confidenceBand || (Number.isFinite(confScore) ? compConfidenceBand(confScore) : '');
+  const confBadgeClass = Number.isFinite(confScore)
+    ? (confScore >= 85 ? 'cp-g' : confScore >= 70 ? 'cp-a' : 'cp-r')
+    : 'cp-b';
+  const confBreakdown = asArray(data.confidenceBreakdown).slice(0, 3).map(function(row){
+    const s = Number(row && row.score);
+    const m = Number(row && row.max);
+    const val = (Number.isFinite(s) && Number.isFinite(m) && m > 0) ? (s + '/' + m) : 'n/a';
+    return `<span class="comp-pill cp-b">${esc(firstText(row, ['label'], 'Confidence'))}: ${esc(val)}</span>`;
+  }).join('');
+  const confidenceHtml = Number.isFinite(confScore)
+    ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px">
+        <span class="comp-pill ${confBadgeClass}">Confidence ${esc(confBand)} ${esc(confScore)}%</span>
+        <span class="comp-pill cp-b">${esc(data.sourceCount || 0)} sources</span>
+        <span class="comp-pill cp-b">${esc(data.corroborationCount || 0)} corroborated</span>
+        <span class="comp-pill cp-b">${esc(data.freshnessState || 'Unknown')}</span>
+      </div>
+      ${confBreakdown ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${confBreakdown}</div>` : ''}
+      ${data.confidenceCaveat ? `<div style="font-size:10px;color:var(--t3);margin-top:6px;line-height:1.45">${esc(data.confidenceCaveat)}</div>` : ''}`
+    : '';
   const newsEvidenceRows = asArray(data.newsEvidence).slice(0,4);
   const newsEvidenceHtml = newsEvidenceRows.length
     ? `<div style="background:var(--bg2);border:1px solid var(--bo);border-radius:8px;padding:10px 12px;margin:10px 0 2px">
@@ -4018,7 +5117,7 @@ function renderComp(id,data){
     <div style="font-size:9px;color:var(--t3);margin-top:2px">Owner: ${esc(a.owner||'B2C team')}</div>
   </div></div>`).join('');
   const noMatch = !data.hasSpecificCache;
-  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
+  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}${confidenceHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
 }
 
 function renderCErr(id,msg){
@@ -4213,6 +5312,8 @@ updateKpiTooltips = function(){
 // Make hover robust even when the original listener attached before the patch loaded.
 (function rv91RefreshDerivedState(){
   try{
+    updateCompetitorBadgeCount();
+    updatePartnerBadgeCount();
     updateExecutiveScorecard();
     updateKpiTooltips();
     updateFeedFromDomains();

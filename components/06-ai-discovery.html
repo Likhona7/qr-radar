@@ -1,0 +1,83 @@
+<div class="ai-page" id="aiDiscoveryPage">
+  <div class="ai-hero">
+    <div class="ai-hero-copy">
+      <div class="ai-eyebrow">Agentic AI visibility and referral intelligence</div>
+      <h1>AI Discovery Intelligence</h1>
+      <p>
+        This page keeps the useful parts only: AI referral traffic, crawler visibility, citation
+        share, query gaps, and conversion quality. It excludes training-data claims, exact Google
+        AI Mode traffic, and hype metrics that Radar cannot verify reliably.
+      </p>
+      <div class="ai-chip-row">
+        <span class="ai-chip">AI referrals</span>
+        <span class="ai-chip">Crawler logs</span>
+        <span class="ai-chip">Citation share</span>
+        <span class="ai-chip">Query gaps</span>
+        <span class="ai-chip">Conversion</span>
+      </div>
+    </div>
+    <div class="ai-hero-side">
+      <button type="button" class="ai-primary-btn" onclick="renderAIDiscoveryPage()">Refresh view</button>
+      <button type="button" class="ai-secondary-btn" onclick="showExecSummary()">Open executive view</button>
+    </div>
+  </div>
+
+  <div class="ai-kpi-grid" id="aiDiscoveryKpis"></div>
+
+  <div class="ai-split-grid">
+    <section class="ai-panel">
+      <div class="ai-panel-head">
+        <div>
+          <div class="ai-panel-title">What is useful to Radar</div>
+          <div class="ai-panel-copy">Signals that can be measured, compared, and turned into action.</div>
+        </div>
+        <span class="ai-panel-pill ai-ok">Ready to wire</span>
+      </div>
+      <div class="ai-stack" id="aiUsefulStack"></div>
+    </section>
+
+    <section class="ai-panel">
+      <div class="ai-panel-head">
+        <div>
+          <div class="ai-panel-title">What to leave out</div>
+          <div class="ai-panel-copy">Metrics that look interesting but are not dependable or actionable.</div>
+        </div>
+        <span class="ai-panel-pill ai-warn">Exclude</span>
+      </div>
+      <div class="ai-stack" id="aiExcludeStack"></div>
+    </section>
+  </div>
+
+  <section class="ai-panel ai-wide">
+    <div class="ai-panel-head">
+      <div>
+        <div class="ai-panel-title">Measurement blueprint</div>
+        <div class="ai-panel-copy">Three practical sources that can power this tab now.</div>
+      </div>
+      <span class="ai-panel-pill">Server logs + Adobe + monitor</span>
+    </div>
+    <div class="ai-source-grid" id="aiSourceGrid"></div>
+  </section>
+
+  <section class="ai-panel ai-wide">
+    <div class="ai-panel-head">
+      <div>
+        <div class="ai-panel-title">Example query monitor</div>
+        <div class="ai-panel-copy">A small weekly query set to track citation gaps and route opportunities.</div>
+      </div>
+      <span class="ai-panel-pill ai-ok">Weekly audit</span>
+    </div>
+    <div class="ai-query-table" id="aiQueryTable"></div>
+  </section>
+
+  <section class="ai-panel ai-wide">
+    <div class="ai-panel-head">
+      <div>
+        <div class="ai-panel-title">Recommended Radar outputs</div>
+        <div class="ai-panel-copy">What this tab should feed into the business review.</div>
+      </div>
+      <span class="ai-panel-pill">Business action</span>
+    </div>
+    <div class="ai-action-grid" id="aiActionGrid"></div>
+  </section>
+</div>

@@ -119,7 +119,12 @@
   <button class="comp-nav-btn" id="navComp" onclick="showComp()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="8" r="3"/><circle cx="11" cy="8" r="3"/></svg>
     Competitor Intelligence
-    <span class="comp-nav-badge">6 rivals</span>
+    <span class="comp-nav-badge" id="compRivalsBadge">11 rivals</span>
+  </button>
+  <button class="comp-nav-btn partner" id="navPartner" onclick="showPartner()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12"/><path d="M8 2v12"/><circle cx="8" cy="8" r="2.5"/></svg>
+    Partner Network
+    <span class="comp-nav-badge partner-nav-badge" id="partnerNetworkBadge">18 partners</span>
   </button>
   <button class="comp-nav-btn" id="navSent" onclick="showSent()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M5.5 9.5s.8 1.5 2.5 1.5 2.5-1.5 2.5-1.5"/><circle cx="5.5" cy="7" r=".8" fill="currentColor"/><circle cx="10.5" cy="7" r=".8" fill="currentColor"/></svg>
@@ -129,7 +134,7 @@
   <button class="comp-nav-btn" id="navCI" onclick="showCI()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M2 13c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
     Customer Intelligence
-    <span class="comp-nav-badge">6 segments</span>
+    <span class="comp-nav-badge" id="ciSegmentsBadge">7 segments</span>
   </button>
   <button class="comp-nav-btn" id="navCIOS" onclick="showCIOS()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/><circle cx="11.5" cy="9.5" r="2" fill="none"/><path d="M13 11l1.5 1.5"/></svg>
@@ -145,6 +150,11 @@
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c3-7 7 2 12-7"/><path d="M10 5h4v4"/></svg>
     Predictive Intelligence
     <span class="comp-nav-badge">future</span>
+  </button>
+  <button class="comp-nav-btn ai-discovery" id="navAI" onclick="showAIDiscovery()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3.2"/><path d="M9.5 9.5L14 14"/><path d="M6 3.8v.8M6 7.4v.8M3.8 6h.8M7.4 6h.8"/></svg>
+    AI Discovery
+    <span class="comp-nav-badge ai-nav-badge">new</span>
   </button>
   <button class="comp-nav-btn strategic" id="navRoadmap" onclick="showRoadmap()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h10v10H3z"/><path d="M5 6h6M5 9h4"/></svg>
