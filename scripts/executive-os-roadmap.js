@@ -177,6 +177,14 @@
     return window.__EXEC_LIVE__;
   }
 
+  function dateMetaOf(s) {
+    try {
+      return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(s || {}) : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
   function renderList(id, items, empty) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -185,7 +193,7 @@
       return;
     }
     el.innerHTML = items.map(function (s, i) {
-      return '<div class="exec-list-card exec-clickable" data-signal-index="' + i + '"><div class="exec-list-index">' + (i + 1) + '</div><div><div class="exec-list-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-list-body">' + safeEsc(bodyOf(s)) + '</div></div><div class="exec-list-pill">' + safeEsc(domainOf(s)) + '</div></div>';
+      return '<div class="exec-list-card exec-clickable" data-signal-index="' + i + '"><div class="exec-list-index">' + (i + 1) + '</div><div><div class="exec-list-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-list-body">' + safeEsc(bodyOf(s)) + '</div>' + dateMetaOf(s) + '</div><div class="exec-list-pill">' + safeEsc(domainOf(s)) + '</div></div>';
     }).join('');
     Array.prototype.forEach.call(el.querySelectorAll('.exec-list-card.exec-clickable'), function (card) {
       card.addEventListener('click', function () {
@@ -541,7 +549,7 @@
       var sev = scoreBucket(sscore(s));
       return '<article class="exec-signal-row exec-clickable" data-signal-index="' + i + '">' +
         '<div class="exec-signal-rank">' + (i + 1) + '</div>' +
-        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div><button type="button" class="exec-inline-link">See route detail <span>→</span></button></div>' +
+        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div>' + dateMetaOf(s) + '<button type="button" class="exec-inline-link">See route detail <span>→</span></button></div>' +
         '<div class="exec-signal-side"><span class="exec-severity ' + sev.cls + '">' + sev.label + '</span><span>' + safeEsc(s.impactLabel || s.demandImpact || 'Signal') + '</span><span>' + timeAgoLabel(s) + '</span></div>' +
       '</article>';
     }).join('');
@@ -586,7 +594,7 @@
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Impact (12-18M)</label><strong>' + safeEsc(x.impact) + '</strong></div>' +
@@ -748,7 +756,7 @@
       var sev = scoreBucket(signalScore(s));
       return '<article class="exec-signal-row exec-clickable" data-signal-index="' + i + '">' +
         '<div class="exec-signal-rank">' + (i + 1) + '</div>' +
-        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div><button type="button" class="exec-inline-link">See route detail <span>-></span></button></div>' +
+        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div>' + dateMetaOf(s) + '<button type="button" class="exec-inline-link">See route detail <span>-></span></button></div>' +
         '<div class="exec-signal-side"><span class="exec-severity ' + sev.cls + '">' + sev.label + '</span><span>' + safeEsc(s.impactLabel || s.demandImpact || 'Signal') + '</span><span>' + timeAgoLabel(s) + '</span></div>' +
       '</article>';
     }).join('');
@@ -792,7 +800,7 @@
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Proof</label><span>' + safeEsc(x.evidenceCount) + ' evidence point' + (x.evidenceCount === 1 ? '' : 's') + '</span><em>' + safeEsc(x.outcomeStatus) + '</em></div>' +
@@ -901,13 +909,34 @@
   var basePredict = window.renderPredictivePage;
   window.renderPredictivePage = function () { if (basePredict) basePredict(); renderPredictiveAddOns(); };
   var baseHide = window.hideAllPrimaryPages;
-  window.hideAllPrimaryPages = function () { if (baseHide) baseHide(); var el = document.getElementById('roadmapPage'); if (el) el.classList.remove('visible'); };
+  window.hideAllPrimaryPages = function () {
+    if (baseHide) baseHide();
+    var el = document.getElementById('roadmapPage');
+    if (el) el.classList.remove('visible');
+    var pulse = document.getElementById('backendPulsePage');
+    if (pulse) pulse.classList.remove('visible');
+  };
   var baseClear = window.clearPrimaryNav;
-  window.clearPrimaryNav = function () { if (baseClear) baseClear(); var el = document.getElementById('navRoadmap'); if (el) el.classList.remove('active'); };
+  window.clearPrimaryNav = function () {
+    if (baseClear) baseClear();
+    var el = document.getElementById('navRoadmap');
+    if (el) el.classList.remove('active');
+    var pulse = document.getElementById('footerBackendPulseLink');
+    if (pulse) pulse.classList.remove('active');
+  };
 
   var roadmapState = { proof: null, runtimeWarnings: null, lastFetchedAt: null, loading: false, error: null };
   var ROADMAP_PROOF_MAP = {
     'Deployed backend web-search enforcement': 'web_search',
+    'Backend Pulse completion': 'backend_pulse',
+    'Discovery status endpoint': 'ai_discovery',
+    'Refresh and source run tables': 'source_ledger',
+    'Source coverage and freshness ledger': 'source_ledger',
+    'AI Discovery backend API contract': 'ai_discovery',
+    'App ratings intelligence feed': 'app_ratings_feed',
+    'Signal-to-action completeness': 'action_completeness',
+    'Executive briefing export': 'executive_export',
+    'Partner and competitor business proof': 'partner_competitor_proof',
     'Source-specific competitor cache population': 'competitor_cache',
     'Source-specific sentiment payload quality': 'sentiment_quality',
     'Severity weight formalization': 'severity_weights',
@@ -962,7 +991,7 @@
         ['Automated smoke suite (tabs)', 'done', 'Local smoke test passes across primary tabs'],
         ['Release gate on diagnostics/cache routes', 'done', 'Health/diagnostics/cache proof routes are reported passing'],
         ['Roadmap tracker live-proof mode', 'progress', 'Switching to backend-driven status hydration from /api/roadmap/proof.'],
-        ['Console/runtime quality gate', 'progress', 'Waiting for runtime warnings endpoint check.']
+        ['Console/runtime quality gate', 'done', 'Runtime warning endpoint reports clean with no errors or warnings after the latest backend checks.']
       ]},
       { s: 'Phase 3 - Intelligence Upgrade (High-value)', tasks: [
         ['Executive delta brief', 'progress', 'Awaiting live proof from /api/dashboard/delta.'],
@@ -981,6 +1010,20 @@
         ['Automated smoke suite green (local + deployed)', 'done', 'Local tab smoke and deployed backend smoke are green'],
         ['Evidence tracker parity with runtime', 'progress', 'Target: automatic evidence synchronization from backend proof endpoints'],
         ['Predictive endpoints availability', 'done', 'Predictive endpoints are reported available and callable']
+      ]},
+      { s: 'Approval-Ready Finish Line (Before Internal Data)', tasks: [
+        ['Backend Pulse completion', 'done', 'Footer link and Backend Pulse page are live, wired to health, daily-status, runtime warnings, performance and discovery proof endpoints.'],
+        ['Rich daily-status endpoint', 'progress', '/api/refresh/daily-status is available for runtime proof; next polish is to align it with the richer discovery run-history fields now returned by discovery status.'],
+        ['Discovery status endpoint', 'done', '/api/discovery/status confirms active discovery: sources checked, new signals found and saved, Claude web search ran, OpenAI scoring ran, and errors/warnings are visible.'],
+        ['Refresh and source run tables', 'done', 'refresh_runs, source_ingestion_runs and source_freshness_ledger exist and are writing discovery proof after the successful AI discovery run.'],
+        ['Full source discovery cron', 'progress', 'Manual /api/discovery/run is proven end to end; next step is scheduled discovery cadence and source expansion beyond the tested source subset.'],
+        ['Source coverage and freshness ledger', 'progress', 'Source ledger now writes rows and freshness proof; final polish is to expose direct items_saved, last_checked_at, last_success_at, freshness_state and confidence_score fields consistently.'],
+        ['AI Discovery backend API contract', 'done', 'Backend discovery API is live: /api/discovery/run saves discovered items/signals and /api/discovery/status reports Claude, OpenAI, saved signal and ledger proof.'],
+        ['App ratings intelligence feed', 'progress', 'Competitor airline app ratings source is now part of AI discovery proof; expand coverage to QR and all competitor app-store review feeds.'],
+        ['Signal-to-action completeness', 'progress', 'Every top signal should map to an owner-ready action, due date, expected impact, evidence, status or explicit monitor decision.'],
+        ['Executive briefing export', 'progress', 'Export button exists; finish one-click PowerPoint brief with verdict, top signals, top actions, evidence, commercial impact and next decision needed.'],
+        ['Partner and competitor business proof', 'progress', 'Partner Network and Competitor tabs are visible; close with data proof showing partner opportunity, competitor threat, action and source freshness.'],
+        ['Deployment and release stability', 'progress', 'Keep GitHub, Vercel and Render deployment paths stable with post-deploy smoke checks and clear rollback instructions.']
       ]}
     ];
   }
@@ -1110,13 +1153,17 @@
     if (roadmapState.runtimeWarnings && roadmapState.runtimeWarnings.data) {
       var status = roadmapState.runtimeWarnings.data.status;
       var clean = status === 'clean';
+      var warnings = Array.isArray(roadmapState.runtimeWarnings.data.warnings) ? roadmapState.runtimeWarnings.data.warnings : [];
+      var warningText = warnings.length
+        ? warnings.slice(0, 3).map(function (w) { return w.code || w.message || 'Runtime warning'; }).join(', ')
+        : 'warnings reported';
       model.forEach(function (sec) {
         sec.tasks.forEach(function (task) {
           if (task[0] === 'Console/runtime quality gate') {
             task[1] = clean ? 'done' : 'progress';
             task[2] = clean
               ? 'Runtime quality gate reports clean with no warnings or errors.'
-              : 'Runtime quality gate reports warnings; continue triage.';
+              : 'Runtime warning details are visible in Backend Pulse: ' + warningText + '.';
           }
         });
       });
@@ -1131,6 +1178,8 @@
       { date: '28 May 2026', tag: 'Validation', title: 'Core smoke checks passed', body: 'Health, cache, diagnostics, ranking and predictive routes are returning success.' },
       { date: '28 May 2026', tag: 'UX Upgrade', title: 'Executive Summary redesigned for glanceable decisions', body: 'First-screen verdict now prioritizes status, cause, impact and recommended move with clearer drill-down paths.' },
       { date: '28 May 2026', tag: 'Roadmap', title: 'Tracker moved to live-proof mode', body: 'Roadmap now hydrates statuses from backend proof endpoints for review parity.' },
+      { date: '05 Jun 2026', tag: 'Discovery', title: 'AI discovery proved signal creation', body: 'Manual discovery run checked source data, used Claude web search and OpenAI scoring, saved new signals, and wrote source proof to Supabase.' },
+      { date: '04 Jun 2026', tag: 'Finish Line', title: 'Approval-ready checklist added', body: 'Roadmap now separates the non-internal-data work needed before Radar can be positioned as approval-ready.' },
       { date: '02 Jun 2026', tag: 'Planning', title: 'Frontend-shippable vs backend-blocked split added', body: 'Roadmap now shows what can be finished in the UI and what still needs server-side proof or schema work.' }
     ];
     if (roadmapState.proof && roadmapState.proof.summary) {
@@ -1231,6 +1280,254 @@
       if (json && json.ok) roadmapState.runtimeWarnings = json;
     } catch (_) { /* noop */ }
   }
+
+  var backendPulseState = {
+    loading: false,
+    health: null,
+    daily: null,
+    warnings: null,
+    performance: null,
+    error: null,
+    lastFetchedAt: null
+  };
+
+  function pulseData(payload) {
+    return payload && payload.data ? payload.data : {};
+  }
+
+  function pulseText(v, fallback) {
+    if (v === 0) return '0';
+    if (v === false) return 'No';
+    if (v === true) return 'Yes';
+    if (v == null || v === '') return fallback || 'Unknown';
+    return String(v);
+  }
+
+  function pulseDate(v) {
+    if (!v) return 'Unknown';
+    try {
+      var d = new Date(v);
+      if (isNaN(d.getTime())) return String(v);
+      return d.toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return String(v);
+    }
+  }
+
+  function pulseMetaFromRun(run) {
+    if (!run) return {};
+    var meta = run.metadata || run.meta || {};
+    if (typeof meta === 'string') {
+      try { meta = JSON.parse(meta); } catch (e) { meta = {}; }
+    }
+    return meta || {};
+  }
+
+  async function fetchBackendPulsePath(path, timeoutMs) {
+    if (typeof backendFetch === 'function') {
+      var res = await backendFetch(path, { method: 'GET' }, timeoutMs || 15000);
+      return res.json();
+    }
+    var base = (typeof BACKEND_URL === 'string' && BACKEND_URL) ? BACKEND_URL : '';
+    var response = await fetch(base + path, { method: 'GET' });
+    return response.json();
+  }
+
+  function backendPulseTone() {
+    if (backendPulseState.error) return 'error';
+    if (backendPulseState.loading && !backendPulseState.lastFetchedAt) return 'checking';
+    var warnings = pulseData(backendPulseState.warnings);
+    var health = pulseData(backendPulseState.health);
+    var checks = health.checks || {};
+    if (warnings.errorCount > 0 || checks.server === false || checks.supabase === false) return 'error';
+    if ((warnings.warnCount || 0) > 0 || (health.cache && /aging|stale/i.test(String(health.cache.status || '')))) return 'warn';
+    return 'good';
+  }
+
+  function renderBackendPulseCard(title, value, label, detail, tone) {
+    return '<div class="backend-pulse-card ' + safeEsc(tone || 'neutral') + '">' +
+      '<div class="backend-pulse-card-title">' + safeEsc(title) + '</div>' +
+      '<div class="backend-pulse-card-value">' + safeEsc(value) + '</div>' +
+      '<div class="backend-pulse-card-label">' + safeEsc(label) + '</div>' +
+      '<div class="backend-pulse-card-detail">' + safeEsc(detail) + '</div>' +
+    '</div>';
+  }
+
+  function renderBackendPulseList(items) {
+    if (!items || !items.length) return '<div class="backend-pulse-empty">No attention items right now.</div>';
+    return '<ul class="backend-pulse-list">' + items.map(function (x) {
+      return '<li class="' + safeEsc(x.tone || 'neutral') + '"><strong>' + safeEsc(x.title) + '</strong><span>' + safeEsc(x.body) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function renderBackendPulse() {
+    var statusEl = document.getElementById('backendPulseStatus');
+    var gridEl = document.getElementById('backendPulseGrid');
+    var meaningEl = document.getElementById('backendPulseMeaning');
+    var attentionEl = document.getElementById('backendPulseAttention');
+    if (!statusEl || !gridEl || !meaningEl || !attentionEl) return;
+
+    var tone = backendPulseTone();
+    var health = pulseData(backendPulseState.health);
+    var daily = pulseData(backendPulseState.daily);
+    var warnings = pulseData(backendPulseState.warnings);
+    var perf = pulseData(backendPulseState.performance);
+    var checks = health.checks || {};
+    var cache = health.cache || {};
+    var latestRun = daily.latestMaintenanceRun || daily.latestRun || daily.lastRun || null;
+    var runMeta = pulseMetaFromRun(latestRun);
+    var runTime = latestRun && (latestRun.run_at || latestRun.created_at || latestRun.completed_at || latestRun.started_at);
+    var latestRefresh = daily.latestContentRefresh || daily.latestDomainRefresh || daily.latestRefresh || cache.latestRefresh || {};
+    var contentAge = daily.contentAgeHuman || daily.ageHuman || cache.ageHuman || 'Unknown';
+    var contentStatus = daily.contentStatus || daily.cacheStatus || (cache && cache.status) || 'Unknown';
+    var competitorRows = runMeta.competitorCache || daily.competitorCache || [];
+    var competitorLabel = Array.isArray(competitorRows) && competitorRows.length
+      ? competitorRows.map(function (x) { return x.rival + ':' + x.status; }).join(', ')
+      : 'No latest competitor refresh list';
+    var signalsChecked = runMeta.signalsChecked || daily.signalsChecked || latestRun && latestRun.signals_checked;
+    var rankingsUpdated = runMeta.rankingsUpdated || daily.rankingsUpdated || latestRun && latestRun.rankings_updated;
+    var uptime = perf.uptimeHuman || perf.uptime || perf.processUptime || 'Unknown';
+    var requestCount = perf.requestCount || perf.totalRequests || perf.requests || 'Unknown';
+    var warnCount = warnings.warnCount || 0;
+    var errorCount = warnings.errorCount || 0;
+
+    var statusTitle = tone === 'good' ? 'Backend is clean' : tone === 'warn' ? 'Backend has warnings' : tone === 'error' ? 'Backend needs attention' : 'Checking backend';
+    var statusBody = backendPulseState.lastFetchedAt
+      ? 'Last checked from this frontend at ' + pulseDate(backendPulseState.lastFetchedAt)
+      : 'Waiting for live status endpoints.';
+
+    statusEl.className = 'backend-pulse-status ' + tone;
+    statusEl.innerHTML = '<span class="backend-pulse-dot"></span><strong>' + safeEsc(statusTitle) + '</strong><span>' + safeEsc(statusBody) + '</span>';
+
+    gridEl.innerHTML = [
+      renderBackendPulseCard(
+        'Backend health',
+        checks.server === false ? 'Offline' : 'Online',
+        'Supabase: ' + pulseText(checks.supabase, 'Unknown') + ' | Claude: ' + pulseText(checks.anthropic, 'Unknown'),
+        'WebSocket: ' + pulseText(checks.websocket, 'Unknown') + ' | Runtime: ' + pulseText(backendPulseState.health && backendPulseState.health.meta && backendPulseState.health.meta.version, 'Unknown'),
+        checks.server === false || checks.supabase === false ? 'error' : 'good'
+      ),
+      renderBackendPulseCard(
+        'Content freshness',
+        pulseText(contentStatus, 'Unknown'),
+        'Age: ' + pulseText(contentAge, 'Unknown'),
+        'Latest refresh: ' + pulseText(daily.latestContentRefreshDoha || cache.latestRefreshedDoha || latestRefresh.refreshed_at, 'Unknown'),
+        /stale/i.test(String(contentStatus)) ? 'error' : /aging/i.test(String(contentStatus)) ? 'warn' : 'good'
+      ),
+      renderBackendPulseCard(
+        'Daily maintenance',
+        runTime ? 'Ran' : 'Not confirmed',
+        'Last run: ' + pulseDate(runTime),
+        'Signals checked: ' + pulseText(signalsChecked, 'Unknown') + ' | Rankings updated: ' + pulseText(rankingsUpdated, 'Unknown'),
+        runTime ? 'good' : 'warn'
+      ),
+      renderBackendPulseCard(
+        'Competitor cache',
+        Array.isArray(competitorRows) && competitorRows.length ? competitorRows.length + ' refreshed' : 'Check status',
+        'Latest maintenance competitor list',
+        competitorLabel,
+        Array.isArray(competitorRows) && competitorRows.length ? 'good' : 'warn'
+      ),
+      renderBackendPulseCard(
+        'New signal discovery',
+        'Partial',
+        'Maintenance ranks existing signals',
+        'Full source discovery still needs ingestion, web-search crawler, or /api/signals/save feed.',
+        'warn'
+      ),
+      renderBackendPulseCard(
+        'Runtime warnings',
+        warnCount + ' warnings',
+        errorCount + ' errors',
+        warnings.status ? 'Diagnostics status: ' + warnings.status : 'Runtime warnings endpoint checked.',
+        errorCount > 0 ? 'error' : warnCount > 0 ? 'warn' : 'good'
+      ),
+      renderBackendPulseCard(
+        'Performance',
+        pulseText(requestCount, 'Unknown'),
+        'Requests tracked',
+        'Uptime: ' + pulseText(uptime, 'Unknown'),
+        'neutral'
+      )
+    ].join('');
+
+    var meaning = [
+      { tone: 'good', title: 'What is happening now', body: 'The frontend is reading live backend status from health, daily-status, runtime-warnings and performance endpoints.' },
+      { tone: 'good', title: 'What daily maintenance does', body: 'The scheduled backend job recalculates ranking, updates vector memory, refreshes competitor cache and checks watchlist escalations.' },
+      { tone: 'warn', title: 'Important limitation', body: 'Daily maintenance is not yet the same as full new-signal discovery across every source. New source ingestion still needs a crawler, feed, or saved signal endpoint.' }
+    ];
+    meaningEl.innerHTML = renderBackendPulseList(meaning);
+
+    var attention = [];
+    if (backendPulseState.error) {
+      attention.push({ tone: 'error', title: 'Endpoint request failed', body: backendPulseState.error });
+    }
+    if (/aging|stale/i.test(String(contentStatus || ''))) {
+      attention.push({ tone: /stale/i.test(String(contentStatus)) ? 'error' : 'warn', title: 'Content cache needs attention', body: 'Latest content freshness is ' + contentStatus + ' and age is ' + contentAge + '.' });
+    }
+    if (!runTime) {
+      attention.push({ tone: 'warn', title: 'Maintenance run not confirmed', body: 'The daily-status endpoint did not return a latest maintenance timestamp.' });
+    }
+    attention.push({ tone: 'warn', title: 'Full discovery is not automatic yet', body: 'Radar can refresh and rank known signals, but true new-source discovery requires backend ingestion or crawler work.' });
+    if (warnings && Array.isArray(warnings.warnings)) {
+      warnings.warnings.slice(0, 5).forEach(function (w) {
+        attention.push({ tone: w.level === 'error' ? 'error' : 'warn', title: w.code || 'Runtime warning', body: w.message || 'Backend warning reported.' });
+      });
+    }
+    attentionEl.innerHTML = renderBackendPulseList(attention);
+  }
+
+  async function loadBackendPulse(force) {
+    if (backendPulseState.loading && !force) return;
+    backendPulseState.loading = true;
+    backendPulseState.error = null;
+    renderBackendPulse();
+    try {
+      var results = await Promise.all([
+        fetchBackendPulsePath('/api/health/full', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Health request failed' } }; }),
+        fetchBackendPulsePath('/api/refresh/daily-status?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Daily status request failed' } }; }),
+        fetchBackendPulsePath('/api/diagnostics/runtime-warnings?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Runtime warnings request failed' } }; }),
+        fetchBackendPulsePath('/api/diagnostics/performance', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Performance request failed' } }; })
+      ]);
+      backendPulseState.health = results[0];
+      backendPulseState.daily = results[1];
+      backendPulseState.warnings = results[2];
+      backendPulseState.performance = results[3];
+      backendPulseState.lastFetchedAt = new Date().toISOString();
+      var failed = results.filter(function (r) { return !r || r.ok === false; });
+      if (failed.length) {
+        backendPulseState.error = failed.map(function (r) {
+          return r && r.error && r.error.message ? r.error.message : 'Endpoint unavailable';
+        }).join(' | ');
+      }
+    } catch (err) {
+      backendPulseState.error = (err && err.message) || 'Backend pulse request failed';
+    } finally {
+      backendPulseState.loading = false;
+      renderBackendPulse();
+    }
+  }
+
+  window.refreshBackendPulse=function() {
+    loadBackendPulse(true);
+  };
+
+  window.showBackendPulse=function() {
+    try { if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs(); } catch (e) {}
+    window.hideAllPrimaryPages();
+    window.clearPrimaryNav();
+    var el = document.getElementById('backendPulsePage');
+    if (el) el.classList.add('visible');
+    var link = document.getElementById('footerBackendPulseLink');
+    if (link) link.classList.add('active');
+    renderBackendPulse();
+    loadBackendPulse(false);
+  };
 
   window.showRoadmap=function() {
     try { if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs(); } catch (e) {}
