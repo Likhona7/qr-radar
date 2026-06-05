@@ -653,7 +653,8 @@ function normalizeCompData(id, data){
     impact: firstText(s, ['captureStrategy'], 'Use B2C/product/marketing actions to protect direct share'),
     severity: (Number(s.commercialImpactScore||0) >= 8 ? 'High' : 'Medium'),
     source: firstText(s, ['source'], 'Backend cache'),
-    sourceUrl: firstText(s, ['sourceUrl'], '')
+    sourceUrl: firstText(s, ['sourceUrl'], ''),
+    signal: s
   }));
   weak = dedupeBy(weak, function(w){ return firstText(w, ['title'], '')+'|'+firstText(w, ['detail'], ''); }).slice(0, 5);
   if(!weak.length) weak.push({
@@ -664,10 +665,10 @@ function normalizeCompData(id, data){
     source:'Backend cache'
   });
   const opp = dedupeBy(explicitOpp.length ? explicitOpp : (hasSpecificCache ? weak.slice(0,4).map(w => ({
-    title: 'Respond to '+(meta.name || 'competitor')+' signal', detail: w.impact || w.detail, value:'TBD', timeWindow:'30 days', b2cAngle:'Direct booking'
+    title: 'Respond to '+(meta.name || 'competitor')+' signal', detail: w.impact || w.detail, value:'TBD', timeWindow:'30 days', b2cAngle:'Direct booking', signal: w.signal || w
   })) : []), function(o){ return firstText(o, ['title'], '')+'|'+firstText(o, ['detail'], ''); });
   const acts = dedupeBy(explicitActs.length ? explicitActs : (hasSpecificCache ? opp.slice(0,4).map(o => ({
-    title: o.title || 'Create B2C action', detail: o.detail || 'Turn cached signal into product/marketing action.', owner:'Digital/B2C team', timeline:'Days 1-14', value:o.value || 'TBD'
+    title: o.title || 'Create B2C action', detail: o.detail || 'Turn cached signal into product/marketing action.', owner:'Digital/B2C team', timeline:'Days 1-14', value:o.value || 'TBD', signal: o.signal || o
   })) : []), function(a){ return firstText(a, ['title'], '')+'|'+firstText(a, ['detail'], ''); });
   const scoreSource = data.overallThreat || data.threat || data.score || derivedThreat || (selectedSignals.length ? domain.score : null);
   const newsPages = competitorNewsPages(meta);
@@ -1807,26 +1808,36 @@ function humanAgeFromDate(value){
   const mins = minutesBetweenDates(value);
   if(mins === null) return '';
   if(mins < 1) return 'just now';
-  if(mins < 60) return mins + 'm ago';
-  const hrs = Math.round(mins / 60);
-  if(hrs < 48) return hrs + 'h ago';
-  const days = Math.round(hrs / 24);
-  if(days < 60) return days + 'd ago';
-  return Math.round(days / 30) + 'mo ago';
+  if(mins < 60) return mins + 'm';
+  const hrs = Math.floor(mins / 60);
+  const remM = mins % 60;
+  if(hrs < 24) return hrs + 'h' + (remM ? ' ' + remM + 'm' : '');
+  const days = Math.floor(hrs / 24);
+  const remH = hrs % 24;
+  if(days < 60) return days + 'd' + (remH ? ' ' + remH + 'h' : '');
+  const months = Math.floor(days / 30);
+  const remD = days % 30;
+  return months + 'mo' + (remD ? ' ' + remD + 'd' : '');
 }
 
 function ensureSignalTimerFields(s){
   s = s || {};
   const t = s.timer || {};
-  s.firstSeenAt = s.firstSeenAt || t.firstSeenAt || t.first_seen_at || s.created_at || s.sourceDate || '';
-  s.lastSeenAt = s.lastSeenAt || t.lastSeenAt || t.last_seen_at || s.updated_at || s.firstSeenAt || '';
-  s.lastVerifiedAt = s.lastVerifiedAt || t.lastVerifiedAt || t.last_verified_at || '';
-  s.lastContentChangedAt = s.lastContentChangedAt || t.lastContentChangedAt || t.last_content_changed_at || s.lastSeenAt || '';
+  s.sourceDate = s.sourceDate || s.source_date || t.sourceDate || t.source_date || s.published_at || s.publishedAt || s.created_at || s.createdAt || '';
+  s.firstSeenAt = s.firstSeenAt || s.first_seen_at || t.firstSeenAt || t.first_seen_at || s.createdAt || s.created_at || s.sourceDate || '';
+  s.lastSeenAt = s.lastSeenAt || s.last_seen_at || t.lastSeenAt || t.last_seen_at || s.lastObservedAt || s.last_observed_at || s.updatedAt || s.updated_at || s.firstSeenAt || '';
+  s.lastVerifiedAt = s.lastVerifiedAt || s.last_verified_at || t.lastVerifiedAt || t.last_verified_at || s.verifiedAt || s.verified_at || s.updatedAt || s.updated_at || s.lastSeenAt || '';
+  s.lastContentChangedAt = s.lastContentChangedAt || s.last_content_changed_at || t.lastContentChangedAt || t.last_content_changed_at || s.updatedAt || s.updated_at || s.lastSeenAt || '';
   s.ageHuman = s.ageHuman || t.ageHuman || humanAgeFromDate(s.firstSeenAt);
   s.lastSeenHuman = s.lastSeenHuman || t.lastSeenHuman || humanAgeFromDate(s.lastSeenAt);
   s.lastVerifiedHuman = s.lastVerifiedHuman || t.lastVerifiedHuman || humanAgeFromDate(s.lastVerifiedAt);
   s.contentChangedHuman = s.contentChangedHuman || t.contentChangedHuman || humanAgeFromDate(s.lastContentChangedAt);
-  s.statusLabel = s.statusLabel || t.statusLabel || (s.isStale ? 'STALE' : s.firstSeenAt ? 'ACTIVE' : '');
+  if(!s.statusLabel && !t.statusLabel){
+    const firstSeenMinutes = minutesBetweenDates(s.firstSeenAt);
+    s.statusLabel = s.isStale ? 'STALE' : firstSeenMinutes !== null && firstSeenMinutes <= (14 * 24 * 60) ? 'NEW' : s.firstSeenAt ? 'ACTIVE' : '';
+  } else {
+    s.statusLabel = s.statusLabel || t.statusLabel;
+  }
   return s;
 }
 
@@ -1842,6 +1853,17 @@ function signalDateSummary(s){
   return parts.filter(Boolean).join(' - ');
 }
 
+function compactSignalDateSummary(s){
+  s = ensureSignalTimerFields(s || {});
+  const parts = [];
+  const freshest = s.lastVerifiedHuman || s.contentChangedHuman || s.lastSeenHuman || '';
+  if(freshest) parts.push('Verified ' + freshest);
+  else if(s.sourceDate) parts.push('Source ' + formatRadarDate(s.sourceDate));
+  if(s.ageHuman) parts.push('First seen ' + s.ageHuman);
+  if(s.statusLabel) parts.push(String(s.statusLabel).toUpperCase());
+  return parts.filter(Boolean).join(' - ');
+}
+
 function renderSignalDateMeta(s){
   const summary = signalDateSummary(s);
   if(!summary) return '';
@@ -1849,6 +1871,16 @@ function renderSignalDateMeta(s){
   const stale = s.isStale ? '<span class="sig-date-chip sig-date-stale">Stale</span>' : '';
   return '<div class="sig-date-meta"><span>' + esc(summary) + '</span>' + hash + stale + '</div>';
 }
+
+function renderSignalDateCompactMeta(s){
+  const summary = compactSignalDateSummary(s);
+  if(!summary) return '';
+  return '<div class="sig-date-meta sig-date-compact"><span>' + esc(summary) + '</span></div>';
+}
+
+window.signalDateSummary = signalDateSummary;
+window.renderSignalDateMeta = renderSignalDateMeta;
+window.renderSignalDateCompactMeta = renderSignalDateCompactMeta;
 
 function hasAny(text, words){
   return words.some(w => text.includes(w));
@@ -3551,6 +3583,14 @@ const AIDISCOVERY = {
 };
 let APARTNER = null;
 let AAIDISC = null;
+const AI_DISCOVERY_API_PATH = '/api/ai-discovery/status';
+let AI_DISCOVERY_BACKEND = {
+  loading: false,
+  loadedAt: null,
+  status: 'pending',
+  data: null,
+  error: null
+};
 
 function updateCompetitorBadgeCount(){
   const badge = document.getElementById('compRivalsBadge');
@@ -3564,6 +3604,111 @@ function updatePartnerBadgeCount(){
   if(!badge) return;
   const total = Object.keys(PMETA || {}).length;
   badge.textContent = total + ' partners';
+}
+
+function aiDiscoveryBackendEndpoint(){
+  const viewMode = (typeof VIEW_MODE !== 'undefined' && VIEW_MODE) ? VIEW_MODE : 'b2c';
+  return AI_DISCOVERY_API_PATH + '?viewMode=' + encodeURIComponent(viewMode);
+}
+
+function aiDiscoverySafeNum(v, fallback){
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function aiDiscoveryBackendData(){
+  return (AI_DISCOVERY_BACKEND && AI_DISCOVERY_BACKEND.data) || {};
+}
+
+function aiDiscoveryStatusLabel(){
+  if(AI_DISCOVERY_BACKEND.loading) return 'Checking backend';
+  if(AI_DISCOVERY_BACKEND.status === 'connected') return 'Backend connected';
+  if(AI_DISCOVERY_BACKEND.status === 'error') return 'Backend API pending';
+  return 'Backend API pending';
+}
+
+function renderAIDiscoveryBackendStatus(){
+  const host = document.getElementById('aiBackendGrid');
+  const pill = document.getElementById('aiBackendStatusPill');
+  if(!host) return;
+  const data = aiDiscoveryBackendData();
+  const hasLive = AI_DISCOVERY_BACKEND.status === 'connected';
+  if(pill){
+    pill.textContent = aiDiscoveryStatusLabel();
+    pill.classList.toggle('ai-ok', hasLive);
+    pill.classList.toggle('ai-warn', !hasLive);
+  }
+
+  const cards = [
+    {
+      label: 'Server route',
+      value: hasLive ? 'Live' : 'Backend API pending',
+      detail: hasLive
+        ? 'Reading ' + AI_DISCOVERY_API_PATH + ' from the backend.'
+        : 'Add GET ' + AI_DISCOVERY_API_PATH + ' on the backend/server to return AI discovery proof.'
+    },
+    {
+      label: 'AI referrals',
+      value: hasLive ? String(aiDiscoverySafeNum(data.aiReferralSessions, 0)) : 'Awaiting API',
+      detail: 'Sessions from ChatGPT, Perplexity, Claude, Gemini or other AI referrers.'
+    },
+    {
+      label: 'Crawler visibility',
+      value: hasLive ? String(aiDiscoverySafeNum(data.crawlerHits, 0)) : 'Awaiting logs',
+      detail: 'GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot and Google-Extended page visibility.'
+    },
+    {
+      label: 'Citation monitor',
+      value: hasLive ? String(aiDiscoverySafeNum(data.citedQueries, 0)) : 'Awaiting monitor',
+      detail: 'Weekly query set showing where QR is cited, missing, or behind competitors.'
+    },
+    {
+      label: 'Query gaps',
+      value: hasLive ? String(aiDiscoverySafeNum(data.queryGaps, 0)) : 'Awaiting API',
+      detail: 'Travel questions where competitors appear and Qatar Airways does not.'
+    },
+    {
+      label: 'Last checked',
+      value: hasLive ? (data.lastCheckedDoha || data.lastCheckedAt || 'Live') : 'Not confirmed',
+      detail: AI_DISCOVERY_BACKEND.error || 'Backend should return freshness, source count and confidence.'
+    }
+  ];
+
+  host.innerHTML = cards.map(function(card){
+    return '<div class="ai-backend-card"><div class="ai-backend-label">'+esc(card.label)+'</div><div class="ai-backend-value">'+esc(card.value)+'</div><div class="ai-backend-detail">'+esc(card.detail)+'</div></div>';
+  }).join('');
+}
+
+async function loadAIDiscoveryBackend(force){
+  if(AI_DISCOVERY_BACKEND.loading && !force) return;
+  AI_DISCOVERY_BACKEND.loading = true;
+  AI_DISCOVERY_BACKEND.error = null;
+  renderAIDiscoveryBackendStatus();
+  try{
+    if(!BACKEND_URL) throw new Error('Backend URL is not configured.');
+    const json = await backendFetch(aiDiscoveryBackendEndpoint(), { method:'GET' }, 12000).then(function(resp){ return resp.json(); });
+    if(json && json.ok && json.data){
+      AI_DISCOVERY_BACKEND.status = 'connected';
+      AI_DISCOVERY_BACKEND.data = json.data;
+      AI_DISCOVERY_BACKEND.loadedAt = new Date().toISOString();
+    }else{
+      AI_DISCOVERY_BACKEND.status = 'error';
+      AI_DISCOVERY_BACKEND.data = null;
+      AI_DISCOVERY_BACKEND.error = (json && json.error && json.error.message) || 'Backend route did not return AI Discovery data.';
+    }
+  }catch(err){
+    AI_DISCOVERY_BACKEND.status = 'error';
+    AI_DISCOVERY_BACKEND.data = null;
+    AI_DISCOVERY_BACKEND.error = (err && err.message) || 'AI Discovery backend route unavailable.';
+  }finally{
+    AI_DISCOVERY_BACKEND.loading = false;
+    renderAIDiscoveryBackendStatus();
+  }
+}
+
+function refreshAIDiscoveryBackend(){
+  renderAIDiscoveryPage();
+  loadAIDiscoveryBackend(true);
 }
 
 function urlHostName(v){
@@ -3836,6 +3981,11 @@ function renderPartnerPage(){
 }
 
 function renderAIDiscoveryPage(){
+  renderAIDiscoveryBackendStatus();
+  if(!AI_DISCOVERY_BACKEND.loadedAt && !AI_DISCOVERY_BACKEND.loading){
+    loadAIDiscoveryBackend(false);
+  }
+
   const kpiHost = document.getElementById('aiDiscoveryKpis');
   if(kpiHost){
     kpiHost.innerHTML = AIDISCOVERY.kpis.map(function(card){
@@ -4064,12 +4214,12 @@ async function loadAllCompetitors(){
 function hideAllPrimaryPages(){
   var main = document.querySelector('.main');
   if(main) main.style.display='none';
-  ['compPage','partnerPage','sentPage','ciPage','ciosPage','execPage','predictPage','aiDiscoveryPage'].forEach(function(id){
+  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('visible');
   });
 }
 function clearPrimaryNav(){
-  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navExec','navPredict','navAI'].forEach(function(id){
+  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
 }
@@ -5054,10 +5204,56 @@ function renderAPError(msg){
   document.getElementById('apBody').innerHTML = `<div class="ap-error">! ${esc(msg)}</div>`;
 }
 
+function compSignalLike(row){
+  return row && row.signal ? row.signal : (row || {});
+}
+function compDateMetaOf(row){
+  try{
+    const source = compSignalLike(row);
+    return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(source) : '';
+  }catch(e){
+    return '';
+  }
+}
+function compCompactDateMetaOf(row){
+  try{
+    const source = compSignalLike(row);
+    return typeof renderSignalDateCompactMeta === 'function' ? renderSignalDateCompactMeta(source) : '';
+  }catch(e){
+    return '';
+  }
+}
+function compLatestSignalForMeta(data){
+  const rows = []
+    .concat(asArray(data && data.weaknesses))
+    .concat(asArray(data && data.opportunities))
+    .concat(asArray(data && data.actions));
+  let best = null;
+  let bestTs = null;
+  rows.forEach(function(row){
+    const sig = compSignalLike(row);
+    const ts = compParseDateValue(firstText(sig, [
+      'lastVerifiedAt','last_verified_at',
+      'lastContentChangedAt','last_content_changed_at',
+      'lastSeenAt','last_seen_at',
+      'updatedAt','updated_at',
+      'sourceDate','source_date',
+      'createdAt','created_at',
+      'firstSeenAt','first_seen_at'
+    ], ''));
+    if(Number.isFinite(ts) && (!bestTs || ts > bestTs)){
+      bestTs = ts;
+      best = sig;
+    }
+  });
+  return best;
+}
+
 function renderComp(id,data){
   data = normalizeCompData(id, data);
   const meta=CMETA[id]||{};
   const whyLine = firstText(data, ['why'], '') || meta.why || '';
+  const latestMetaHtml = compCompactDateMetaOf(compLatestSignalForMeta(data));
   const officialNewsPages = competitorNewsPages(meta);
   const officialNewsHtml = officialNewsPages.length
     ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px">${officialNewsPages.map(function(u){
@@ -5104,20 +5300,23 @@ function renderComp(id,data){
     return `<div class="comp-sig"><div class="comp-sdot" style="background:var(--red)"></div><div class="comp-sb">
       <div class="comp-st">${esc(w.title||'')}</div><div class="comp-sd">${esc(w.detail||'')}</div>
       <div class="comp-sd" style="color:var(--grn);margin-top:2px">Action: ${esc(w.impact||'')}</div>
+      ${compDateMetaOf(w)}
       <div class="comp-sr"><span class="comp-pill cp-${w.severity==='High'?'r':w.severity==='Medium'?'a':'g'}">${esc(w.severity||'Med')}</span>${u?`<a href="${u}" target="_blank" rel="noopener" style="font-size:9px;color:var(--qb)">Verify</a>`:''}</div>
     </div></div>`;
   }).join('');
   const oppH=(data.opportunities||[]).map(o=>`<div class="comp-sig"><div class="comp-sdot" style="background:var(--grn)"></div><div class="comp-sb">
     <div class="comp-st">${esc(o.title||'')}</div><div class="comp-sd">${esc(o.detail||'')}</div>
+    ${compDateMetaOf(o)}
     <div class="comp-sr"><span class="comp-pill cp-g">${esc(o.value||'TBD')}</span><span class="comp-pill cp-a">${esc(o.timeWindow||'')}</span><span class="comp-pill cp-b">${esc(o.b2cAngle||'')}</span></div>
   </div></div>`).join('');
   const actH=(data.actions||[]).map(a=>`<div class="comp-sig"><div class="comp-sdot" style="background:var(--qb)"></div><div class="comp-sb">
     <div class="comp-st">${esc(a.title||'')}</div><div class="comp-sd">${esc(a.detail||'')}</div>
+    ${compDateMetaOf(a)}
     <div class="comp-sr"><span class="comp-pill cp-b">${esc(a.timeline||'')}</span><span class="comp-pill cp-g">${esc(a.value||'')}</span><button class="comp-ap-btn" data-act="${encodeURIComponent(a.title||'')}" data-dom="comp_${esc(id)}" data-meta="${esc(meta.name||id)}" onclick="compActBtn(this)">Plan</button></div>
     <div style="font-size:9px;color:var(--t3);margin-top:2px">Owner: ${esc(a.owner||'B2C team')}</div>
   </div></div>`).join('');
   const noMatch = !data.hasSpecificCache;
-  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}${confidenceHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
+  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${latestMetaHtml}${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}${confidenceHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
 }
 
 function renderCErr(id,msg){

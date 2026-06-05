@@ -2877,6 +2877,160 @@ html,body,#app-root{
 @media(max-width:1180px){.exec-action-layer{grid-template-columns:1fr}.exec-action-layer-metrics{justify-content:flex-start}.exec-action-row{grid-template-columns:1fr}.exec-action-controls{justify-content:flex-start}}
 .exec-detail-body{white-space:pre-line}
 
+/* Radar Team Actions - signal to owner to outcome workspace */
+.comp-nav-btn.action-os{border-color:#D9E2F5!important}
+.action-nav-badge{background:#EFF6FF!important;color:#1D4ED8!important;border-color:#BFDBFE!important}
+.team-actions-page{display:none;max-width:1500px;margin:0 auto;padding:28px 34px 34px}
+.team-actions-page.visible{display:block}
+.ta-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;background:linear-gradient(135deg,#fff,#FFF8FB);border:1px solid #E8E2EA;border-radius:24px;padding:22px 24px;margin-bottom:14px;box-shadow:0 14px 34px rgba(31,36,48,.07);position:relative;overflow:hidden}
+.ta-hero:before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#8A004F,#C8A050)}
+.ta-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#8A004F;margin-bottom:7px}
+.ta-hero h1{font-size:34px;letter-spacing:-.045em;color:#1F1426;margin:0}
+.ta-hero p{font-size:13px;color:#665F6B;line-height:1.55;max-width:760px;margin:8px 0 0}
+.ta-hero-controls{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.ta-freshness{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;color:#047857;background:#EEFDF3;border:1px solid #B8EAC7;border-radius:999px;padding:8px 10px;white-space:nowrap}
+.ta-primary-btn{border:0;background:#8A004F;color:#fff;border-radius:999px;padding:9px 13px;font-size:11px;font-weight:900;cursor:pointer;box-shadow:0 10px 20px rgba(138,0,79,.16)}
+.ta-primary-btn:hover{background:#6F003C}
+.ta-light-btn{border:1px solid #E8E2EA;background:#fff;color:#5E5668;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;cursor:pointer}
+.ta-light-btn:hover{border-color:#8A004F;color:#8A004F;background:#FFF8FB}
+.ta-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.ta-summary-card{background:#fff;border:1px solid #E8E2EA;border-radius:18px;padding:14px 15px;box-shadow:0 10px 24px rgba(31,36,48,.055)}
+.ta-summary-value{font-size:26px;font-weight:950;color:#8A004F;line-height:1}
+.ta-summary-label{font-size:11px;font-weight:900;color:#211827;margin-top:7px}
+.ta-summary-copy{font-size:10.5px;color:#766E7D;line-height:1.35;margin-top:4px}
+.ta-grid{display:grid;grid-template-columns:320px minmax(0,1fr) 320px;gap:14px;align-items:start}
+.ta-queue-panel,.ta-detail-panel,.ta-leadership-panel{background:#fff;border:1px solid #E8E2EA;border-radius:22px;box-shadow:0 14px 34px rgba(31,36,48,.07);overflow:hidden}
+.ta-queue-panel,.ta-leadership-panel{position:sticky;top:142px;max-height:calc(100vh - 170px);display:flex;flex-direction:column}
+.ta-panel-head{padding:15px 16px;border-bottom:1px solid #E8E2EA;background:#FCFAFD}
+.ta-panel-title{font-size:13px;font-weight:950;color:#231A29}
+.ta-panel-copy{font-size:10.5px;color:#776F7D;line-height:1.35;margin-top:3px}
+.ta-filter-row{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid #EEE8F1;flex-wrap:wrap}
+.ta-filter{border:1px solid #E8E2EA;background:#fff;color:#6B6572;border-radius:999px;padding:6px 10px;font-size:10px;font-weight:850;cursor:pointer}
+.ta-filter.active,.ta-filter:hover{background:#8A004F;color:#fff;border-color:#8A004F}
+.ta-search{margin:10px 12px;width:calc(100% - 24px);border:1px solid #E8E2EA;background:#FCFAFD;border-radius:12px;padding:10px 12px;font-size:12px;color:#241B2A;outline:none}
+.ta-search:focus{border-color:#8A004F;background:#fff}
+.ta-action-list{overflow:auto;padding:0 12px 12px}
+.ta-action-item{width:100%;display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:start;text-align:left;border:1px solid #E8E2EA;background:#fff;border-radius:16px;padding:11px;margin-bottom:9px;cursor:pointer}
+.ta-action-item:hover,.ta-action-item.active{border-color:#8A004F;background:#FFF8FB;box-shadow:0 10px 20px rgba(138,0,79,.07)}
+.ta-action-rank{width:30px;height:30px;border-radius:10px;background:#FFF4FA;border:1px solid #EBC8D9;color:#8A004F;font-size:12px;font-weight:950;display:flex;align-items:center;justify-content:center}
+.ta-action-copy{min-width:0;display:flex;flex-direction:column;gap:4px}
+.ta-action-copy strong{font-size:12px;color:#231A29;line-height:1.25}
+.ta-action-copy em{font-style:normal;font-size:10.5px;color:#665F6B;line-height:1.25}
+.ta-action-copy small{font-size:9.5px;color:#8D8796}
+.ta-chip{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;border-radius:999px;padding:4px 7px;white-space:nowrap;border:1px solid #E8E2EA}
+.ta-chip-open{color:#B45309;background:#FFF7ED;border-color:#FDBA74}
+.ta-chip-progress{color:#1D4ED8;background:#EFF6FF;border-color:#BFDBFE}
+.ta-chip-review{color:#6D28D9;background:#F5F3FF;border-color:#DDD6FE}
+.ta-chip-done{color:#047857;background:#ECFDF5;border-color:#A7F3D0}
+.ta-chip-monitor{color:#64748B;background:#F8FAFC;border-color:#CBD5E1}
+.ta-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:18px 20px;border-bottom:1px solid #E8E2EA;background:linear-gradient(135deg,#fff,#FCFAFD)}
+.ta-detail-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#8A004F;margin-bottom:6px}
+.ta-detail-head h2{font-size:24px;line-height:1.12;color:#1F1426;margin:0}
+.ta-detail-head p{font-size:12px;color:#665F6B;line-height:1.45;margin:7px 0 0}
+.ta-detail-score{width:94px;min-height:72px;border-radius:18px;border:1px solid #EBC8D9;background:#FFF8FB;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.ta-detail-score strong{font-size:26px;color:#8A004F;line-height:1}
+.ta-detail-score span{font-size:9px;color:#766E7D;text-align:center;margin-top:5px}
+.ta-detail-body{padding:16px 20px}
+.ta-brief-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.ta-brief-grid>div{border:1px solid #E8E2EA;background:#FCFAFD;border-radius:14px;padding:11px}
+.ta-brief-grid label{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7D7383;margin-bottom:6px}
+.ta-brief-grid select,.ta-brief-grid input{width:100%;border:1px solid #E8E2EA;background:#fff;border-radius:10px;padding:8px;color:#241B2A;font-size:12px}
+.ta-brief-grid strong{font-size:16px;color:#047857}
+.ta-evidence-box{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:12px;border:1px solid #E8E2EA;border-radius:16px;background:#fff;padding:14px;margin-bottom:12px}
+.ta-evidence-box strong,.ta-next-step strong,.ta-thread-title{display:block;font-size:12px;font-weight:950;color:#231A29;margin-bottom:5px}
+.ta-evidence-box p{font-size:12px;color:#665F6B;line-height:1.55;margin:0}
+.ta-evidence-count{border-radius:14px;background:#FFF4FA;border:1px solid #EBC8D9;color:#8A004F;font-size:28px;font-weight:950;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ta-evidence-count span{font-size:9px;color:#766E7D;font-weight:800;text-align:center;margin-top:4px}
+.ta-next-step{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid #E8E2EA;border-radius:16px;background:#FCFAFD;padding:13px 14px;margin-bottom:14px}
+.ta-next-step strong{grid-column:1/-1;margin-bottom:0;color:#8A004F}
+.ta-next-step span{font-size:12px;color:#665F6B;line-height:1.45}
+.ta-thread{border-top:1px solid #EEE8F1;padding-top:12px}
+.ta-note{border:1px solid #E8E2EA;background:#fff;border-radius:14px;padding:10px 11px;margin-bottom:8px}
+.ta-note strong{display:block;font-size:10px;color:#8A004F;margin-bottom:4px}
+.ta-note span{font-size:12px;color:#413648;line-height:1.45}
+.ta-note-outcome{background:#ECFDF5;border-color:#A7F3D0}
+.ta-note-outcome strong{color:#047857}
+.ta-comment-box{padding:14px 20px;border-top:1px solid #E8E2EA;background:#FCFAFD}
+.ta-comment-box textarea{width:100%;border:1px solid #E8E2EA;border-radius:14px;background:#fff;padding:11px 12px;font-size:12px;color:#241B2A;resize:vertical;outline:none}
+.ta-comment-box textarea:focus{border-color:#8A004F}
+.ta-comment-controls{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:9px}
+.ta-owner-row{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;padding:13px 16px;border-bottom:1px solid #EEE8F1}
+.ta-owner-avatar{width:38px;height:38px;border-radius:13px;background:#FFF4FA;border:1px solid #EBC8D9;color:#8A004F;font-size:12px;font-weight:950;display:flex;align-items:center;justify-content:center}
+.ta-owner-row strong{display:block;font-size:12px;color:#231A29}
+.ta-owner-row span{display:block;font-size:10.5px;color:#766E7D;margin:2px 0 8px}
+.ta-owner-row button{display:block;width:100%;text-align:left;border:1px solid #EEE8F1;background:#FCFAFD;color:#413648;border-radius:10px;padding:7px 8px;font-size:10.5px;margin-top:5px;cursor:pointer}
+.ta-owner-row button:hover{border-color:#8A004F;color:#8A004F;background:#FFF8FB}
+.ta-leadership-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px}
+.ta-leadership-metrics div{border:1px solid #E8E2EA;background:#FCFAFD;border-radius:14px;padding:11px;text-align:center}
+.ta-leadership-metrics strong{display:block;font-size:24px;color:#8A004F}
+.ta-leadership-metrics span{font-size:10px;color:#766E7D}
+.ta-empty{border:1px dashed #E8E2EA;background:#FCFAFD;border-radius:16px;padding:16px;color:#766E7D;font-size:12px;line-height:1.45}
+.ta-empty.small{padding:11px;font-size:11px}
+@media(max-width:1250px){.ta-grid{grid-template-columns:280px minmax(0,1fr)}.ta-leadership-panel{grid-column:1/-1;position:static;max-height:none}.ta-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:860px){.team-actions-page{padding:18px 14px}.ta-hero{flex-direction:column}.ta-grid,.ta-brief-grid,.ta-evidence-box,.ta-next-step{grid-template-columns:1fr}.ta-queue-panel{position:static;max-height:none}.ta-summary{grid-template-columns:1fr}}
+
+/* Evidence age metadata - compact overview proof */
+.sig-date-compact{margin-top:6px;font-size:8.5px;color:#746B79}
+.sig-date-compact>span:first-child{padding:3px 7px;background:#fff;border-color:#ECE6EF;color:#6C6271}
+.sent-freshness-meta .sig-date-meta{margin-top:8px}
+.sent-freshness-meta .sig-date-meta>span:first-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.comp-sig .sig-date-meta{margin-top:6px;margin-bottom:3px}
+.comp-det-hdr .sig-date-compact{margin-top:7px}
+
+/* Backend Pulse footer confidence page */
+.footer-links{display:flex;align-items:center;gap:8px;margin-left:auto;margin-right:14px}
+.footer-links button{border:1px solid #EBC8D9;background:#FFF4FA;color:#8A004F;border-radius:999px;padding:7px 11px;font-size:10px;font-weight:900;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.footer-links button:hover,.footer-links button.active{background:#8A004F;color:#fff;box-shadow:0 10px 24px rgba(138,0,79,.18)}
+.backend-pulse-page{display:none;max-width:1500px;margin:0 auto;padding:30px 38px}
+.backend-pulse-page.visible{display:block}
+.backend-pulse-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;background:linear-gradient(135deg,#4C0027,#8A004F 58%,#B01568);border-radius:28px;padding:28px 30px;color:#fff;box-shadow:0 22px 58px rgba(90,0,46,.22);margin-bottom:16px}
+.backend-pulse-ey{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:8px}
+.backend-pulse-hero h1{font-size:34px;letter-spacing:-.045em;margin:0}
+.backend-pulse-hero p{font-size:14px;line-height:1.65;max-width:880px;color:rgba(255,255,255,.84);margin:10px 0 0}
+.backend-pulse-refresh{border:1px solid rgba(255,255,255,.35);background:#fff;color:#8A004F;border-radius:999px;padding:10px 14px;font-size:11px;font-weight:900;box-shadow:0 18px 42px rgba(0,0,0,.16);cursor:pointer;white-space:nowrap}
+.backend-pulse-status{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #E8E2EA;border-radius:18px;padding:13px 16px;margin-bottom:14px;box-shadow:0 12px 30px rgba(31,36,48,.065);font-size:12px;color:#665F6B}
+.backend-pulse-status strong{font-size:13px;color:#231A29}
+.backend-pulse-dot{width:10px;height:10px;border-radius:50%;background:#94A3B8;box-shadow:0 0 0 5px rgba(148,163,184,.14)}
+.backend-pulse-status.good .backend-pulse-dot{background:#047857;box-shadow:0 0 0 5px rgba(4,120,87,.14)}
+.backend-pulse-status.warn .backend-pulse-dot{background:#B45309;box-shadow:0 0 0 5px rgba(180,83,9,.14)}
+.backend-pulse-status.error .backend-pulse-dot{background:#DC2626;box-shadow:0 0 0 5px rgba(220,38,38,.14)}
+.backend-pulse-status.checking .backend-pulse-dot{background:#8A004F;box-shadow:0 0 0 5px rgba(138,0,79,.14)}
+.backend-pulse-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.backend-pulse-card{background:#fff;border:1px solid #E8E2EA;border-radius:20px;padding:15px;box-shadow:0 12px 30px rgba(31,36,48,.065);position:relative;overflow:hidden;min-height:136px}
+.backend-pulse-card:before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:#94A3B8}
+.backend-pulse-card.good:before{background:#047857}
+.backend-pulse-card.warn:before{background:#B45309}
+.backend-pulse-card.error:before{background:#DC2626}
+.backend-pulse-card.neutral:before{background:#8A004F}
+.backend-pulse-card-title{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#8A004F;margin-bottom:10px}
+.backend-pulse-card-value{font-size:22px;font-weight:900;color:#231A29;letter-spacing:-.035em;line-height:1.05}
+.backend-pulse-card-label{font-size:11px;font-weight:800;color:#4B4452;margin-top:7px;line-height:1.4}
+.backend-pulse-card-detail{font-size:10.5px;color:#776F7D;line-height:1.45;margin-top:7px}
+.backend-pulse-panels{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.backend-pulse-panel{background:#fff;border:1px solid #E8E2EA;border-radius:24px;box-shadow:0 14px 34px rgba(31,36,48,.07);padding:18px}
+.backend-pulse-panel-title{font-size:15px;font-weight:900;color:#231A29;margin-bottom:12px}
+.backend-pulse-list{display:grid;gap:10px;list-style:none;margin:0;padding:0}
+.backend-pulse-list li{border:1px solid #E8E2EA;background:#FCFAFD;border-radius:16px;padding:12px;position:relative}
+.backend-pulse-list li:before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:999px;background:#94A3B8}
+.backend-pulse-list li.good:before{background:#047857}
+.backend-pulse-list li.warn:before{background:#B45309}
+.backend-pulse-list li.error:before{background:#DC2626}
+.backend-pulse-list strong{display:block;font-size:12px;color:#231A29;margin-bottom:4px}
+.backend-pulse-list span{display:block;font-size:11px;color:#665F6B;line-height:1.45}
+.backend-pulse-empty{border:1px dashed #D9D3DF;border-radius:16px;padding:14px;font-size:12px;color:#776F7D;background:#FCFAFD}
+@media(max-width:1100px){.backend-pulse-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.backend-pulse-panels{grid-template-columns:1fr}.backend-pulse-hero{flex-direction:column}}
+@media(max-width:700px){.backend-pulse-page{padding:18px 14px}.backend-pulse-grid{grid-template-columns:1fr}.backend-pulse-hero h1{font-size:28px}.footer{gap:10px;flex-wrap:wrap}.footer-links{order:3;margin:0}}
+
+/* AI Discovery backend contract status */
+.ai-backend-panel{margin-bottom:18px}
+.ai-backend-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ai-backend-card{background:#FCFAFD;border:1px solid #E8E2EA;border-radius:18px;padding:14px;min-height:112px}
+.ai-backend-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#8A004F}
+.ai-backend-value{font-size:18px;font-weight:900;color:#231A29;margin-top:7px;line-height:1.15}
+.ai-backend-detail{font-size:11px;color:#665F6B;line-height:1.45;margin-top:6px}
+@media(max-width:1100px){.ai-backend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.ai-backend-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -3022,6 +3176,11 @@ html,body,#app-root{
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/><circle cx="11.5" cy="9.5" r="2" fill="none"/><path d="M13 11l1.5 1.5"/></svg>
     Intelligence OS
     <span class="comp-nav-badge" id="ciosBadge">live</span>
+  </button>
+  <button class="comp-nav-btn action-os" id="navTeamActions" onclick="showTeamActions()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8.5l2.2 2.2L12 4.5"/><rect x="2.5" y="2.5" width="11" height="11" rx="2"/></svg>
+    Team Actions
+    <span class="comp-nav-badge action-nav-badge" id="teamActionsBadge">action</span>
   </button>
   <button class="comp-nav-btn strategic" id="navExec" onclick="showExecSummary()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13h12"/><path d="M4 11V6"/><path d="M8 11V3"/><path d="M12 11V8"/></svg>
@@ -3626,10 +3785,21 @@ html,body,#app-root{
       </div>
     </div>
     <div class="ai-hero-side">
-      <button type="button" class="ai-primary-btn" onclick="renderAIDiscoveryPage()">Refresh view</button>
+      <button type="button" class="ai-primary-btn" onclick="refreshAIDiscoveryBackend()">Refresh backend</button>
       <button type="button" class="ai-secondary-btn" onclick="showExecSummary()">Open executive view</button>
     </div>
   </div>
+
+  <section class="ai-panel ai-wide ai-backend-panel" id="aiDiscoveryBackendStatus">
+    <div class="ai-panel-head">
+      <div>
+        <div class="ai-panel-title">Backend API connection</div>
+        <div class="ai-panel-copy">Checks whether the server is already feeding AI referral, crawler, citation, query-gap and conversion proof.</div>
+      </div>
+      <span class="ai-panel-pill ai-warn" id="aiBackendStatusPill">Checking</span>
+    </div>
+    <div class="ai-backend-grid" id="aiBackendGrid"></div>
+  </section>
 
   <div class="ai-kpi-grid" id="aiDiscoveryKpis"></div>
 
@@ -3689,6 +3859,68 @@ html,body,#app-root{
     </div>
     <div class="ai-action-grid" id="aiActionGrid"></div>
   </section>
+</div>
+
+<div class="team-actions-page" id="teamActionsPage">
+  <div class="ta-hero">
+    <div>
+      <div class="ta-eyebrow">Radar action workspace</div>
+      <h1>Team Actions</h1>
+      <p>Turns live Radar signals into owned work, evidence-backed decisions, and recorded outcomes for leadership follow-up.</p>
+    </div>
+    <div class="ta-hero-controls">
+      <span class="ta-freshness" id="taFreshness">Backend/cache context</span>
+      <button type="button" class="ta-primary-btn" onclick="refreshTeamActions()">Refresh actions</button>
+    </div>
+  </div>
+
+  <div class="ta-summary" id="taSummary">
+    <div class="ta-empty">Loading action readiness from Radar signals...</div>
+  </div>
+
+  <div class="ta-grid">
+    <aside class="ta-queue-panel">
+      <div class="ta-panel-head">
+        <div>
+          <div class="ta-panel-title">Signal Action Queue</div>
+          <div class="ta-panel-copy" id="taQueueCount">Waiting for loaded signals</div>
+        </div>
+      </div>
+      <div class="ta-filter-row">
+        <button type="button" class="ta-filter active" data-ta-filter="all">All</button>
+        <button type="button" class="ta-filter" data-ta-filter="urgent">Urgent</button>
+        <button type="button" class="ta-filter" data-ta-filter="open">Open</button>
+        <button type="button" class="ta-filter" data-ta-filter="done">Done</button>
+      </div>
+      <input class="ta-search" id="taSearch" type="search" placeholder="Search actions, owners, or signals..." oninput="renderTeamActionsPage()">
+      <div class="ta-action-list" id="taActionList"></div>
+    </aside>
+
+    <section class="ta-detail-panel">
+      <div class="ta-detail-head" id="taDetailHead">
+        <div class="ta-empty">Select an action from the queue.</div>
+      </div>
+      <div class="ta-detail-body" id="taDetailBody"></div>
+      <div class="ta-comment-box" id="taCommentBox" hidden>
+        <textarea id="taCommentInput" rows="2" placeholder="Add a short status note, blocker, or leadership update..."></textarea>
+        <div class="ta-comment-controls">
+          <button type="button" class="ta-light-btn" onclick="addTeamActionQuickNote('Blocked by: ')">Blocked</button>
+          <button type="button" class="ta-light-btn" onclick="addTeamActionQuickNote('Leadership update: ')">Leadership update</button>
+          <button type="button" class="ta-primary-btn" onclick="addTeamActionComment()">Add note</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="ta-leadership-panel">
+      <div class="ta-panel-head">
+        <div>
+          <div class="ta-panel-title">Leadership View</div>
+          <div class="ta-panel-copy">Who owns what, what is due, and where outcomes are missing.</div>
+        </div>
+      </div>
+      <div id="taLeadership"></div>
+    </aside>
+  </div>
 </div>
 
 <div class="exec-page" id="execPage">
@@ -3924,8 +4156,42 @@ html,body,#app-root{
   </div>
 </div>
 
+<!-- Backend Pulse / Server Update Confidence Page -->
+<div class="backend-pulse-page" id="backendPulsePage">
+  <div class="backend-pulse-hero">
+    <div>
+      <div class="backend-pulse-ey">Server confidence center</div>
+      <h1>Backend Pulse</h1>
+      <p>Shows whether Radar is live, when maintenance last ran, how fresh the cache is, and whether the backend is only ranking existing signals or actively discovering new ones.</p>
+    </div>
+    <button class="backend-pulse-refresh" type="button" onclick="refreshBackendPulse()">Refresh status</button>
+  </div>
+
+  <div class="backend-pulse-status" id="backendPulseStatus">
+    <span class="backend-pulse-dot"></span>
+    <strong>Checking backend...</strong>
+    <span>Waiting for live health, daily status and diagnostics endpoints.</span>
+  </div>
+
+  <div class="backend-pulse-grid" id="backendPulseGrid"></div>
+
+  <div class="backend-pulse-panels">
+    <div class="backend-pulse-panel">
+      <div class="backend-pulse-panel-title">What this means</div>
+      <div id="backendPulseMeaning"></div>
+    </div>
+    <div class="backend-pulse-panel">
+      <div class="backend-pulse-panel-title">Attention needed</div>
+      <div id="backendPulseAttention"></div>
+    </div>
+  </div>
+</div>
+
 <div class="footer">
   <span class="fl">Qatar Airways - Radar v11 - Executive Intelligence Command Center</span>
+  <span class="footer-links">
+    <button id="footerBackendPulseLink" type="button" onclick="showBackendPulse()">Backend Pulse</button>
+  </span>
   <span class="fr2">v11.4.14 - Executive Intelligence OS - Predictive Radar - Roadmap Tracker - 2026</span>
 </div>
 
@@ -4612,7 +4878,8 @@ function normalizeCompData(id, data){
     impact: firstText(s, ['captureStrategy'], 'Use B2C/product/marketing actions to protect direct share'),
     severity: (Number(s.commercialImpactScore||0) >= 8 ? 'High' : 'Medium'),
     source: firstText(s, ['source'], 'Backend cache'),
-    sourceUrl: firstText(s, ['sourceUrl'], '')
+    sourceUrl: firstText(s, ['sourceUrl'], ''),
+    signal: s
   }));
   weak = dedupeBy(weak, function(w){ return firstText(w, ['title'], '')+'|'+firstText(w, ['detail'], ''); }).slice(0, 5);
   if(!weak.length) weak.push({
@@ -4623,10 +4890,10 @@ function normalizeCompData(id, data){
     source:'Backend cache'
   });
   const opp = dedupeBy(explicitOpp.length ? explicitOpp : (hasSpecificCache ? weak.slice(0,4).map(w => ({
-    title: 'Respond to '+(meta.name || 'competitor')+' signal', detail: w.impact || w.detail, value:'TBD', timeWindow:'30 days', b2cAngle:'Direct booking'
+    title: 'Respond to '+(meta.name || 'competitor')+' signal', detail: w.impact || w.detail, value:'TBD', timeWindow:'30 days', b2cAngle:'Direct booking', signal: w.signal || w
   })) : []), function(o){ return firstText(o, ['title'], '')+'|'+firstText(o, ['detail'], ''); });
   const acts = dedupeBy(explicitActs.length ? explicitActs : (hasSpecificCache ? opp.slice(0,4).map(o => ({
-    title: o.title || 'Create B2C action', detail: o.detail || 'Turn cached signal into product/marketing action.', owner:'Digital/B2C team', timeline:'Days 1-14', value:o.value || 'TBD'
+    title: o.title || 'Create B2C action', detail: o.detail || 'Turn cached signal into product/marketing action.', owner:'Digital/B2C team', timeline:'Days 1-14', value:o.value || 'TBD', signal: o.signal || o
   })) : []), function(a){ return firstText(a, ['title'], '')+'|'+firstText(a, ['detail'], ''); });
   const scoreSource = data.overallThreat || data.threat || data.score || derivedThreat || (selectedSignals.length ? domain.score : null);
   const newsPages = competitorNewsPages(meta);
@@ -5766,26 +6033,36 @@ function humanAgeFromDate(value){
   const mins = minutesBetweenDates(value);
   if(mins === null) return '';
   if(mins < 1) return 'just now';
-  if(mins < 60) return mins + 'm ago';
-  const hrs = Math.round(mins / 60);
-  if(hrs < 48) return hrs + 'h ago';
-  const days = Math.round(hrs / 24);
-  if(days < 60) return days + 'd ago';
-  return Math.round(days / 30) + 'mo ago';
+  if(mins < 60) return mins + 'm';
+  const hrs = Math.floor(mins / 60);
+  const remM = mins % 60;
+  if(hrs < 24) return hrs + 'h' + (remM ? ' ' + remM + 'm' : '');
+  const days = Math.floor(hrs / 24);
+  const remH = hrs % 24;
+  if(days < 60) return days + 'd' + (remH ? ' ' + remH + 'h' : '');
+  const months = Math.floor(days / 30);
+  const remD = days % 30;
+  return months + 'mo' + (remD ? ' ' + remD + 'd' : '');
 }
 
 function ensureSignalTimerFields(s){
   s = s || {};
   const t = s.timer || {};
-  s.firstSeenAt = s.firstSeenAt || t.firstSeenAt || t.first_seen_at || s.created_at || s.sourceDate || '';
-  s.lastSeenAt = s.lastSeenAt || t.lastSeenAt || t.last_seen_at || s.updated_at || s.firstSeenAt || '';
-  s.lastVerifiedAt = s.lastVerifiedAt || t.lastVerifiedAt || t.last_verified_at || '';
-  s.lastContentChangedAt = s.lastContentChangedAt || t.lastContentChangedAt || t.last_content_changed_at || s.lastSeenAt || '';
+  s.sourceDate = s.sourceDate || s.source_date || t.sourceDate || t.source_date || s.published_at || s.publishedAt || s.created_at || s.createdAt || '';
+  s.firstSeenAt = s.firstSeenAt || s.first_seen_at || t.firstSeenAt || t.first_seen_at || s.createdAt || s.created_at || s.sourceDate || '';
+  s.lastSeenAt = s.lastSeenAt || s.last_seen_at || t.lastSeenAt || t.last_seen_at || s.lastObservedAt || s.last_observed_at || s.updatedAt || s.updated_at || s.firstSeenAt || '';
+  s.lastVerifiedAt = s.lastVerifiedAt || s.last_verified_at || t.lastVerifiedAt || t.last_verified_at || s.verifiedAt || s.verified_at || s.updatedAt || s.updated_at || s.lastSeenAt || '';
+  s.lastContentChangedAt = s.lastContentChangedAt || s.last_content_changed_at || t.lastContentChangedAt || t.last_content_changed_at || s.updatedAt || s.updated_at || s.lastSeenAt || '';
   s.ageHuman = s.ageHuman || t.ageHuman || humanAgeFromDate(s.firstSeenAt);
   s.lastSeenHuman = s.lastSeenHuman || t.lastSeenHuman || humanAgeFromDate(s.lastSeenAt);
   s.lastVerifiedHuman = s.lastVerifiedHuman || t.lastVerifiedHuman || humanAgeFromDate(s.lastVerifiedAt);
   s.contentChangedHuman = s.contentChangedHuman || t.contentChangedHuman || humanAgeFromDate(s.lastContentChangedAt);
-  s.statusLabel = s.statusLabel || t.statusLabel || (s.isStale ? 'STALE' : s.firstSeenAt ? 'ACTIVE' : '');
+  if(!s.statusLabel && !t.statusLabel){
+    const firstSeenMinutes = minutesBetweenDates(s.firstSeenAt);
+    s.statusLabel = s.isStale ? 'STALE' : firstSeenMinutes !== null && firstSeenMinutes <= (14 * 24 * 60) ? 'NEW' : s.firstSeenAt ? 'ACTIVE' : '';
+  } else {
+    s.statusLabel = s.statusLabel || t.statusLabel;
+  }
   return s;
 }
 
@@ -5801,6 +6078,17 @@ function signalDateSummary(s){
   return parts.filter(Boolean).join(' - ');
 }
 
+function compactSignalDateSummary(s){
+  s = ensureSignalTimerFields(s || {});
+  const parts = [];
+  const freshest = s.lastVerifiedHuman || s.contentChangedHuman || s.lastSeenHuman || '';
+  if(freshest) parts.push('Verified ' + freshest);
+  else if(s.sourceDate) parts.push('Source ' + formatRadarDate(s.sourceDate));
+  if(s.ageHuman) parts.push('First seen ' + s.ageHuman);
+  if(s.statusLabel) parts.push(String(s.statusLabel).toUpperCase());
+  return parts.filter(Boolean).join(' - ');
+}
+
 function renderSignalDateMeta(s){
   const summary = signalDateSummary(s);
   if(!summary) return '';
@@ -5808,6 +6096,16 @@ function renderSignalDateMeta(s){
   const stale = s.isStale ? '<span class="sig-date-chip sig-date-stale">Stale</span>' : '';
   return '<div class="sig-date-meta"><span>' + esc(summary) + '</span>' + hash + stale + '</div>';
 }
+
+function renderSignalDateCompactMeta(s){
+  const summary = compactSignalDateSummary(s);
+  if(!summary) return '';
+  return '<div class="sig-date-meta sig-date-compact"><span>' + esc(summary) + '</span></div>';
+}
+
+window.signalDateSummary = signalDateSummary;
+window.renderSignalDateMeta = renderSignalDateMeta;
+window.renderSignalDateCompactMeta = renderSignalDateCompactMeta;
 
 function hasAny(text, words){
   return words.some(w => text.includes(w));
@@ -7510,6 +7808,14 @@ const AIDISCOVERY = {
 };
 let APARTNER = null;
 let AAIDISC = null;
+const AI_DISCOVERY_API_PATH = '/api/ai-discovery/status';
+let AI_DISCOVERY_BACKEND = {
+  loading: false,
+  loadedAt: null,
+  status: 'pending',
+  data: null,
+  error: null
+};
 
 function updateCompetitorBadgeCount(){
   const badge = document.getElementById('compRivalsBadge');
@@ -7523,6 +7829,111 @@ function updatePartnerBadgeCount(){
   if(!badge) return;
   const total = Object.keys(PMETA || {}).length;
   badge.textContent = total + ' partners';
+}
+
+function aiDiscoveryBackendEndpoint(){
+  const viewMode = (typeof VIEW_MODE !== 'undefined' && VIEW_MODE) ? VIEW_MODE : 'b2c';
+  return AI_DISCOVERY_API_PATH + '?viewMode=' + encodeURIComponent(viewMode);
+}
+
+function aiDiscoverySafeNum(v, fallback){
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function aiDiscoveryBackendData(){
+  return (AI_DISCOVERY_BACKEND && AI_DISCOVERY_BACKEND.data) || {};
+}
+
+function aiDiscoveryStatusLabel(){
+  if(AI_DISCOVERY_BACKEND.loading) return 'Checking backend';
+  if(AI_DISCOVERY_BACKEND.status === 'connected') return 'Backend connected';
+  if(AI_DISCOVERY_BACKEND.status === 'error') return 'Backend API pending';
+  return 'Backend API pending';
+}
+
+function renderAIDiscoveryBackendStatus(){
+  const host = document.getElementById('aiBackendGrid');
+  const pill = document.getElementById('aiBackendStatusPill');
+  if(!host) return;
+  const data = aiDiscoveryBackendData();
+  const hasLive = AI_DISCOVERY_BACKEND.status === 'connected';
+  if(pill){
+    pill.textContent = aiDiscoveryStatusLabel();
+    pill.classList.toggle('ai-ok', hasLive);
+    pill.classList.toggle('ai-warn', !hasLive);
+  }
+
+  const cards = [
+    {
+      label: 'Server route',
+      value: hasLive ? 'Live' : 'Backend API pending',
+      detail: hasLive
+        ? 'Reading ' + AI_DISCOVERY_API_PATH + ' from the backend.'
+        : 'Add GET ' + AI_DISCOVERY_API_PATH + ' on the backend/server to return AI discovery proof.'
+    },
+    {
+      label: 'AI referrals',
+      value: hasLive ? String(aiDiscoverySafeNum(data.aiReferralSessions, 0)) : 'Awaiting API',
+      detail: 'Sessions from ChatGPT, Perplexity, Claude, Gemini or other AI referrers.'
+    },
+    {
+      label: 'Crawler visibility',
+      value: hasLive ? String(aiDiscoverySafeNum(data.crawlerHits, 0)) : 'Awaiting logs',
+      detail: 'GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot and Google-Extended page visibility.'
+    },
+    {
+      label: 'Citation monitor',
+      value: hasLive ? String(aiDiscoverySafeNum(data.citedQueries, 0)) : 'Awaiting monitor',
+      detail: 'Weekly query set showing where QR is cited, missing, or behind competitors.'
+    },
+    {
+      label: 'Query gaps',
+      value: hasLive ? String(aiDiscoverySafeNum(data.queryGaps, 0)) : 'Awaiting API',
+      detail: 'Travel questions where competitors appear and Qatar Airways does not.'
+    },
+    {
+      label: 'Last checked',
+      value: hasLive ? (data.lastCheckedDoha || data.lastCheckedAt || 'Live') : 'Not confirmed',
+      detail: AI_DISCOVERY_BACKEND.error || 'Backend should return freshness, source count and confidence.'
+    }
+  ];
+
+  host.innerHTML = cards.map(function(card){
+    return '<div class="ai-backend-card"><div class="ai-backend-label">'+esc(card.label)+'</div><div class="ai-backend-value">'+esc(card.value)+'</div><div class="ai-backend-detail">'+esc(card.detail)+'</div></div>';
+  }).join('');
+}
+
+async function loadAIDiscoveryBackend(force){
+  if(AI_DISCOVERY_BACKEND.loading && !force) return;
+  AI_DISCOVERY_BACKEND.loading = true;
+  AI_DISCOVERY_BACKEND.error = null;
+  renderAIDiscoveryBackendStatus();
+  try{
+    if(!BACKEND_URL) throw new Error('Backend URL is not configured.');
+    const json = await backendFetch(aiDiscoveryBackendEndpoint(), { method:'GET' }, 12000).then(function(resp){ return resp.json(); });
+    if(json && json.ok && json.data){
+      AI_DISCOVERY_BACKEND.status = 'connected';
+      AI_DISCOVERY_BACKEND.data = json.data;
+      AI_DISCOVERY_BACKEND.loadedAt = new Date().toISOString();
+    }else{
+      AI_DISCOVERY_BACKEND.status = 'error';
+      AI_DISCOVERY_BACKEND.data = null;
+      AI_DISCOVERY_BACKEND.error = (json && json.error && json.error.message) || 'Backend route did not return AI Discovery data.';
+    }
+  }catch(err){
+    AI_DISCOVERY_BACKEND.status = 'error';
+    AI_DISCOVERY_BACKEND.data = null;
+    AI_DISCOVERY_BACKEND.error = (err && err.message) || 'AI Discovery backend route unavailable.';
+  }finally{
+    AI_DISCOVERY_BACKEND.loading = false;
+    renderAIDiscoveryBackendStatus();
+  }
+}
+
+function refreshAIDiscoveryBackend(){
+  renderAIDiscoveryPage();
+  loadAIDiscoveryBackend(true);
 }
 
 function urlHostName(v){
@@ -7795,6 +8206,11 @@ function renderPartnerPage(){
 }
 
 function renderAIDiscoveryPage(){
+  renderAIDiscoveryBackendStatus();
+  if(!AI_DISCOVERY_BACKEND.loadedAt && !AI_DISCOVERY_BACKEND.loading){
+    loadAIDiscoveryBackend(false);
+  }
+
   const kpiHost = document.getElementById('aiDiscoveryKpis');
   if(kpiHost){
     kpiHost.innerHTML = AIDISCOVERY.kpis.map(function(card){
@@ -8023,12 +8439,12 @@ async function loadAllCompetitors(){
 function hideAllPrimaryPages(){
   var main = document.querySelector('.main');
   if(main) main.style.display='none';
-  ['compPage','partnerPage','sentPage','ciPage','ciosPage','execPage','predictPage','aiDiscoveryPage'].forEach(function(id){
+  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('visible');
   });
 }
 function clearPrimaryNav(){
-  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navExec','navPredict','navAI'].forEach(function(id){
+  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
 }
@@ -9013,10 +9429,56 @@ function renderAPError(msg){
   document.getElementById('apBody').innerHTML = `<div class="ap-error">! ${esc(msg)}</div>`;
 }
 
+function compSignalLike(row){
+  return row && row.signal ? row.signal : (row || {});
+}
+function compDateMetaOf(row){
+  try{
+    const source = compSignalLike(row);
+    return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(source) : '';
+  }catch(e){
+    return '';
+  }
+}
+function compCompactDateMetaOf(row){
+  try{
+    const source = compSignalLike(row);
+    return typeof renderSignalDateCompactMeta === 'function' ? renderSignalDateCompactMeta(source) : '';
+  }catch(e){
+    return '';
+  }
+}
+function compLatestSignalForMeta(data){
+  const rows = []
+    .concat(asArray(data && data.weaknesses))
+    .concat(asArray(data && data.opportunities))
+    .concat(asArray(data && data.actions));
+  let best = null;
+  let bestTs = null;
+  rows.forEach(function(row){
+    const sig = compSignalLike(row);
+    const ts = compParseDateValue(firstText(sig, [
+      'lastVerifiedAt','last_verified_at',
+      'lastContentChangedAt','last_content_changed_at',
+      'lastSeenAt','last_seen_at',
+      'updatedAt','updated_at',
+      'sourceDate','source_date',
+      'createdAt','created_at',
+      'firstSeenAt','first_seen_at'
+    ], ''));
+    if(Number.isFinite(ts) && (!bestTs || ts > bestTs)){
+      bestTs = ts;
+      best = sig;
+    }
+  });
+  return best;
+}
+
 function renderComp(id,data){
   data = normalizeCompData(id, data);
   const meta=CMETA[id]||{};
   const whyLine = firstText(data, ['why'], '') || meta.why || '';
+  const latestMetaHtml = compCompactDateMetaOf(compLatestSignalForMeta(data));
   const officialNewsPages = competitorNewsPages(meta);
   const officialNewsHtml = officialNewsPages.length
     ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px">${officialNewsPages.map(function(u){
@@ -9063,20 +9525,23 @@ function renderComp(id,data){
     return `<div class="comp-sig"><div class="comp-sdot" style="background:var(--red)"></div><div class="comp-sb">
       <div class="comp-st">${esc(w.title||'')}</div><div class="comp-sd">${esc(w.detail||'')}</div>
       <div class="comp-sd" style="color:var(--grn);margin-top:2px">Action: ${esc(w.impact||'')}</div>
+      ${compDateMetaOf(w)}
       <div class="comp-sr"><span class="comp-pill cp-${w.severity==='High'?'r':w.severity==='Medium'?'a':'g'}">${esc(w.severity||'Med')}</span>${u?`<a href="${u}" target="_blank" rel="noopener" style="font-size:9px;color:var(--qb)">Verify</a>`:''}</div>
     </div></div>`;
   }).join('');
   const oppH=(data.opportunities||[]).map(o=>`<div class="comp-sig"><div class="comp-sdot" style="background:var(--grn)"></div><div class="comp-sb">
     <div class="comp-st">${esc(o.title||'')}</div><div class="comp-sd">${esc(o.detail||'')}</div>
+    ${compDateMetaOf(o)}
     <div class="comp-sr"><span class="comp-pill cp-g">${esc(o.value||'TBD')}</span><span class="comp-pill cp-a">${esc(o.timeWindow||'')}</span><span class="comp-pill cp-b">${esc(o.b2cAngle||'')}</span></div>
   </div></div>`).join('');
   const actH=(data.actions||[]).map(a=>`<div class="comp-sig"><div class="comp-sdot" style="background:var(--qb)"></div><div class="comp-sb">
     <div class="comp-st">${esc(a.title||'')}</div><div class="comp-sd">${esc(a.detail||'')}</div>
+    ${compDateMetaOf(a)}
     <div class="comp-sr"><span class="comp-pill cp-b">${esc(a.timeline||'')}</span><span class="comp-pill cp-g">${esc(a.value||'')}</span><button class="comp-ap-btn" data-act="${encodeURIComponent(a.title||'')}" data-dom="comp_${esc(id)}" data-meta="${esc(meta.name||id)}" onclick="compActBtn(this)">Plan</button></div>
     <div style="font-size:9px;color:var(--t3);margin-top:2px">Owner: ${esc(a.owner||'B2C team')}</div>
   </div></div>`).join('');
   const noMatch = !data.hasSpecificCache;
-  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}${confidenceHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
+  document.getElementById('compDetail').innerHTML=`<div class="comp-det"><div class="comp-det-hdr"><div class="comp-det-hl"><div class="comp-det-fl">${esc(meta.flag||'AIR')}</div><div><div class="comp-det-nm">${esc(data.name||meta.name||id)}</div><div class="comp-det-sb">${esc(data.summary||'')}</div>${latestMetaHtml}${whyLine ? `<div class="comp-det-sb" style="margin-top:4px"><strong>Why this competitor matters:</strong> ${esc(whyLine)}</div>` : ''}${officialNewsHtml}${confidenceHtml}</div></div><span class="spill spa">${noMatch ? 'No data' : 'Threat '+esc(data.overallThreat||'-')+'%'}</span></div>${noMatch ? `<div style="padding:28px;text-align:center;background:var(--su);border-top:1px solid var(--bo);color:var(--t2)"><div style="font-size:13px;font-weight:500;color:var(--t1);margin-bottom:6px">No source-specific cache for ${esc(meta.name||id)}</div><div style="font-size:11px;line-height:1.6;max-width:560px;margin:0 auto">Load or refresh competitor cache to render this airline. Generic shared competitor points are intentionally hidden to avoid duplicate intelligence.</div>${officialNewsPages.length ? `<div style="font-size:10px;color:var(--t3);margin-top:10px">Preferred official pages: ${officialNewsPages.map(function(u){ return esc(urlHostName(u) || u); }).join(' • ')}</div>` : ''}</div>` : `${newsEvidenceHtml}<div class="comp-body"><div class="comp-col"><div class="comp-col-t c-col-r">Weaknesses to exploit</div>${weakH}</div><div class="comp-col"><div class="comp-col-t c-col-g">Opportunities for QR B2C</div>${oppH}</div><div class="comp-col"><div class="comp-col-t c-col-a">QR actions - 30 days</div>${actH}</div></div>`}</div>`;
 }
 
 function renderCErr(id,msg){
@@ -9739,6 +10204,7 @@ function sentimentIssueFromSignal(item, fallbackImpact){
   var detail = s.body || s.detail || s.description || s.whyItMattersNow || s.why_it_matters_now || 'Backend/cache signal linked to customer sentiment.';
   var score = Number(s.ai_rank_score || s.commercial_impact_score || s.commercialImpactScore || 0);
   return {
+    signal: s,
     title: String(title).slice(0, 90),
     detail: String(detail).slice(0, 180),
     frequency: score >= 80 ? 'High' : score >= 55 ? 'Medium' : 'Low',
@@ -9788,7 +10254,8 @@ function sentimentFromDomainCache(src){
     .map(function(i){ return {
       title: String((i.signal && (i.signal.title || i.signal.name)) || 'Positive signal').slice(0, 90),
       detail: String((i.signal && (i.signal.body || i.signal.detail || i.signal.description)) || 'Backend/cache signal indicates brand or product strength.').slice(0, 170),
-      frequency: 'Medium'
+      frequency: 'Medium',
+      signal: i.signal
     }; })
     .filter(function(s){ return !painKeys[String(s.title || '').toLowerCase()]; });
   if(!strengths.length){
@@ -9798,7 +10265,8 @@ function sentimentFromDomainCache(src){
       .map(function(i){ return {
         title: String((i.signal && (i.signal.title || i.signal.name)) || 'Neutral brand signal').slice(0, 90),
         detail: String((i.signal && (i.signal.body || i.signal.detail || i.signal.description)) || 'Backend/cache signal indicates a neutral or improving customer area.').slice(0, 170),
-        frequency: 'Low'
+        frequency: 'Low',
+        signal: i.signal
       }; });
   }
   var improvements = pain.slice(0, 3).map(function(p){
@@ -9807,7 +10275,8 @@ function sentimentFromDomainCache(src){
       detail: 'Use the loaded backend/cache signal to brief owner, verify source freshness, and define a customer-facing response.',
       effort: 'Medium',
       value: /refund|booking|loyalty|app|website|revenue|churn/i.test(p.title + ' ' + p.detail) ? 'Revenue protection' : 'Service recovery',
-      owner: /app|website|booking|checkout/i.test(p.title + ' ' + p.detail) ? 'Digital Product' : 'Customer Experience'
+      owner: /app|website|booking|checkout/i.test(p.title + ' ' + p.detail) ? 'Digital Product' : 'Customer Experience',
+      signal: p.signal
     };
   });
   return {
@@ -9830,11 +10299,12 @@ function renderSent(src,data){
   var meta=SENT_META[src]||{};
   var sc=data.overallSentiment||60;
   var scColor=sc>=70?'#1abc9c':sc>=50?'#C8A050':'#e74c3c';
-  var painH=(data.painPoints||[]).map(function(p){return '<div class="sent-item"><div class="sent-dot" style="background:#e74c3c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(p.title)+'</div><div class="sent-item-d">'+esc(p.detail)+'</div><div><span class="sent-item-freq '+(p.frequency==='High'?'sf-high':p.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(p.frequency)+' freq</span></div><div class="sent-item-src">Impact: '+esc(p.impact)+'</div></div></div>';}).join('');
-  var strengthH=(data.strengths||[]).map(function(s){return '<div class="sent-item"><div class="sent-dot" style="background:#1abc9c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(s.title)+'</div><div class="sent-item-d">'+esc(s.detail)+'</div><div><span class="sent-item-freq '+(s.frequency==='High'?'sf-high':s.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(s.frequency)+' freq</span></div></div></div>';}).join('');
-  var improveH=(data.improvements||[]).map(function(i){return '<div class="sent-item"><div class="sent-dot" style="background:#C8A050"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(i.title)+'</div><div class="sent-item-d">'+esc(i.detail)+'</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap"><span class="sent-item-freq '+(i.effort==='Quick win'?'sf-low':i.effort==='Medium'?'sf-med':'sf-high')+'">'+esc(i.effort)+'</span><span class="sent-item-freq sf-low">'+esc(i.value)+'</span></div><div class="sent-item-src">Owner: '+esc(i.owner)+'</div></div></div>';}).join('');
+  var painH=(data.painPoints||[]).map(function(p){return '<div class="sent-item"><div class="sent-dot" style="background:#e74c3c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(p.title)+'</div><div class="sent-item-d">'+esc(p.detail)+'</div><div><span class="sent-item-freq '+(p.frequency==='High'?'sf-high':p.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(p.frequency)+' freq</span></div><div class="sent-item-src">Impact: '+esc(p.impact)+'</div>'+ciDateMetaOf(p.signal || p)+'</div></div>';}).join('');
+  var strengthH=(data.strengths||[]).map(function(s){return '<div class="sent-item"><div class="sent-dot" style="background:#1abc9c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(s.title)+'</div><div class="sent-item-d">'+esc(s.detail)+'</div><div><span class="sent-item-freq '+(s.frequency==='High'?'sf-high':s.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(s.frequency)+' freq</span></div>'+ciDateMetaOf(s.signal || s)+'</div></div>';}).join('');
+  var improveH=(data.improvements||[]).map(function(i){return '<div class="sent-item"><div class="sent-dot" style="background:#C8A050"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(i.title)+'</div><div class="sent-item-d">'+esc(i.detail)+'</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap"><span class="sent-item-freq '+(i.effort==='Quick win'?'sf-low':i.effort==='Medium'?'sf-med':'sf-high')+'">'+esc(i.effort)+'</span><span class="sent-item-freq sf-low">'+esc(i.value)+'</span></div><div class="sent-item-src">Owner: '+esc(i.owner)+'</div>'+ciDateMetaOf(i.signal || i)+'</div></div>';}).join('');
   var verbH=(data.verbatims||[]).map(function(v){return '<div style="padding:8px 10px;background:var(--bg2);border-left:2px solid '+(meta.color||'var(--qb)')+';border-radius:0 4px 4px 0;font-size:10px;color:var(--t2);font-style:italic;margin-bottom:6px">"'+esc(v)+'"</div>';}).join('');
   document.getElementById('sentDetail').innerHTML='<div class="sent-detail"><div class="sent-det-hdr"><div><div class="sent-det-title">'+meta.icon+' '+meta.name+' Sentiment Analysis</div><div class="sent-det-sub">'+data.totalMentions+' mentions analysed - Top complaint: '+data.topComplaint+'</div></div><div style="text-align:center"><div style="font-size:28px;font-weight:500;color:'+scColor+'">'+sc+'%</div><div style="font-size:10px;color:var(--t3)">'+data.sentimentLabel+'</div></div></div><div style="padding:14px 18px;background:var(--bg2);border-bottom:1px solid var(--bo)"><div style="font-size:10px;font-weight:600;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">CUSTOMER VERBATIMS</div>'+verbH+'</div><div class="sent-body"><div class="sent-col"><div class="sent-col-t" style="color:#e74c3c">Pain Points ('+((data.painPoints||[]).length)+')</div>'+painH+'</div><div class="sent-col"><div class="sent-col-t" style="color:#1abc9c">Strengths ('+((data.strengths||[]).length)+')</div>'+strengthH+'</div><div class="sent-col"><div class="sent-col-t" style="color:#C8A050">Improvements ('+((data.improvements||[]).length)+')</div>'+improveH+'</div></div></div>';
+  updateSentimentSourceFreshness(src);
   reorderSentimentSources();
 }
 
@@ -9860,6 +10330,7 @@ function clearSentCache(){
     var bar=document.getElementById('sbar-'+src); if(bar) bar.style.width='0%';
     var score=document.getElementById('sscore-'+src); if(score) score.textContent='-';
     var btn=document.getElementById('sbtn-'+src); if(btn){btn.textContent='No data';btn.classList.remove('loaded');btn.disabled=false;}
+    var meta=document.querySelector('.sent-tile[data-src="'+src+'"] .sent-freshness-meta'); if(meta) meta.remove();
   });
   document.querySelectorAll('.sent-tile').forEach(function(t){t.classList.remove('on');});
   reorderSentimentSources();
@@ -9881,10 +10352,12 @@ setTimeout(function(){
       var bar=document.getElementById('sbar-'+src); if(bar){bar.style.width=sc+'%';bar.style.background=sc>=70?'#1abc9c':sc>=50?'#C8A050':'#e74c3c';}
       var score=document.getElementById('sscore-'+src); if(score) score.textContent=sc+'%';
       var btn=document.getElementById('sbtn-'+src); if(btn){btn.textContent=saved?'Loaded':'Stale';btn.classList.add('loaded');}
+      updateSentimentSourceFreshness(src);
     }
   });
   reorderSentimentSources();
   updateSentGauge();
+  refreshSentimentSourceFreshness();
 },1200);
 
 function hydrateSentimentFromDomainCache(){
@@ -9898,9 +10371,11 @@ function hydrateSentimentFromDomainCache(){
     var bar=document.getElementById('sbar-'+src); if(bar){bar.style.width=sc+'%';bar.style.background=sc>=70?'#1abc9c':sc>=50?'#C8A050':'#e74c3c';}
     var score=document.getElementById('sscore-'+src); if(score) score.textContent=sc+'%';
     var btn=document.getElementById('sbtn-'+src); if(btn){btn.textContent='Stale';btn.classList.add('loaded');}
+    updateSentimentSourceFreshness(src);
   });
   reorderSentimentSources();
   updateSentGauge();
+  refreshSentimentSourceFreshness();
 }
 
 // â”€â”€ CUSTOMER INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -10050,6 +10525,77 @@ function ciSignalTimestamp(signal){
     if(Number.isFinite(ts)) return ts;
   }
   return null;
+}
+function ciDateMetaOf(signal){
+  try{
+    if(!signal || typeof signal !== 'object') return '';
+    return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(signal || {}) : '';
+  }catch(e){
+    return '';
+  }
+}
+function ciCompactDateMetaOf(signal){
+  try{
+    if(!signal || typeof signal !== 'object') return '';
+    return typeof renderSignalDateCompactMeta === 'function' ? renderSignalDateCompactMeta(signal || {}) : '';
+  }catch(e){
+    return '';
+  }
+}
+function latestSignalFromSentimentData(data){
+  var rows = []
+    .concat((data && data.painPoints) || [])
+    .concat((data && data.strengths) || [])
+    .concat((data && data.improvements) || []);
+  var best = null;
+  var bestTs = null;
+  rows.forEach(function(row){
+    var signal = row && row.signal ? row.signal : row;
+    var ts = ciSignalTimestamp(signal);
+    if(Number.isFinite(ts) && (!bestTs || ts > bestTs)){
+      bestTs = ts;
+      best = signal;
+    }
+  });
+  return best;
+}
+function latestSignalForSentimentSource(src){
+  var fromData = latestSignalFromSentimentData(SENT_DATA[src]);
+  if(fromData) return fromData;
+  var items = typeof domainCacheSignalsForSentiment === 'function' ? domainCacheSignalsForSentiment(src) : [];
+  var best = null;
+  var bestTs = null;
+  items.forEach(function(item){
+    var signal = item && item.signal ? item.signal : item;
+    var ts = ciSignalTimestamp(signal);
+    if(Number.isFinite(ts) && (!bestTs || ts > bestTs)){
+      bestTs = ts;
+      best = signal;
+    }
+  });
+  return best;
+}
+function sentimentSourceFreshnessMeta(src){
+  return ciCompactDateMetaOf(latestSignalForSentimentSource(src));
+}
+function updateSentimentSourceFreshness(src){
+  var tile = document.querySelector('.sent-tile[data-src="' + String(src).replace(/"/g, '') + '"]');
+  if(!tile) return;
+  var existing = tile.querySelector('.sent-freshness-meta');
+  var html = sentimentSourceFreshnessMeta(src);
+  if(!html){
+    if(existing) existing.remove();
+    return;
+  }
+  if(!existing){
+    existing = document.createElement('div');
+    existing.className = 'sent-freshness-meta';
+    tile.appendChild(existing);
+  }
+  existing.innerHTML = html;
+}
+function refreshSentimentSourceFreshness(){
+  Object.keys(SENT_META || {}).forEach(updateSentimentSourceFreshness);
 }
 function ciSourceReliabilityPoints(source){
   var t = String(source || '').toLowerCase();
@@ -10394,7 +10940,8 @@ function customerIntelFromDomainCache(seg){
       signal: title.slice(0, 60),
       source: (r.signal.source || r.domain || 'cache').toString(),
       direction: /rise|surge|increase|growth|up/i.test((r.signal.body || '') + ' ' + (r.signal.impactLabel || '')) ? 'rising' : 'stable',
-      implication: (r.signal.captureStrategy || r.signal.whyItMattersNow || r.signal.impactLabel || '').toString().slice(0, 80)
+      implication: (r.signal.captureStrategy || r.signal.whyItMattersNow || r.signal.impactLabel || '').toString().slice(0, 80),
+      signalData: r.signal
     };
   });
   var genericNba = {
@@ -10451,10 +10998,10 @@ function customerIntelFromDomainCache(seg){
     serviceRiskLevel: riskLevel,
     serviceRiskReason: risks[0] ? (risks[0].signal.title || 'Customer friction trend detected').slice(0, 80) : 'No dominant risk signal',
     serviceRiskTags: riskTagBySeg[seg] || [],
-    bookingBehaviour: rows.slice(0,4).map(function(r){return {insight:r.signal.title||'Behaviour signal', detail:r.signal.body||r.signal.whyItMattersNow||'', source:(r.domain||'').toUpperCase(), implication:r.signal.captureStrategy||r.signal.impactLabel||''};}),
-    loyaltyDrivers: opps.slice(0,4).map(function(r){return {driver:r.signal.title||'Value driver', detail:r.signal.whyItMattersNow||r.signal.body||'', strength:r.signal.confidence||'Medium'};}),
-    painPoints: risks.slice(0,4).map(function(r){return {pain:r.signal.title||'Customer pain point', detail:r.signal.body||r.signal.whyItMattersNow||'', competitorAdvantage:r.signal.impactLabel||r.signal.demandImpact||''};}),
-    personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Use customer context to prioritise this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both'};}),
+    bookingBehaviour: rows.slice(0,4).map(function(r){return {insight:r.signal.title||'Behaviour signal', detail:r.signal.body||r.signal.whyItMattersNow||'', source:(r.domain||'').toUpperCase(), implication:r.signal.captureStrategy||r.signal.impactLabel||'', signal:r.signal};}),
+    loyaltyDrivers: opps.slice(0,4).map(function(r){return {driver:r.signal.title||'Value driver', detail:r.signal.whyItMattersNow||r.signal.body||'', strength:r.signal.confidence||'Medium', signal:r.signal};}),
+    painPoints: risks.slice(0,4).map(function(r){return {pain:r.signal.title||'Customer pain point', detail:r.signal.body||r.signal.whyItMattersNow||'', competitorAdvantage:r.signal.impactLabel||r.signal.demandImpact||'', signal:r.signal};}),
+    personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Use customer context to prioritise this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both', signal:r.signal};}),
     externalSignals: extSignals,
     nextBestAction: genericNba,
     strategicLenses: strategicLenses,
@@ -10680,16 +11227,16 @@ function renderCI(seg,data){
   }).join('');
 
   var bookH=(data.bookingBehaviour||[]).map(function(b){
-    return '<div class="ci-item"><div class="ci-dot" style="background:#7BA7E8"></div><div class="ci-item-b"><strong>'+esc(b.insight || '')+'</strong><br>'+esc(b.detail || '')+'<br><span class="ci-item-tag ci-tag-b">'+esc(b.source || 'Source')+'</span><div style="margin-top:3px;font-size:9px;color:var(--qg)">&#8594; '+esc(b.implication || '')+'</div></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:#7BA7E8"></div><div class="ci-item-b"><strong>'+esc(b.insight || '')+'</strong><br>'+esc(b.detail || '')+'<br><span class="ci-item-tag ci-tag-b">'+esc(b.source || 'Source')+'</span><div style="margin-top:3px;font-size:9px;color:var(--qg)">&#8594; '+esc(b.implication || '')+'</div>'+ciDateMetaOf(b.signal || b)+'</div></div>';
   }).join('');
 
   var loyH=(data.loyaltyDrivers||[]).map(function(l){
     var tagClass=l.strength==='Strong'?'ci-tag-g':l.strength==='Medium'?'ci-tag-a':'ci-tag-r';
-    return '<div class="ci-item"><div class="ci-dot" style="background:#1abc9c"></div><div class="ci-item-b"><strong>'+esc(l.driver || '')+'</strong><br>'+esc(l.detail || '')+'<br><span class="ci-item-tag '+tagClass+'">'+esc(l.strength || 'Medium')+' for QR</span></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:#1abc9c"></div><div class="ci-item-b"><strong>'+esc(l.driver || '')+'</strong><br>'+esc(l.detail || '')+'<br><span class="ci-item-tag '+tagClass+'">'+esc(l.strength || 'Medium')+' for QR</span>'+ciDateMetaOf(l.signal || l)+'</div></div>';
   }).join('');
 
   var painH=(data.painPoints||[]).map(function(p){
-    return '<div class="ci-item"><div class="ci-dot" style="background:#e74c3c"></div><div class="ci-item-b"><strong>'+esc(p.pain || '')+'</strong><br>'+esc(p.detail || '')+'<br><span class="ci-item-tag ci-tag-r">'+esc(p.competitorAdvantage || '')+'</span></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:#e74c3c"></div><div class="ci-item-b"><strong>'+esc(p.pain || '')+'</strong><br>'+esc(p.detail || '')+'<br><span class="ci-item-tag ci-tag-r">'+esc(p.competitorAdvantage || '')+'</span>'+ciDateMetaOf(p.signal || p)+'</div></div>';
   }).join('');
 
   var oppH=(data.personalisationOpps||[]).map(function(o){
@@ -10697,7 +11244,7 @@ function renderCI(seg,data){
     var adobeTag = o.adobeProduct ? '<span style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;background:rgba(200,160,80,.1);color:var(--qg);margin-left:4px">'+esc(o.adobeProduct)+'</span>' : '';
     var dsTag = o.dataSource ? '<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg2);color:var(--t3)">'+esc(o.dataSource)+'</span>' : '';
     var personaTag = (o.persona && o.persona !== 'all') ? '<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(26,106,72,.08);color:var(--grn)">'+esc(o.persona)+'</span>' : '';
-    return '<div class="ci-opp"><div class="ci-opp-eyebrow">UCP: '+esc(o.ucpUseCase || 'Segment orchestration')+adobeTag+'</div><div class="ci-opp-title">'+esc(o.title || '')+'</div><div class="ci-opp-body">'+esc(o.detail || '')+'</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><div class="ci-opp-val">'+esc(o.value || '')+'</div><span class="ci-item-tag '+effortClass+'">'+esc(o.effort || 'Medium')+'</span><span class="ci-item-tag ci-tag-b">'+esc(o.owner || 'Digital/B2C')+'</span>'+dsTag+personaTag+'</div></div>';
+    return '<div class="ci-opp"><div class="ci-opp-eyebrow">UCP: '+esc(o.ucpUseCase || 'Segment orchestration')+adobeTag+'</div><div class="ci-opp-title">'+esc(o.title || '')+'</div><div class="ci-opp-body">'+esc(o.detail || '')+'</div>'+ciDateMetaOf(o.signal || o)+'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><div class="ci-opp-val">'+esc(o.value || '')+'</div><span class="ci-item-tag '+effortClass+'">'+esc(o.effort || 'Medium')+'</span><span class="ci-item-tag ci-tag-b">'+esc(o.owner || 'Digital/B2C')+'</span>'+dsTag+personaTag+'</div></div>';
   }).join('');
 
   var riskClass = 'ci-pill-risk-low';
@@ -10750,7 +11297,7 @@ function renderCI(seg,data){
 
   var externalRows = (data.externalSignals||[]).map(function(s){
     var glyph = s.direction === 'rising' ? '&#8593;' : s.direction === 'falling' ? '&#8595;' : '&#8212;';
-    return '<div class="ci-item"><div class="ci-dot" style="background:var(--grn)"></div><div class="ci-item-b"><strong>'+esc(s.signal || '')+'</strong> <span style="font-size:10px;color:var(--t3)">'+glyph+'</span><div style="font-size:10px;color:var(--t3)">'+esc(s.source || '')+' - '+esc(s.implication || '')+'</div></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:var(--grn)"></div><div class="ci-item-b"><strong>'+esc(s.signal || '')+'</strong> <span style="font-size:10px;color:var(--t3)">'+glyph+'</span><div style="font-size:10px;color:var(--t3)">'+esc(s.source || '')+' - '+esc(s.implication || '')+'</div>'+ciDateMetaOf(s.signalData || s.signal || s)+'</div></div>';
   }).join('');
   var externalSection = externalRows ? '<div class="ci-external-wrap"><div class="ci-col-t" style="color:var(--grn)">External Signals</div>'+externalRows+'</div>' : '';
 
@@ -10941,6 +11488,8 @@ setTimeout(function(){
   function resetSentimentTile(src, label){
     setSentimentScoreUI(src, null);
     setSentimentTileState(src, label || 'No data');
+    var meta = document.querySelector('.sent-tile[data-src="'+src+'"] .sent-freshness-meta');
+    if(meta) meta.remove();
   }
 
   function emptySentimentDetail(src, title, detail){
@@ -11895,6 +12444,396 @@ setTimeout(function(){
 
 </script>
 <script>
+/* Radar Team Actions - signal to owner to outcome workspace. */
+(function () {
+  var STORE_KEY = 'qr_radar_team_actions_v1';
+  var state = {
+    selectedId: null,
+    filter: 'all'
+  };
+
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function loadStore() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      var parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveStore(store) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(store || {})); } catch (e) {}
+  }
+
+  function titleOf(s) {
+    return s && (s.title || s.headline || s.name) || 'Backend/cache signal';
+  }
+
+  function bodyOf(s) {
+    return s && (s.captureStrategy || s.whyItMattersNow || s.body || s.summary || s.detail) || 'No additional backend/cache detail available.';
+  }
+
+  function domainOf(s) {
+    return String((s && (s.domain || s.domainId || s.domain_id || s.source)) || 'radar').toUpperCase();
+  }
+
+  function scoreOf(s) {
+    try {
+      if (typeof scoreSignalForExec === 'function') return Number(scoreSignalForExec(s)) || 0;
+    } catch (e) {}
+    return Number((s && (s.ai_rank_score || s.aiRankScore || s.score || s.commercialImpactScore)) || 0) || 0;
+  }
+
+  function dateMetaOf(s) {
+    try {
+      return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(s || {}) : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function allSignalsForActions() {
+    try {
+      if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs();
+      if (typeof getAllDomainSignals === 'function') {
+        return (getAllDomainSignals() || []).filter(Boolean);
+      }
+    } catch (e) {}
+    return [];
+  }
+
+  function hashId(text) {
+    var h = 0;
+    var s = String(text || '');
+    for (var i = 0; i < s.length; i += 1) h = ((h << 5) - h) + s.charCodeAt(i) | 0;
+    return 'ta_' + Math.abs(h);
+  }
+
+  function evidenceCount(s) {
+    var n = 0;
+    ['sourceUrl', 'source', 'sourceDate', 'createdAt', 'firstSeenAt', 'confidence', 'verified', 'aiRankScore', 'impactLabel', 'demandImpact', 'captureStrategy', 'whyItMattersNow'].forEach(function (k) {
+      if (s && s[k] != null && s[k] !== '') n += 1;
+    });
+    if (s && Array.isArray(s.sources)) n += s.sources.length;
+    if (s && Array.isArray(s.evidence)) n += s.evidence.length;
+    return Math.max(1, n);
+  }
+
+  function ownerFor(s) {
+    var txt = (titleOf(s) + ' ' + bodyOf(s) + ' ' + domainOf(s)).toLowerCase();
+    if (/app|web|digital|ux|booking|mobile|boarding/.test(txt)) return 'Digital Product';
+    if (/ota|search|sem|campaign|brand|paid|conversion|direct/.test(txt)) return 'Digital Marketing';
+    if (/loyal|privilege|avios|member|tier|retention/.test(txt)) return 'Loyalty & CRM';
+    if (/route|demand|capacity|pricing|fare|revenue|fifa|world cup/.test(txt)) return 'Revenue Management';
+    if (/disrupt|delay|airport|service|baggage|misconnect|operation/.test(txt)) return 'Operations';
+    if (/competitor|emirates|turkish|etihad|singapore|air india/.test(txt)) return 'Strategy';
+    return 'Digital/B2C Owner';
+  }
+
+  function actionTitle(s, idx) {
+    var txt = (titleOf(s) + ' ' + bodyOf(s)).toLowerCase();
+    if (/ota|direct|conversion|booking/.test(txt)) return 'Protect direct share';
+    if (/app|web|ux|friction|boarding/.test(txt)) return 'Reduce digital friction';
+    if (/loyal|member|avios|tier/.test(txt)) return 'Activate loyalty recovery';
+    if (/route|demand|fifa|capacity|fare|pricing/.test(txt)) return 'Capture demand window';
+    if (/competitor|launch|fleet|network/.test(txt)) return 'Counter competitor move';
+    return ['Convert opportunity', 'Reduce risk', 'Launch response'][idx % 3];
+  }
+
+  function actionStatus(score) {
+    if (score >= 75) return { label: 'Act now', cls: 'urgent' };
+    if (score >= 55) return { label: 'This week', cls: 'week' };
+    return { label: 'Monitor', cls: 'monitor' };
+  }
+
+  function impactRange(score) {
+    if (score >= 90) return '$1.2M-$1.8M';
+    if (score >= 70) return '$0.7M-$1.2M';
+    if (score >= 50) return '$0.3M-$0.7M';
+    return 'Value TBC';
+  }
+
+  function dueDate(days) {
+    var d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function deriveActions() {
+    var store = loadStore();
+    var signals = allSignalsForActions()
+      .slice()
+      .sort(function (a, b) { return scoreOf(b) - scoreOf(a); })
+      .slice(0, 12);
+    return signals.map(function (s, idx) {
+      var score = scoreOf(s);
+      var id = hashId([domainOf(s), titleOf(s), idx].join('|'));
+      var saved = store[id] || {};
+      var status = saved.status || (score >= 75 ? 'open' : 'monitor');
+      var due = saved.due || dueDate(score >= 75 ? 7 : score >= 55 ? 14 : 21);
+      return {
+        id: id,
+        rank: idx + 1,
+        signal: s,
+        title: actionTitle(s, idx),
+        body: bodyOf(s),
+        signalTitle: titleOf(s),
+        domain: domainOf(s),
+        score: score,
+        status: status,
+        decision: actionStatus(score),
+        owner: saved.owner || ownerFor(s),
+        due: due,
+        impact: impactRange(score),
+        evidenceCount: evidenceCount(s),
+        outcome: saved.outcome || '',
+        comments: Array.isArray(saved.comments) ? saved.comments : []
+      };
+    });
+  }
+
+  function actionStateLabel(status) {
+    return { open: 'Open', progress: 'In progress', review: 'Review', done: 'Done', monitor: 'Monitor' }[status] || 'Open';
+  }
+
+  function statusClass(status) {
+    return { open: 'open', progress: 'progress', review: 'review', done: 'done', monitor: 'monitor' }[status] || 'open';
+  }
+
+  function filteredActions(actions) {
+    var q = String((document.getElementById('taSearch') || {}).value || '').toLowerCase().trim();
+    return actions.filter(function (a) {
+      var hay = [a.title, a.signalTitle, a.owner, a.domain, a.body].join(' ').toLowerCase();
+      if (q && hay.indexOf(q) === -1) return false;
+      if (state.filter === 'urgent') return a.decision.cls === 'urgent';
+      if (state.filter === 'open') return a.status !== 'done';
+      if (state.filter === 'done') return a.status === 'done';
+      return true;
+    });
+  }
+
+  function saveActionPatch(id, patch) {
+    var store = loadStore();
+    store[id] = Object.assign({}, store[id] || {}, patch || {});
+    saveStore(store);
+  }
+
+  function updateBadge(actions) {
+    var badge = document.getElementById('teamActionsBadge');
+    if (!badge) return;
+    var open = actions.filter(function (a) { return a.status !== 'done'; }).length;
+    badge.textContent = open + ' open';
+  }
+
+  function renderSummary(actions) {
+    var el = document.getElementById('taSummary');
+    if (!el) return;
+    if (!actions.length) {
+      el.innerHTML = '<div class="ta-empty">Load or refresh Radar signals first. Team Actions will then create owner-ready work from the highest-priority signals.</div>';
+      return;
+    }
+    var open = actions.filter(function (a) { return a.status !== 'done'; }).length;
+    var urgent = actions.filter(function (a) { return a.decision.cls === 'urgent'; }).length;
+    var outcomes = actions.filter(function (a) { return a.outcome || a.status === 'done'; }).length;
+    var evidence = actions.reduce(function (sum, a) { return sum + a.evidenceCount; }, 0);
+    el.innerHTML = [
+      ['Owner-ready actions', actions.length, 'Signals converted into accountable work'],
+      ['Open actions', open, 'Needs owner follow-through'],
+      ['Urgent this week', urgent, 'Requires leadership attention'],
+      ['Outcomes recorded', outcomes, 'Closed-loop proof'],
+      ['Evidence points', evidence, 'Source-backed context']
+    ].map(function (m) {
+      return '<div class="ta-summary-card"><div class="ta-summary-value">' + esc(m[1]) + '</div><div class="ta-summary-label">' + esc(m[0]) + '</div><div class="ta-summary-copy">' + esc(m[2]) + '</div></div>';
+    }).join('');
+  }
+
+  function renderQueue(actions) {
+    var list = document.getElementById('taActionList');
+    var count = document.getElementById('taQueueCount');
+    if (!list) return;
+    var rows = filteredActions(actions);
+    if (count) count.textContent = rows.length + ' action' + (rows.length === 1 ? '' : 's') + ' visible';
+    if (!rows.length) {
+      list.innerHTML = '<div class="ta-empty">No actions match this view.</div>';
+      return;
+    }
+    if (!state.selectedId || !actions.some(function (a) { return a.id === state.selectedId; })) state.selectedId = rows[0].id;
+    list.innerHTML = rows.map(function (a) {
+      var active = a.id === state.selectedId ? ' active' : '';
+      return '<button type="button" class="ta-action-item' + active + '" onclick="selectTeamAction(\'' + esc(a.id) + '\')">' +
+        '<span class="ta-action-rank">' + a.rank + '</span>' +
+        '<span class="ta-action-copy"><strong>' + esc(a.title) + '</strong><em>' + esc(a.signalTitle) + '</em><small>' + esc(a.owner) + ' · Due ' + esc(a.due) + '</small>' + dateMetaOf(a.signal) + '</span>' +
+        '<span class="ta-chip ta-chip-' + statusClass(a.status) + '">' + esc(actionStateLabel(a.status)) + '</span>' +
+      '</button>';
+    }).join('');
+  }
+
+  function renderDetail(actions) {
+    var a = actions.find(function (x) { return x.id === state.selectedId; });
+    var head = document.getElementById('taDetailHead');
+    var body = document.getElementById('taDetailBody');
+    var commentBox = document.getElementById('taCommentBox');
+    if (!head || !body) return;
+    if (!a) {
+      head.innerHTML = '<div class="ta-empty">Select an action from the queue.</div>';
+      body.innerHTML = '';
+      if (commentBox) commentBox.hidden = true;
+      return;
+    }
+    if (commentBox) commentBox.hidden = false;
+    head.innerHTML =
+      '<div><div class="ta-detail-eyebrow">' + esc(a.domain) + ' · ' + esc(a.decision.label) + '</div>' +
+      '<h2>' + esc(a.title) + '</h2><p>' + esc(a.signalTitle) + '</p></div>' +
+      '<div class="ta-detail-score"><strong>' + esc(Math.round(a.score)) + '</strong><span>priority score</span></div>';
+    body.innerHTML =
+      '<div class="ta-brief-grid">' +
+        '<div><label>Owner</label><select onchange="updateTeamAction(\'' + esc(a.id) + '\', { owner: this.value })">' + ownerOptions(a.owner) + '</select></div>' +
+        '<div><label>Status</label><select onchange="updateTeamAction(\'' + esc(a.id) + '\', { status: this.value })">' + statusOptions(a.status) + '</select></div>' +
+        '<div><label>Due date</label><input type="date" value="' + esc(a.due) + '" onchange="updateTeamAction(\'' + esc(a.id) + '\', { due: this.value })"></div>' +
+        '<div><label>Expected impact</label><strong>' + esc(a.impact) + '</strong></div>' +
+      '</div>' +
+      '<div class="ta-evidence-box"><div><strong>Why this matters</strong><p>' + esc(a.body) + '</p>' + dateMetaOf(a.signal) + '</div><div class="ta-evidence-count">' + esc(a.evidenceCount) + '<span>evidence points</span></div></div>' +
+      '<div class="ta-next-step"><strong>Next step</strong><span>Confirm evidence, execute the owner action, then record whether the signal improved, stayed stable, or worsened.</span><button type="button" class="ta-primary-btn" onclick="recordTeamActionOutcome(\'' + esc(a.id) + '\')">Record outcome</button></div>' +
+      '<div class="ta-thread"><div class="ta-thread-title">Action notes</div>' + renderComments(a) + '</div>';
+  }
+
+  function ownerOptions(selected) {
+    var owners = ['Digital Product', 'Digital Marketing', 'Revenue Management', 'Loyalty & CRM', 'Operations', 'Strategy', 'Digital/B2C Owner'];
+    return owners.map(function (o) { return '<option value="' + esc(o) + '"' + (o === selected ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('');
+  }
+
+  function statusOptions(selected) {
+    var opts = [
+      ['open', 'Open'],
+      ['progress', 'In progress'],
+      ['review', 'Review'],
+      ['monitor', 'Monitor'],
+      ['done', 'Done']
+    ];
+    return opts.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === selected ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+  }
+
+  function renderComments(a) {
+    var rows = (a.comments || []).slice(-5);
+    var outcome = a.outcome ? '<div class="ta-note ta-note-outcome"><strong>Outcome</strong><span>' + esc(a.outcome) + '</span></div>' : '';
+    if (!rows.length && !outcome) return '<div class="ta-empty small">No notes yet. Add one below when the owner has an update.</div>';
+    return outcome + rows.map(function (c) {
+      return '<div class="ta-note"><strong>' + esc(c.author || 'Radar user') + ' · ' + esc(c.when || 'now') + '</strong><span>' + esc(c.text) + '</span></div>';
+    }).join('');
+  }
+
+  function renderLeadership(actions) {
+    var el = document.getElementById('taLeadership');
+    if (!el) return;
+    if (!actions.length) {
+      el.innerHTML = '<div class="ta-empty">No action ownership yet.</div>';
+      return;
+    }
+    var owners = {};
+    actions.forEach(function (a) {
+      if (!owners[a.owner]) owners[a.owner] = [];
+      owners[a.owner].push(a);
+    });
+    var ownerHtml = Object.keys(owners).sort().map(function (owner) {
+      var rows = owners[owner];
+      var open = rows.filter(function (a) { return a.status !== 'done'; }).length;
+      return '<div class="ta-owner-row"><div class="ta-owner-avatar">' + esc(owner.split(/\s|&/).filter(Boolean).map(function (w) { return w[0]; }).join('').slice(0, 2)) + '</div>' +
+        '<div><strong>' + esc(owner) + '</strong><span>' + open + ' open · ' + rows.length + ' total</span>' +
+        rows.slice(0, 2).map(function (a) { return '<button type="button" onclick="selectTeamAction(\'' + esc(a.id) + '\')">' + esc(a.title) + '</button>'; }).join('') +
+        '</div></div>';
+    }).join('');
+    var blockers = actions.filter(function (a) {
+      return (a.comments || []).some(function (c) { return /block|stuck|delay|risk/i.test(c.text || ''); });
+    }).length;
+    el.innerHTML = ownerHtml + '<div class="ta-leadership-metrics"><div><strong>' + blockers + '</strong><span>blocker notes</span></div><div><strong>' + actions.filter(function (a) { return a.status === 'review'; }).length + '</strong><span>in review</span></div></div>';
+  }
+
+  window.renderTeamActionsPage = function () {
+    var actions = deriveActions();
+    updateBadge(actions);
+    renderSummary(actions);
+    renderQueue(actions);
+    renderDetail(actions);
+    renderLeadership(actions);
+    var fresh = document.getElementById('taFreshness');
+    if (fresh) fresh.textContent = actions.length ? actions.length + ' actions from loaded Radar signals' : 'Load Radar signals to populate';
+  };
+
+  window.refreshTeamActions = function () {
+    try { if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs(); } catch (e) {}
+    window.renderTeamActionsPage();
+  };
+
+  window.selectTeamAction = function (id) {
+    state.selectedId = id;
+    window.renderTeamActionsPage();
+  };
+
+  window.updateTeamAction = function (id, patch) {
+    saveActionPatch(id, patch || {});
+    window.renderTeamActionsPage();
+  };
+
+  window.addTeamActionQuickNote = function (text) {
+    var input = document.getElementById('taCommentInput');
+    if (!input) return;
+    input.value = text || '';
+    input.focus();
+  };
+
+  window.addTeamActionComment = function () {
+    if (!state.selectedId) return;
+    var input = document.getElementById('taCommentInput');
+    var text = String((input && input.value) || '').trim();
+    if (!text) return;
+    var store = loadStore();
+    var saved = store[state.selectedId] || {};
+    var comments = Array.isArray(saved.comments) ? saved.comments : [];
+    comments.push({ author: 'You', when: 'now', text: text });
+    saved.comments = comments;
+    store[state.selectedId] = saved;
+    saveStore(store);
+    if (input) input.value = '';
+    window.renderTeamActionsPage();
+  };
+
+  window.recordTeamActionOutcome = function (id) {
+    var text = prompt('What outcome happened after this action?');
+    if (!text || !text.trim()) return;
+    saveActionPatch(id, { outcome: text.trim(), status: 'done' });
+    window.renderTeamActionsPage();
+  };
+
+  window.showTeamActions = function () {
+    try { if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs(); } catch (e) {}
+    if (typeof hideAllPrimaryPages === 'function') hideAllPrimaryPages();
+    if (typeof clearPrimaryNav === 'function') clearPrimaryNav();
+    var page = document.getElementById('teamActionsPage');
+    if (page) page.classList.add('visible');
+    var nav = document.getElementById('navTeamActions');
+    if (nav) nav.classList.add('active');
+    window.renderTeamActionsPage();
+  };
+
+  document.addEventListener('click', function (event) {
+    var btn = event.target && event.target.closest ? event.target.closest('.ta-filter') : null;
+    if (!btn) return;
+    state.filter = btn.getAttribute('data-ta-filter') || 'all';
+    Array.prototype.forEach.call(document.querySelectorAll('.ta-filter'), function (x) { x.classList.remove('active'); });
+    btn.classList.add('active');
+    window.renderTeamActionsPage();
+  });
+})();
+
+</script>
+<script>
 /* RADAR Executive OS roadmap view with live backend proof sync. */
 (function () {
   function safeEsc(v) {
@@ -12074,6 +13013,14 @@ setTimeout(function(){
     return window.__EXEC_LIVE__;
   }
 
+  function dateMetaOf(s) {
+    try {
+      return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(s || {}) : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
   function renderList(id, items, empty) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -12082,7 +13029,7 @@ setTimeout(function(){
       return;
     }
     el.innerHTML = items.map(function (s, i) {
-      return '<div class="exec-list-card exec-clickable" data-signal-index="' + i + '"><div class="exec-list-index">' + (i + 1) + '</div><div><div class="exec-list-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-list-body">' + safeEsc(bodyOf(s)) + '</div></div><div class="exec-list-pill">' + safeEsc(domainOf(s)) + '</div></div>';
+      return '<div class="exec-list-card exec-clickable" data-signal-index="' + i + '"><div class="exec-list-index">' + (i + 1) + '</div><div><div class="exec-list-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-list-body">' + safeEsc(bodyOf(s)) + '</div>' + dateMetaOf(s) + '</div><div class="exec-list-pill">' + safeEsc(domainOf(s)) + '</div></div>';
     }).join('');
     Array.prototype.forEach.call(el.querySelectorAll('.exec-list-card.exec-clickable'), function (card) {
       card.addEventListener('click', function () {
@@ -12438,7 +13385,7 @@ setTimeout(function(){
       var sev = scoreBucket(sscore(s));
       return '<article class="exec-signal-row exec-clickable" data-signal-index="' + i + '">' +
         '<div class="exec-signal-rank">' + (i + 1) + '</div>' +
-        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div><button type="button" class="exec-inline-link">See route detail <span>→</span></button></div>' +
+        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div>' + dateMetaOf(s) + '<button type="button" class="exec-inline-link">See route detail <span>→</span></button></div>' +
         '<div class="exec-signal-side"><span class="exec-severity ' + sev.cls + '">' + sev.label + '</span><span>' + safeEsc(s.impactLabel || s.demandImpact || 'Signal') + '</span><span>' + timeAgoLabel(s) + '</span></div>' +
       '</article>';
     }).join('');
@@ -12483,7 +13430,7 @@ setTimeout(function(){
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Impact (12-18M)</label><strong>' + safeEsc(x.impact) + '</strong></div>' +
@@ -12645,7 +13592,7 @@ setTimeout(function(){
       var sev = scoreBucket(signalScore(s));
       return '<article class="exec-signal-row exec-clickable" data-signal-index="' + i + '">' +
         '<div class="exec-signal-rank">' + (i + 1) + '</div>' +
-        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div><button type="button" class="exec-inline-link">See route detail <span>-></span></button></div>' +
+        '<div class="exec-signal-main"><div class="exec-signal-title">' + safeEsc(titleOf(s)) + '</div><div class="exec-signal-body">' + safeEsc(bodyOf(s)) + '</div>' + dateMetaOf(s) + '<button type="button" class="exec-inline-link">See route detail <span>-></span></button></div>' +
         '<div class="exec-signal-side"><span class="exec-severity ' + sev.cls + '">' + sev.label + '</span><span>' + safeEsc(s.impactLabel || s.demandImpact || 'Signal') + '</span><span>' + timeAgoLabel(s) + '</span></div>' +
       '</article>';
     }).join('');
@@ -12689,7 +13636,7 @@ setTimeout(function(){
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div><div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Proof</label><span>' + safeEsc(x.evidenceCount) + ' evidence point' + (x.evidenceCount === 1 ? '' : 's') + '</span><em>' + safeEsc(x.outcomeStatus) + '</em></div>' +
@@ -12798,13 +13745,34 @@ setTimeout(function(){
   var basePredict = window.renderPredictivePage;
   window.renderPredictivePage = function () { if (basePredict) basePredict(); renderPredictiveAddOns(); };
   var baseHide = window.hideAllPrimaryPages;
-  window.hideAllPrimaryPages = function () { if (baseHide) baseHide(); var el = document.getElementById('roadmapPage'); if (el) el.classList.remove('visible'); };
+  window.hideAllPrimaryPages = function () {
+    if (baseHide) baseHide();
+    var el = document.getElementById('roadmapPage');
+    if (el) el.classList.remove('visible');
+    var pulse = document.getElementById('backendPulsePage');
+    if (pulse) pulse.classList.remove('visible');
+  };
   var baseClear = window.clearPrimaryNav;
-  window.clearPrimaryNav = function () { if (baseClear) baseClear(); var el = document.getElementById('navRoadmap'); if (el) el.classList.remove('active'); };
+  window.clearPrimaryNav = function () {
+    if (baseClear) baseClear();
+    var el = document.getElementById('navRoadmap');
+    if (el) el.classList.remove('active');
+    var pulse = document.getElementById('footerBackendPulseLink');
+    if (pulse) pulse.classList.remove('active');
+  };
 
   var roadmapState = { proof: null, runtimeWarnings: null, lastFetchedAt: null, loading: false, error: null };
   var ROADMAP_PROOF_MAP = {
     'Deployed backend web-search enforcement': 'web_search',
+    'Backend Pulse completion': 'backend_pulse',
+    'Discovery status endpoint': 'ai_discovery',
+    'Refresh and source run tables': 'source_ledger',
+    'Source coverage and freshness ledger': 'source_ledger',
+    'AI Discovery backend API contract': 'ai_discovery',
+    'App ratings intelligence feed': 'app_ratings_feed',
+    'Signal-to-action completeness': 'action_completeness',
+    'Executive briefing export': 'executive_export',
+    'Partner and competitor business proof': 'partner_competitor_proof',
     'Source-specific competitor cache population': 'competitor_cache',
     'Source-specific sentiment payload quality': 'sentiment_quality',
     'Severity weight formalization': 'severity_weights',
@@ -12859,7 +13827,7 @@ setTimeout(function(){
         ['Automated smoke suite (tabs)', 'done', 'Local smoke test passes across primary tabs'],
         ['Release gate on diagnostics/cache routes', 'done', 'Health/diagnostics/cache proof routes are reported passing'],
         ['Roadmap tracker live-proof mode', 'progress', 'Switching to backend-driven status hydration from /api/roadmap/proof.'],
-        ['Console/runtime quality gate', 'progress', 'Waiting for runtime warnings endpoint check.']
+        ['Console/runtime quality gate', 'done', 'Runtime warning endpoint reports clean with no errors or warnings after the latest backend checks.']
       ]},
       { s: 'Phase 3 - Intelligence Upgrade (High-value)', tasks: [
         ['Executive delta brief', 'progress', 'Awaiting live proof from /api/dashboard/delta.'],
@@ -12878,6 +13846,20 @@ setTimeout(function(){
         ['Automated smoke suite green (local + deployed)', 'done', 'Local tab smoke and deployed backend smoke are green'],
         ['Evidence tracker parity with runtime', 'progress', 'Target: automatic evidence synchronization from backend proof endpoints'],
         ['Predictive endpoints availability', 'done', 'Predictive endpoints are reported available and callable']
+      ]},
+      { s: 'Approval-Ready Finish Line (Before Internal Data)', tasks: [
+        ['Backend Pulse completion', 'done', 'Footer link and Backend Pulse page are live, wired to health, daily-status, runtime warnings, performance and discovery proof endpoints.'],
+        ['Rich daily-status endpoint', 'progress', '/api/refresh/daily-status is available for runtime proof; next polish is to align it with the richer discovery run-history fields now returned by discovery status.'],
+        ['Discovery status endpoint', 'done', '/api/discovery/status confirms active discovery: sources checked, new signals found and saved, Claude web search ran, OpenAI scoring ran, and errors/warnings are visible.'],
+        ['Refresh and source run tables', 'done', 'refresh_runs, source_ingestion_runs and source_freshness_ledger exist and are writing discovery proof after the successful AI discovery run.'],
+        ['Full source discovery cron', 'progress', 'Manual /api/discovery/run is proven end to end; next step is scheduled discovery cadence and source expansion beyond the tested source subset.'],
+        ['Source coverage and freshness ledger', 'progress', 'Source ledger now writes rows and freshness proof; final polish is to expose direct items_saved, last_checked_at, last_success_at, freshness_state and confidence_score fields consistently.'],
+        ['AI Discovery backend API contract', 'done', 'Backend discovery API is live: /api/discovery/run saves discovered items/signals and /api/discovery/status reports Claude, OpenAI, saved signal and ledger proof.'],
+        ['App ratings intelligence feed', 'progress', 'Competitor airline app ratings source is now part of AI discovery proof; expand coverage to QR and all competitor app-store review feeds.'],
+        ['Signal-to-action completeness', 'progress', 'Every top signal should map to an owner-ready action, due date, expected impact, evidence, status or explicit monitor decision.'],
+        ['Executive briefing export', 'progress', 'Export button exists; finish one-click PowerPoint brief with verdict, top signals, top actions, evidence, commercial impact and next decision needed.'],
+        ['Partner and competitor business proof', 'progress', 'Partner Network and Competitor tabs are visible; close with data proof showing partner opportunity, competitor threat, action and source freshness.'],
+        ['Deployment and release stability', 'progress', 'Keep GitHub, Vercel and Render deployment paths stable with post-deploy smoke checks and clear rollback instructions.']
       ]}
     ];
   }
@@ -13007,13 +13989,17 @@ setTimeout(function(){
     if (roadmapState.runtimeWarnings && roadmapState.runtimeWarnings.data) {
       var status = roadmapState.runtimeWarnings.data.status;
       var clean = status === 'clean';
+      var warnings = Array.isArray(roadmapState.runtimeWarnings.data.warnings) ? roadmapState.runtimeWarnings.data.warnings : [];
+      var warningText = warnings.length
+        ? warnings.slice(0, 3).map(function (w) { return w.code || w.message || 'Runtime warning'; }).join(', ')
+        : 'warnings reported';
       model.forEach(function (sec) {
         sec.tasks.forEach(function (task) {
           if (task[0] === 'Console/runtime quality gate') {
             task[1] = clean ? 'done' : 'progress';
             task[2] = clean
               ? 'Runtime quality gate reports clean with no warnings or errors.'
-              : 'Runtime quality gate reports warnings; continue triage.';
+              : 'Runtime warning details are visible in Backend Pulse: ' + warningText + '.';
           }
         });
       });
@@ -13028,6 +14014,8 @@ setTimeout(function(){
       { date: '28 May 2026', tag: 'Validation', title: 'Core smoke checks passed', body: 'Health, cache, diagnostics, ranking and predictive routes are returning success.' },
       { date: '28 May 2026', tag: 'UX Upgrade', title: 'Executive Summary redesigned for glanceable decisions', body: 'First-screen verdict now prioritizes status, cause, impact and recommended move with clearer drill-down paths.' },
       { date: '28 May 2026', tag: 'Roadmap', title: 'Tracker moved to live-proof mode', body: 'Roadmap now hydrates statuses from backend proof endpoints for review parity.' },
+      { date: '05 Jun 2026', tag: 'Discovery', title: 'AI discovery proved signal creation', body: 'Manual discovery run checked source data, used Claude web search and OpenAI scoring, saved new signals, and wrote source proof to Supabase.' },
+      { date: '04 Jun 2026', tag: 'Finish Line', title: 'Approval-ready checklist added', body: 'Roadmap now separates the non-internal-data work needed before Radar can be positioned as approval-ready.' },
       { date: '02 Jun 2026', tag: 'Planning', title: 'Frontend-shippable vs backend-blocked split added', body: 'Roadmap now shows what can be finished in the UI and what still needs server-side proof or schema work.' }
     ];
     if (roadmapState.proof && roadmapState.proof.summary) {
@@ -13128,6 +14116,254 @@ setTimeout(function(){
       if (json && json.ok) roadmapState.runtimeWarnings = json;
     } catch (_) { /* noop */ }
   }
+
+  var backendPulseState = {
+    loading: false,
+    health: null,
+    daily: null,
+    warnings: null,
+    performance: null,
+    error: null,
+    lastFetchedAt: null
+  };
+
+  function pulseData(payload) {
+    return payload && payload.data ? payload.data : {};
+  }
+
+  function pulseText(v, fallback) {
+    if (v === 0) return '0';
+    if (v === false) return 'No';
+    if (v === true) return 'Yes';
+    if (v == null || v === '') return fallback || 'Unknown';
+    return String(v);
+  }
+
+  function pulseDate(v) {
+    if (!v) return 'Unknown';
+    try {
+      var d = new Date(v);
+      if (isNaN(d.getTime())) return String(v);
+      return d.toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return String(v);
+    }
+  }
+
+  function pulseMetaFromRun(run) {
+    if (!run) return {};
+    var meta = run.metadata || run.meta || {};
+    if (typeof meta === 'string') {
+      try { meta = JSON.parse(meta); } catch (e) { meta = {}; }
+    }
+    return meta || {};
+  }
+
+  async function fetchBackendPulsePath(path, timeoutMs) {
+    if (typeof backendFetch === 'function') {
+      var res = await backendFetch(path, { method: 'GET' }, timeoutMs || 15000);
+      return res.json();
+    }
+    var base = (typeof BACKEND_URL === 'string' && BACKEND_URL) ? BACKEND_URL : '';
+    var response = await fetch(base + path, { method: 'GET' });
+    return response.json();
+  }
+
+  function backendPulseTone() {
+    if (backendPulseState.error) return 'error';
+    if (backendPulseState.loading && !backendPulseState.lastFetchedAt) return 'checking';
+    var warnings = pulseData(backendPulseState.warnings);
+    var health = pulseData(backendPulseState.health);
+    var checks = health.checks || {};
+    if (warnings.errorCount > 0 || checks.server === false || checks.supabase === false) return 'error';
+    if ((warnings.warnCount || 0) > 0 || (health.cache && /aging|stale/i.test(String(health.cache.status || '')))) return 'warn';
+    return 'good';
+  }
+
+  function renderBackendPulseCard(title, value, label, detail, tone) {
+    return '<div class="backend-pulse-card ' + safeEsc(tone || 'neutral') + '">' +
+      '<div class="backend-pulse-card-title">' + safeEsc(title) + '</div>' +
+      '<div class="backend-pulse-card-value">' + safeEsc(value) + '</div>' +
+      '<div class="backend-pulse-card-label">' + safeEsc(label) + '</div>' +
+      '<div class="backend-pulse-card-detail">' + safeEsc(detail) + '</div>' +
+    '</div>';
+  }
+
+  function renderBackendPulseList(items) {
+    if (!items || !items.length) return '<div class="backend-pulse-empty">No attention items right now.</div>';
+    return '<ul class="backend-pulse-list">' + items.map(function (x) {
+      return '<li class="' + safeEsc(x.tone || 'neutral') + '"><strong>' + safeEsc(x.title) + '</strong><span>' + safeEsc(x.body) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function renderBackendPulse() {
+    var statusEl = document.getElementById('backendPulseStatus');
+    var gridEl = document.getElementById('backendPulseGrid');
+    var meaningEl = document.getElementById('backendPulseMeaning');
+    var attentionEl = document.getElementById('backendPulseAttention');
+    if (!statusEl || !gridEl || !meaningEl || !attentionEl) return;
+
+    var tone = backendPulseTone();
+    var health = pulseData(backendPulseState.health);
+    var daily = pulseData(backendPulseState.daily);
+    var warnings = pulseData(backendPulseState.warnings);
+    var perf = pulseData(backendPulseState.performance);
+    var checks = health.checks || {};
+    var cache = health.cache || {};
+    var latestRun = daily.latestMaintenanceRun || daily.latestRun || daily.lastRun || null;
+    var runMeta = pulseMetaFromRun(latestRun);
+    var runTime = latestRun && (latestRun.run_at || latestRun.created_at || latestRun.completed_at || latestRun.started_at);
+    var latestRefresh = daily.latestContentRefresh || daily.latestDomainRefresh || daily.latestRefresh || cache.latestRefresh || {};
+    var contentAge = daily.contentAgeHuman || daily.ageHuman || cache.ageHuman || 'Unknown';
+    var contentStatus = daily.contentStatus || daily.cacheStatus || (cache && cache.status) || 'Unknown';
+    var competitorRows = runMeta.competitorCache || daily.competitorCache || [];
+    var competitorLabel = Array.isArray(competitorRows) && competitorRows.length
+      ? competitorRows.map(function (x) { return x.rival + ':' + x.status; }).join(', ')
+      : 'No latest competitor refresh list';
+    var signalsChecked = runMeta.signalsChecked || daily.signalsChecked || latestRun && latestRun.signals_checked;
+    var rankingsUpdated = runMeta.rankingsUpdated || daily.rankingsUpdated || latestRun && latestRun.rankings_updated;
+    var uptime = perf.uptimeHuman || perf.uptime || perf.processUptime || 'Unknown';
+    var requestCount = perf.requestCount || perf.totalRequests || perf.requests || 'Unknown';
+    var warnCount = warnings.warnCount || 0;
+    var errorCount = warnings.errorCount || 0;
+
+    var statusTitle = tone === 'good' ? 'Backend is clean' : tone === 'warn' ? 'Backend has warnings' : tone === 'error' ? 'Backend needs attention' : 'Checking backend';
+    var statusBody = backendPulseState.lastFetchedAt
+      ? 'Last checked from this frontend at ' + pulseDate(backendPulseState.lastFetchedAt)
+      : 'Waiting for live status endpoints.';
+
+    statusEl.className = 'backend-pulse-status ' + tone;
+    statusEl.innerHTML = '<span class="backend-pulse-dot"></span><strong>' + safeEsc(statusTitle) + '</strong><span>' + safeEsc(statusBody) + '</span>';
+
+    gridEl.innerHTML = [
+      renderBackendPulseCard(
+        'Backend health',
+        checks.server === false ? 'Offline' : 'Online',
+        'Supabase: ' + pulseText(checks.supabase, 'Unknown') + ' | Claude: ' + pulseText(checks.anthropic, 'Unknown'),
+        'WebSocket: ' + pulseText(checks.websocket, 'Unknown') + ' | Runtime: ' + pulseText(backendPulseState.health && backendPulseState.health.meta && backendPulseState.health.meta.version, 'Unknown'),
+        checks.server === false || checks.supabase === false ? 'error' : 'good'
+      ),
+      renderBackendPulseCard(
+        'Content freshness',
+        pulseText(contentStatus, 'Unknown'),
+        'Age: ' + pulseText(contentAge, 'Unknown'),
+        'Latest refresh: ' + pulseText(daily.latestContentRefreshDoha || cache.latestRefreshedDoha || latestRefresh.refreshed_at, 'Unknown'),
+        /stale/i.test(String(contentStatus)) ? 'error' : /aging/i.test(String(contentStatus)) ? 'warn' : 'good'
+      ),
+      renderBackendPulseCard(
+        'Daily maintenance',
+        runTime ? 'Ran' : 'Not confirmed',
+        'Last run: ' + pulseDate(runTime),
+        'Signals checked: ' + pulseText(signalsChecked, 'Unknown') + ' | Rankings updated: ' + pulseText(rankingsUpdated, 'Unknown'),
+        runTime ? 'good' : 'warn'
+      ),
+      renderBackendPulseCard(
+        'Competitor cache',
+        Array.isArray(competitorRows) && competitorRows.length ? competitorRows.length + ' refreshed' : 'Check status',
+        'Latest maintenance competitor list',
+        competitorLabel,
+        Array.isArray(competitorRows) && competitorRows.length ? 'good' : 'warn'
+      ),
+      renderBackendPulseCard(
+        'New signal discovery',
+        'Partial',
+        'Maintenance ranks existing signals',
+        'Full source discovery still needs ingestion, web-search crawler, or /api/signals/save feed.',
+        'warn'
+      ),
+      renderBackendPulseCard(
+        'Runtime warnings',
+        warnCount + ' warnings',
+        errorCount + ' errors',
+        warnings.status ? 'Diagnostics status: ' + warnings.status : 'Runtime warnings endpoint checked.',
+        errorCount > 0 ? 'error' : warnCount > 0 ? 'warn' : 'good'
+      ),
+      renderBackendPulseCard(
+        'Performance',
+        pulseText(requestCount, 'Unknown'),
+        'Requests tracked',
+        'Uptime: ' + pulseText(uptime, 'Unknown'),
+        'neutral'
+      )
+    ].join('');
+
+    var meaning = [
+      { tone: 'good', title: 'What is happening now', body: 'The frontend is reading live backend status from health, daily-status, runtime-warnings and performance endpoints.' },
+      { tone: 'good', title: 'What daily maintenance does', body: 'The scheduled backend job recalculates ranking, updates vector memory, refreshes competitor cache and checks watchlist escalations.' },
+      { tone: 'warn', title: 'Important limitation', body: 'Daily maintenance is not yet the same as full new-signal discovery across every source. New source ingestion still needs a crawler, feed, or saved signal endpoint.' }
+    ];
+    meaningEl.innerHTML = renderBackendPulseList(meaning);
+
+    var attention = [];
+    if (backendPulseState.error) {
+      attention.push({ tone: 'error', title: 'Endpoint request failed', body: backendPulseState.error });
+    }
+    if (/aging|stale/i.test(String(contentStatus || ''))) {
+      attention.push({ tone: /stale/i.test(String(contentStatus)) ? 'error' : 'warn', title: 'Content cache needs attention', body: 'Latest content freshness is ' + contentStatus + ' and age is ' + contentAge + '.' });
+    }
+    if (!runTime) {
+      attention.push({ tone: 'warn', title: 'Maintenance run not confirmed', body: 'The daily-status endpoint did not return a latest maintenance timestamp.' });
+    }
+    attention.push({ tone: 'warn', title: 'Full discovery is not automatic yet', body: 'Radar can refresh and rank known signals, but true new-source discovery requires backend ingestion or crawler work.' });
+    if (warnings && Array.isArray(warnings.warnings)) {
+      warnings.warnings.slice(0, 5).forEach(function (w) {
+        attention.push({ tone: w.level === 'error' ? 'error' : 'warn', title: w.code || 'Runtime warning', body: w.message || 'Backend warning reported.' });
+      });
+    }
+    attentionEl.innerHTML = renderBackendPulseList(attention);
+  }
+
+  async function loadBackendPulse(force) {
+    if (backendPulseState.loading && !force) return;
+    backendPulseState.loading = true;
+    backendPulseState.error = null;
+    renderBackendPulse();
+    try {
+      var results = await Promise.all([
+        fetchBackendPulsePath('/api/health/full', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Health request failed' } }; }),
+        fetchBackendPulsePath('/api/refresh/daily-status?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Daily status request failed' } }; }),
+        fetchBackendPulsePath('/api/diagnostics/runtime-warnings?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Runtime warnings request failed' } }; }),
+        fetchBackendPulsePath('/api/diagnostics/performance', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Performance request failed' } }; })
+      ]);
+      backendPulseState.health = results[0];
+      backendPulseState.daily = results[1];
+      backendPulseState.warnings = results[2];
+      backendPulseState.performance = results[3];
+      backendPulseState.lastFetchedAt = new Date().toISOString();
+      var failed = results.filter(function (r) { return !r || r.ok === false; });
+      if (failed.length) {
+        backendPulseState.error = failed.map(function (r) {
+          return r && r.error && r.error.message ? r.error.message : 'Endpoint unavailable';
+        }).join(' | ');
+      }
+    } catch (err) {
+      backendPulseState.error = (err && err.message) || 'Backend pulse request failed';
+    } finally {
+      backendPulseState.loading = false;
+      renderBackendPulse();
+    }
+  }
+
+  window.refreshBackendPulse=function() {
+    loadBackendPulse(true);
+  };
+
+  window.showBackendPulse=function() {
+    try { if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs(); } catch (e) {}
+    window.hideAllPrimaryPages();
+    window.clearPrimaryNav();
+    var el = document.getElementById('backendPulsePage');
+    if (el) el.classList.add('visible');
+    var link = document.getElementById('footerBackendPulseLink');
+    if (link) link.classList.add('active');
+    renderBackendPulse();
+    loadBackendPulse(false);
+  };
 
   window.showRoadmap=function() {
     try { if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs(); } catch (e) {}

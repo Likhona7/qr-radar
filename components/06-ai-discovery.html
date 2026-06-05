@@ -17,10 +17,21 @@
       </div>
     </div>
     <div class="ai-hero-side">
-      <button type="button" class="ai-primary-btn" onclick="renderAIDiscoveryPage()">Refresh view</button>
+      <button type="button" class="ai-primary-btn" onclick="refreshAIDiscoveryBackend()">Refresh backend</button>
       <button type="button" class="ai-secondary-btn" onclick="showExecSummary()">Open executive view</button>
     </div>
   </div>
+
+  <section class="ai-panel ai-wide ai-backend-panel" id="aiDiscoveryBackendStatus">
+    <div class="ai-panel-head">
+      <div>
+        <div class="ai-panel-title">Backend API connection</div>
+        <div class="ai-panel-copy">Checks whether the server is already feeding AI referral, crawler, citation, query-gap and conversion proof.</div>
+      </div>
+      <span class="ai-panel-pill ai-warn" id="aiBackendStatusPill">Checking</span>
+    </div>
+    <div class="ai-backend-grid" id="aiBackendGrid"></div>
+  </section>
 
   <div class="ai-kpi-grid" id="aiDiscoveryKpis"></div>
 

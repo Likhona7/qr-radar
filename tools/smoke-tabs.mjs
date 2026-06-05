@@ -12,8 +12,9 @@ function addCheck(name, pass, detail) {
 }
 
 const requiredIds = [
-  'navMain', 'navComp', 'navPartner', 'navSent', 'navCI', 'navCIOS', 'navExec', 'navPredict', 'navAI', 'navRoadmap',
-  'compPage', 'partnerPage', 'sentPage', 'ciPage', 'ciosPage', 'execPage', 'predictPage', 'aiDiscoveryPage', 'roadmapPage'
+  'navMain', 'navComp', 'navPartner', 'navSent', 'navCI', 'navCIOS', 'navTeamActions', 'navExec', 'navPredict', 'navAI', 'navRoadmap',
+  'compPage', 'partnerPage', 'sentPage', 'ciPage', 'ciosPage', 'teamActionsPage', 'execPage', 'predictPage', 'aiDiscoveryPage', 'roadmapPage', 'backendPulsePage',
+  'footerBackendPulseLink'
 ];
 requiredIds.forEach(id => addCheck(`id:${id}`, bundle.includes(`id="${id}"`), 'Required tab/page id'));
 
@@ -24,6 +25,7 @@ const requiredFns = [
   'function showSent(',
   'function showCI(',
   'function showCIOS(',
+  'window.showTeamActions = function',
   'function showExecSummary(',
   'function showPredictive(',
   'function showAIDiscovery(',
@@ -34,6 +36,12 @@ const requiredFns = [
   'function renderAIDiscoveryPage('
 ];
 requiredFns.forEach(fn => addCheck(`fn:${fn}`, bundle.includes(fn), 'Required navigation/load function'));
+
+addCheck(
+  'fn:showBackendPulse',
+  bundle.includes('window.showBackendPulse=function('),
+  'Backend pulse footer page opens as a first-class Radar page'
+);
 
 addCheck(
   'fn:loadSent',
@@ -70,6 +78,15 @@ addCheck(
   'Roadmap readiness split is rendered in the frontend'
 );
 addCheck(
+  'roadmap:approval-ready-finish-line',
+  bundle.includes('Approval-Ready Finish Line (Before Internal Data)') &&
+  bundle.includes('Discovery status endpoint') &&
+  bundle.includes('Full source discovery cron') &&
+  bundle.includes('AI Discovery backend API contract') &&
+  bundle.includes('App ratings intelligence feed'),
+  'Roadmap lists the remaining non-internal-data finish-line work'
+);
+addCheck(
   'partner:catalog',
   bundle.includes('Partner Network') && bundle.includes('Partner airlines'),
   'Partner network tab and catalog present'
@@ -80,9 +97,25 @@ addCheck(
   'AI Discovery tab and useful-metrics framework present'
 );
 addCheck(
+  'ai-discovery:backend-api',
+  bundle.includes('aiDiscoveryBackendStatus') &&
+  bundle.includes('/api/ai-discovery/status') &&
+  bundle.includes('Backend API pending'),
+  'AI Discovery is wired to a backend API contract with honest pending state'
+);
+addCheck(
   'devserver:use-stubs',
   (await fs.readFile(path.join(root, 'tools', 'dev-server.mjs'), 'utf8')).includes('USE_STUBS'),
   'Local proxy toggle exists'
+);
+
+addCheck(
+  'backend-pulse:runtime-endpoints',
+  bundle.includes('/api/refresh/daily-status') &&
+  bundle.includes('/api/health/full') &&
+  bundle.includes('/api/diagnostics/runtime-warnings') &&
+  bundle.includes('/api/diagnostics/performance'),
+  'Backend pulse page reads the core server status endpoints'
 );
 
 const failed = checks.filter(c => !c.pass);

@@ -363,6 +363,7 @@ function sentimentIssueFromSignal(item, fallbackImpact){
   var detail = s.body || s.detail || s.description || s.whyItMattersNow || s.why_it_matters_now || 'Backend/cache signal linked to customer sentiment.';
   var score = Number(s.ai_rank_score || s.commercial_impact_score || s.commercialImpactScore || 0);
   return {
+    signal: s,
     title: String(title).slice(0, 90),
     detail: String(detail).slice(0, 180),
     frequency: score >= 80 ? 'High' : score >= 55 ? 'Medium' : 'Low',
@@ -412,7 +413,8 @@ function sentimentFromDomainCache(src){
     .map(function(i){ return {
       title: String((i.signal && (i.signal.title || i.signal.name)) || 'Positive signal').slice(0, 90),
       detail: String((i.signal && (i.signal.body || i.signal.detail || i.signal.description)) || 'Backend/cache signal indicates brand or product strength.').slice(0, 170),
-      frequency: 'Medium'
+      frequency: 'Medium',
+      signal: i.signal
     }; })
     .filter(function(s){ return !painKeys[String(s.title || '').toLowerCase()]; });
   if(!strengths.length){
@@ -422,7 +424,8 @@ function sentimentFromDomainCache(src){
       .map(function(i){ return {
         title: String((i.signal && (i.signal.title || i.signal.name)) || 'Neutral brand signal').slice(0, 90),
         detail: String((i.signal && (i.signal.body || i.signal.detail || i.signal.description)) || 'Backend/cache signal indicates a neutral or improving customer area.').slice(0, 170),
-        frequency: 'Low'
+        frequency: 'Low',
+        signal: i.signal
       }; });
   }
   var improvements = pain.slice(0, 3).map(function(p){
@@ -431,7 +434,8 @@ function sentimentFromDomainCache(src){
       detail: 'Use the loaded backend/cache signal to brief owner, verify source freshness, and define a customer-facing response.',
       effort: 'Medium',
       value: /refund|booking|loyalty|app|website|revenue|churn/i.test(p.title + ' ' + p.detail) ? 'Revenue protection' : 'Service recovery',
-      owner: /app|website|booking|checkout/i.test(p.title + ' ' + p.detail) ? 'Digital Product' : 'Customer Experience'
+      owner: /app|website|booking|checkout/i.test(p.title + ' ' + p.detail) ? 'Digital Product' : 'Customer Experience',
+      signal: p.signal
     };
   });
   return {
@@ -454,11 +458,12 @@ function renderSent(src,data){
   var meta=SENT_META[src]||{};
   var sc=data.overallSentiment||60;
   var scColor=sc>=70?'#1abc9c':sc>=50?'#C8A050':'#e74c3c';
-  var painH=(data.painPoints||[]).map(function(p){return '<div class="sent-item"><div class="sent-dot" style="background:#e74c3c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(p.title)+'</div><div class="sent-item-d">'+esc(p.detail)+'</div><div><span class="sent-item-freq '+(p.frequency==='High'?'sf-high':p.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(p.frequency)+' freq</span></div><div class="sent-item-src">Impact: '+esc(p.impact)+'</div></div></div>';}).join('');
-  var strengthH=(data.strengths||[]).map(function(s){return '<div class="sent-item"><div class="sent-dot" style="background:#1abc9c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(s.title)+'</div><div class="sent-item-d">'+esc(s.detail)+'</div><div><span class="sent-item-freq '+(s.frequency==='High'?'sf-high':s.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(s.frequency)+' freq</span></div></div></div>';}).join('');
-  var improveH=(data.improvements||[]).map(function(i){return '<div class="sent-item"><div class="sent-dot" style="background:#C8A050"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(i.title)+'</div><div class="sent-item-d">'+esc(i.detail)+'</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap"><span class="sent-item-freq '+(i.effort==='Quick win'?'sf-low':i.effort==='Medium'?'sf-med':'sf-high')+'">'+esc(i.effort)+'</span><span class="sent-item-freq sf-low">'+esc(i.value)+'</span></div><div class="sent-item-src">Owner: '+esc(i.owner)+'</div></div></div>';}).join('');
+  var painH=(data.painPoints||[]).map(function(p){return '<div class="sent-item"><div class="sent-dot" style="background:#e74c3c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(p.title)+'</div><div class="sent-item-d">'+esc(p.detail)+'</div><div><span class="sent-item-freq '+(p.frequency==='High'?'sf-high':p.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(p.frequency)+' freq</span></div><div class="sent-item-src">Impact: '+esc(p.impact)+'</div>'+ciDateMetaOf(p.signal || p)+'</div></div>';}).join('');
+  var strengthH=(data.strengths||[]).map(function(s){return '<div class="sent-item"><div class="sent-dot" style="background:#1abc9c"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(s.title)+'</div><div class="sent-item-d">'+esc(s.detail)+'</div><div><span class="sent-item-freq '+(s.frequency==='High'?'sf-high':s.frequency==='Medium'?'sf-med':'sf-low')+'">'+esc(s.frequency)+' freq</span></div>'+ciDateMetaOf(s.signal || s)+'</div></div>';}).join('');
+  var improveH=(data.improvements||[]).map(function(i){return '<div class="sent-item"><div class="sent-dot" style="background:#C8A050"></div><div class="sent-item-b"><div class="sent-item-t">'+esc(i.title)+'</div><div class="sent-item-d">'+esc(i.detail)+'</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap"><span class="sent-item-freq '+(i.effort==='Quick win'?'sf-low':i.effort==='Medium'?'sf-med':'sf-high')+'">'+esc(i.effort)+'</span><span class="sent-item-freq sf-low">'+esc(i.value)+'</span></div><div class="sent-item-src">Owner: '+esc(i.owner)+'</div>'+ciDateMetaOf(i.signal || i)+'</div></div>';}).join('');
   var verbH=(data.verbatims||[]).map(function(v){return '<div style="padding:8px 10px;background:var(--bg2);border-left:2px solid '+(meta.color||'var(--qb)')+';border-radius:0 4px 4px 0;font-size:10px;color:var(--t2);font-style:italic;margin-bottom:6px">"'+esc(v)+'"</div>';}).join('');
   document.getElementById('sentDetail').innerHTML='<div class="sent-detail"><div class="sent-det-hdr"><div><div class="sent-det-title">'+meta.icon+' '+meta.name+' Sentiment Analysis</div><div class="sent-det-sub">'+data.totalMentions+' mentions analysed - Top complaint: '+data.topComplaint+'</div></div><div style="text-align:center"><div style="font-size:28px;font-weight:500;color:'+scColor+'">'+sc+'%</div><div style="font-size:10px;color:var(--t3)">'+data.sentimentLabel+'</div></div></div><div style="padding:14px 18px;background:var(--bg2);border-bottom:1px solid var(--bo)"><div style="font-size:10px;font-weight:600;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">CUSTOMER VERBATIMS</div>'+verbH+'</div><div class="sent-body"><div class="sent-col"><div class="sent-col-t" style="color:#e74c3c">Pain Points ('+((data.painPoints||[]).length)+')</div>'+painH+'</div><div class="sent-col"><div class="sent-col-t" style="color:#1abc9c">Strengths ('+((data.strengths||[]).length)+')</div>'+strengthH+'</div><div class="sent-col"><div class="sent-col-t" style="color:#C8A050">Improvements ('+((data.improvements||[]).length)+')</div>'+improveH+'</div></div></div>';
+  updateSentimentSourceFreshness(src);
   reorderSentimentSources();
 }
 
@@ -484,6 +489,7 @@ function clearSentCache(){
     var bar=document.getElementById('sbar-'+src); if(bar) bar.style.width='0%';
     var score=document.getElementById('sscore-'+src); if(score) score.textContent='-';
     var btn=document.getElementById('sbtn-'+src); if(btn){btn.textContent='No data';btn.classList.remove('loaded');btn.disabled=false;}
+    var meta=document.querySelector('.sent-tile[data-src="'+src+'"] .sent-freshness-meta'); if(meta) meta.remove();
   });
   document.querySelectorAll('.sent-tile').forEach(function(t){t.classList.remove('on');});
   reorderSentimentSources();
@@ -505,10 +511,12 @@ setTimeout(function(){
       var bar=document.getElementById('sbar-'+src); if(bar){bar.style.width=sc+'%';bar.style.background=sc>=70?'#1abc9c':sc>=50?'#C8A050':'#e74c3c';}
       var score=document.getElementById('sscore-'+src); if(score) score.textContent=sc+'%';
       var btn=document.getElementById('sbtn-'+src); if(btn){btn.textContent=saved?'Loaded':'Stale';btn.classList.add('loaded');}
+      updateSentimentSourceFreshness(src);
     }
   });
   reorderSentimentSources();
   updateSentGauge();
+  refreshSentimentSourceFreshness();
 },1200);
 
 function hydrateSentimentFromDomainCache(){
@@ -522,9 +530,11 @@ function hydrateSentimentFromDomainCache(){
     var bar=document.getElementById('sbar-'+src); if(bar){bar.style.width=sc+'%';bar.style.background=sc>=70?'#1abc9c':sc>=50?'#C8A050':'#e74c3c';}
     var score=document.getElementById('sscore-'+src); if(score) score.textContent=sc+'%';
     var btn=document.getElementById('sbtn-'+src); if(btn){btn.textContent='Stale';btn.classList.add('loaded');}
+    updateSentimentSourceFreshness(src);
   });
   reorderSentimentSources();
   updateSentGauge();
+  refreshSentimentSourceFreshness();
 }
 
 // â”€â”€ CUSTOMER INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -674,6 +684,77 @@ function ciSignalTimestamp(signal){
     if(Number.isFinite(ts)) return ts;
   }
   return null;
+}
+function ciDateMetaOf(signal){
+  try{
+    if(!signal || typeof signal !== 'object') return '';
+    return typeof renderSignalDateMeta === 'function' ? renderSignalDateMeta(signal || {}) : '';
+  }catch(e){
+    return '';
+  }
+}
+function ciCompactDateMetaOf(signal){
+  try{
+    if(!signal || typeof signal !== 'object') return '';
+    return typeof renderSignalDateCompactMeta === 'function' ? renderSignalDateCompactMeta(signal || {}) : '';
+  }catch(e){
+    return '';
+  }
+}
+function latestSignalFromSentimentData(data){
+  var rows = []
+    .concat((data && data.painPoints) || [])
+    .concat((data && data.strengths) || [])
+    .concat((data && data.improvements) || []);
+  var best = null;
+  var bestTs = null;
+  rows.forEach(function(row){
+    var signal = row && row.signal ? row.signal : row;
+    var ts = ciSignalTimestamp(signal);
+    if(Number.isFinite(ts) && (!bestTs || ts > bestTs)){
+      bestTs = ts;
+      best = signal;
+    }
+  });
+  return best;
+}
+function latestSignalForSentimentSource(src){
+  var fromData = latestSignalFromSentimentData(SENT_DATA[src]);
+  if(fromData) return fromData;
+  var items = typeof domainCacheSignalsForSentiment === 'function' ? domainCacheSignalsForSentiment(src) : [];
+  var best = null;
+  var bestTs = null;
+  items.forEach(function(item){
+    var signal = item && item.signal ? item.signal : item;
+    var ts = ciSignalTimestamp(signal);
+    if(Number.isFinite(ts) && (!bestTs || ts > bestTs)){
+      bestTs = ts;
+      best = signal;
+    }
+  });
+  return best;
+}
+function sentimentSourceFreshnessMeta(src){
+  return ciCompactDateMetaOf(latestSignalForSentimentSource(src));
+}
+function updateSentimentSourceFreshness(src){
+  var tile = document.querySelector('.sent-tile[data-src="' + String(src).replace(/"/g, '') + '"]');
+  if(!tile) return;
+  var existing = tile.querySelector('.sent-freshness-meta');
+  var html = sentimentSourceFreshnessMeta(src);
+  if(!html){
+    if(existing) existing.remove();
+    return;
+  }
+  if(!existing){
+    existing = document.createElement('div');
+    existing.className = 'sent-freshness-meta';
+    tile.appendChild(existing);
+  }
+  existing.innerHTML = html;
+}
+function refreshSentimentSourceFreshness(){
+  Object.keys(SENT_META || {}).forEach(updateSentimentSourceFreshness);
 }
 function ciSourceReliabilityPoints(source){
   var t = String(source || '').toLowerCase();
@@ -1018,7 +1099,8 @@ function customerIntelFromDomainCache(seg){
       signal: title.slice(0, 60),
       source: (r.signal.source || r.domain || 'cache').toString(),
       direction: /rise|surge|increase|growth|up/i.test((r.signal.body || '') + ' ' + (r.signal.impactLabel || '')) ? 'rising' : 'stable',
-      implication: (r.signal.captureStrategy || r.signal.whyItMattersNow || r.signal.impactLabel || '').toString().slice(0, 80)
+      implication: (r.signal.captureStrategy || r.signal.whyItMattersNow || r.signal.impactLabel || '').toString().slice(0, 80),
+      signalData: r.signal
     };
   });
   var genericNba = {
@@ -1075,10 +1157,10 @@ function customerIntelFromDomainCache(seg){
     serviceRiskLevel: riskLevel,
     serviceRiskReason: risks[0] ? (risks[0].signal.title || 'Customer friction trend detected').slice(0, 80) : 'No dominant risk signal',
     serviceRiskTags: riskTagBySeg[seg] || [],
-    bookingBehaviour: rows.slice(0,4).map(function(r){return {insight:r.signal.title||'Behaviour signal', detail:r.signal.body||r.signal.whyItMattersNow||'', source:(r.domain||'').toUpperCase(), implication:r.signal.captureStrategy||r.signal.impactLabel||''};}),
-    loyaltyDrivers: opps.slice(0,4).map(function(r){return {driver:r.signal.title||'Value driver', detail:r.signal.whyItMattersNow||r.signal.body||'', strength:r.signal.confidence||'Medium'};}),
-    painPoints: risks.slice(0,4).map(function(r){return {pain:r.signal.title||'Customer pain point', detail:r.signal.body||r.signal.whyItMattersNow||'', competitorAdvantage:r.signal.impactLabel||r.signal.demandImpact||''};}),
-    personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Use customer context to prioritise this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both'};}),
+    bookingBehaviour: rows.slice(0,4).map(function(r){return {insight:r.signal.title||'Behaviour signal', detail:r.signal.body||r.signal.whyItMattersNow||'', source:(r.domain||'').toUpperCase(), implication:r.signal.captureStrategy||r.signal.impactLabel||'', signal:r.signal};}),
+    loyaltyDrivers: opps.slice(0,4).map(function(r){return {driver:r.signal.title||'Value driver', detail:r.signal.whyItMattersNow||r.signal.body||'', strength:r.signal.confidence||'Medium', signal:r.signal};}),
+    painPoints: risks.slice(0,4).map(function(r){return {pain:r.signal.title||'Customer pain point', detail:r.signal.body||r.signal.whyItMattersNow||'', competitorAdvantage:r.signal.impactLabel||r.signal.demandImpact||'', signal:r.signal};}),
+    personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Use customer context to prioritise this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both', signal:r.signal};}),
     externalSignals: extSignals,
     nextBestAction: genericNba,
     strategicLenses: strategicLenses,
@@ -1304,16 +1386,16 @@ function renderCI(seg,data){
   }).join('');
 
   var bookH=(data.bookingBehaviour||[]).map(function(b){
-    return '<div class="ci-item"><div class="ci-dot" style="background:#7BA7E8"></div><div class="ci-item-b"><strong>'+esc(b.insight || '')+'</strong><br>'+esc(b.detail || '')+'<br><span class="ci-item-tag ci-tag-b">'+esc(b.source || 'Source')+'</span><div style="margin-top:3px;font-size:9px;color:var(--qg)">&#8594; '+esc(b.implication || '')+'</div></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:#7BA7E8"></div><div class="ci-item-b"><strong>'+esc(b.insight || '')+'</strong><br>'+esc(b.detail || '')+'<br><span class="ci-item-tag ci-tag-b">'+esc(b.source || 'Source')+'</span><div style="margin-top:3px;font-size:9px;color:var(--qg)">&#8594; '+esc(b.implication || '')+'</div>'+ciDateMetaOf(b.signal || b)+'</div></div>';
   }).join('');
 
   var loyH=(data.loyaltyDrivers||[]).map(function(l){
     var tagClass=l.strength==='Strong'?'ci-tag-g':l.strength==='Medium'?'ci-tag-a':'ci-tag-r';
-    return '<div class="ci-item"><div class="ci-dot" style="background:#1abc9c"></div><div class="ci-item-b"><strong>'+esc(l.driver || '')+'</strong><br>'+esc(l.detail || '')+'<br><span class="ci-item-tag '+tagClass+'">'+esc(l.strength || 'Medium')+' for QR</span></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:#1abc9c"></div><div class="ci-item-b"><strong>'+esc(l.driver || '')+'</strong><br>'+esc(l.detail || '')+'<br><span class="ci-item-tag '+tagClass+'">'+esc(l.strength || 'Medium')+' for QR</span>'+ciDateMetaOf(l.signal || l)+'</div></div>';
   }).join('');
 
   var painH=(data.painPoints||[]).map(function(p){
-    return '<div class="ci-item"><div class="ci-dot" style="background:#e74c3c"></div><div class="ci-item-b"><strong>'+esc(p.pain || '')+'</strong><br>'+esc(p.detail || '')+'<br><span class="ci-item-tag ci-tag-r">'+esc(p.competitorAdvantage || '')+'</span></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:#e74c3c"></div><div class="ci-item-b"><strong>'+esc(p.pain || '')+'</strong><br>'+esc(p.detail || '')+'<br><span class="ci-item-tag ci-tag-r">'+esc(p.competitorAdvantage || '')+'</span>'+ciDateMetaOf(p.signal || p)+'</div></div>';
   }).join('');
 
   var oppH=(data.personalisationOpps||[]).map(function(o){
@@ -1321,7 +1403,7 @@ function renderCI(seg,data){
     var adobeTag = o.adobeProduct ? '<span style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;background:rgba(200,160,80,.1);color:var(--qg);margin-left:4px">'+esc(o.adobeProduct)+'</span>' : '';
     var dsTag = o.dataSource ? '<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg2);color:var(--t3)">'+esc(o.dataSource)+'</span>' : '';
     var personaTag = (o.persona && o.persona !== 'all') ? '<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(26,106,72,.08);color:var(--grn)">'+esc(o.persona)+'</span>' : '';
-    return '<div class="ci-opp"><div class="ci-opp-eyebrow">UCP: '+esc(o.ucpUseCase || 'Segment orchestration')+adobeTag+'</div><div class="ci-opp-title">'+esc(o.title || '')+'</div><div class="ci-opp-body">'+esc(o.detail || '')+'</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><div class="ci-opp-val">'+esc(o.value || '')+'</div><span class="ci-item-tag '+effortClass+'">'+esc(o.effort || 'Medium')+'</span><span class="ci-item-tag ci-tag-b">'+esc(o.owner || 'Digital/B2C')+'</span>'+dsTag+personaTag+'</div></div>';
+    return '<div class="ci-opp"><div class="ci-opp-eyebrow">UCP: '+esc(o.ucpUseCase || 'Segment orchestration')+adobeTag+'</div><div class="ci-opp-title">'+esc(o.title || '')+'</div><div class="ci-opp-body">'+esc(o.detail || '')+'</div>'+ciDateMetaOf(o.signal || o)+'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><div class="ci-opp-val">'+esc(o.value || '')+'</div><span class="ci-item-tag '+effortClass+'">'+esc(o.effort || 'Medium')+'</span><span class="ci-item-tag ci-tag-b">'+esc(o.owner || 'Digital/B2C')+'</span>'+dsTag+personaTag+'</div></div>';
   }).join('');
 
   var riskClass = 'ci-pill-risk-low';
@@ -1374,7 +1456,7 @@ function renderCI(seg,data){
 
   var externalRows = (data.externalSignals||[]).map(function(s){
     var glyph = s.direction === 'rising' ? '&#8593;' : s.direction === 'falling' ? '&#8595;' : '&#8212;';
-    return '<div class="ci-item"><div class="ci-dot" style="background:var(--grn)"></div><div class="ci-item-b"><strong>'+esc(s.signal || '')+'</strong> <span style="font-size:10px;color:var(--t3)">'+glyph+'</span><div style="font-size:10px;color:var(--t3)">'+esc(s.source || '')+' - '+esc(s.implication || '')+'</div></div></div>';
+    return '<div class="ci-item"><div class="ci-dot" style="background:var(--grn)"></div><div class="ci-item-b"><strong>'+esc(s.signal || '')+'</strong> <span style="font-size:10px;color:var(--t3)">'+glyph+'</span><div style="font-size:10px;color:var(--t3)">'+esc(s.source || '')+' - '+esc(s.implication || '')+'</div>'+ciDateMetaOf(s.signalData || s.signal || s)+'</div></div>';
   }).join('');
   var externalSection = externalRows ? '<div class="ci-external-wrap"><div class="ci-col-t" style="color:var(--grn)">External Signals</div>'+externalRows+'</div>' : '';
 
@@ -1565,6 +1647,8 @@ setTimeout(function(){
   function resetSentimentTile(src, label){
     setSentimentScoreUI(src, null);
     setSentimentTileState(src, label || 'No data');
+    var meta = document.querySelector('.sent-tile[data-src="'+src+'"] .sent-freshness-meta');
+    if(meta) meta.remove();
   }
 
   function emptySentimentDetail(src, title, detail){

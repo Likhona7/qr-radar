@@ -6,6 +6,7 @@ const componentFiles = [
   '04-sentiment.html',
   '05-customer-intelligence.html',
   '06-ai-discovery.html',
+  '06-team-actions.html',
   '06-executive-pages-footer.html',
   '07-action-plan-overlay.html'
 ];
@@ -15,6 +16,7 @@ const localScripts = [
   './scripts/customer-os.js',
   './scripts/visual-fixes.js',
   './scripts/backend-cache-cleanup.js',
+  './scripts/team-actions.js',
   './scripts/executive-os-roadmap.js'
 ];
 

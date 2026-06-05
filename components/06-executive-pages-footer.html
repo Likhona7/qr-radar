@@ -231,7 +231,41 @@
   </div>
 </div>
 
+<!-- Backend Pulse / Server Update Confidence Page -->
+<div class="backend-pulse-page" id="backendPulsePage">
+  <div class="backend-pulse-hero">
+    <div>
+      <div class="backend-pulse-ey">Server confidence center</div>
+      <h1>Backend Pulse</h1>
+      <p>Shows whether Radar is live, when maintenance last ran, how fresh the cache is, and whether the backend is only ranking existing signals or actively discovering new ones.</p>
+    </div>
+    <button class="backend-pulse-refresh" type="button" onclick="refreshBackendPulse()">Refresh status</button>
+  </div>
+
+  <div class="backend-pulse-status" id="backendPulseStatus">
+    <span class="backend-pulse-dot"></span>
+    <strong>Checking backend...</strong>
+    <span>Waiting for live health, daily status and diagnostics endpoints.</span>
+  </div>
+
+  <div class="backend-pulse-grid" id="backendPulseGrid"></div>
+
+  <div class="backend-pulse-panels">
+    <div class="backend-pulse-panel">
+      <div class="backend-pulse-panel-title">What this means</div>
+      <div id="backendPulseMeaning"></div>
+    </div>
+    <div class="backend-pulse-panel">
+      <div class="backend-pulse-panel-title">Attention needed</div>
+      <div id="backendPulseAttention"></div>
+    </div>
+  </div>
+</div>
+
 <div class="footer">
   <span class="fl">Qatar Airways - Radar v11 - Executive Intelligence Command Center</span>
+  <span class="footer-links">
+    <button id="footerBackendPulseLink" type="button" onclick="showBackendPulse()">Backend Pulse</button>
+  </span>
   <span class="fr2">v11.4.14 - Executive Intelligence OS - Predictive Radar - Roadmap Tracker - 2026</span>
 </div>

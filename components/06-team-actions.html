@@ -1,0 +1,61 @@
+<div class="team-actions-page" id="teamActionsPage">
+  <div class="ta-hero">
+    <div>
+      <div class="ta-eyebrow">Radar action workspace</div>
+      <h1>Team Actions</h1>
+      <p>Turns live Radar signals into owned work, evidence-backed decisions, and recorded outcomes for leadership follow-up.</p>
+    </div>
+    <div class="ta-hero-controls">
+      <span class="ta-freshness" id="taFreshness">Backend/cache context</span>
+      <button type="button" class="ta-primary-btn" onclick="refreshTeamActions()">Refresh actions</button>
+    </div>
+  </div>
+
+  <div class="ta-summary" id="taSummary">
+    <div class="ta-empty">Loading action readiness from Radar signals...</div>
+  </div>
+
+  <div class="ta-grid">
+    <aside class="ta-queue-panel">
+      <div class="ta-panel-head">
+        <div>
+          <div class="ta-panel-title">Signal Action Queue</div>
+          <div class="ta-panel-copy" id="taQueueCount">Waiting for loaded signals</div>
+        </div>
+      </div>
+      <div class="ta-filter-row">
+        <button type="button" class="ta-filter active" data-ta-filter="all">All</button>
+        <button type="button" class="ta-filter" data-ta-filter="urgent">Urgent</button>
+        <button type="button" class="ta-filter" data-ta-filter="open">Open</button>
+        <button type="button" class="ta-filter" data-ta-filter="done">Done</button>
+      </div>
+      <input class="ta-search" id="taSearch" type="search" placeholder="Search actions, owners, or signals..." oninput="renderTeamActionsPage()">
+      <div class="ta-action-list" id="taActionList"></div>
+    </aside>
+
+    <section class="ta-detail-panel">
+      <div class="ta-detail-head" id="taDetailHead">
+        <div class="ta-empty">Select an action from the queue.</div>
+      </div>
+      <div class="ta-detail-body" id="taDetailBody"></div>
+      <div class="ta-comment-box" id="taCommentBox" hidden>
+        <textarea id="taCommentInput" rows="2" placeholder="Add a short status note, blocker, or leadership update..."></textarea>
+        <div class="ta-comment-controls">
+          <button type="button" class="ta-light-btn" onclick="addTeamActionQuickNote('Blocked by: ')">Blocked</button>
+          <button type="button" class="ta-light-btn" onclick="addTeamActionQuickNote('Leadership update: ')">Leadership update</button>
+          <button type="button" class="ta-primary-btn" onclick="addTeamActionComment()">Add note</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="ta-leadership-panel">
+      <div class="ta-panel-head">
+        <div>
+          <div class="ta-panel-title">Leadership View</div>
+          <div class="ta-panel-copy">Who owns what, what is due, and where outcomes are missing.</div>
+        </div>
+      </div>
+      <div id="taLeadership"></div>
+    </aside>
+  </div>
+</div>

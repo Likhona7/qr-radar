@@ -8,6 +8,7 @@ const components = [
   '04-sentiment.html',
   '05-customer-intelligence.html',
   '06-ai-discovery.html',
+  '06-team-actions.html',
   '06-executive-pages-footer.html',
   '07-action-plan-overlay.html'
 ];
@@ -17,6 +18,7 @@ const scripts = [
   'customer-os.js',
   'visual-fixes.js',
   'backend-cache-cleanup.js',
+  'team-actions.js',
   'executive-os-roadmap.js'
 ];
 
