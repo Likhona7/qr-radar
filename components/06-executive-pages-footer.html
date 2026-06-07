@@ -174,34 +174,88 @@
   <div class="predict-hero">
     <div class="exec-eyebrow">Future market anticipation</div>
     <div class="predict-title">Predictive Intelligence & Innovation Radar</div>
-    <div class="predict-sub">A forward-looking tab designed to help Qatar Airways identify future customer behaviours, revenue opportunities, market shifts, competitor moves and service innovations before the industry reacts. Current version derives opportunity themes from backend/cache signals; backend predictive models can be connected next.</div>
-    <div class="exec-aud"><span>Beyond dashboarding</span><span>Decision acceleration</span><span>Innovation pipeline</span><span>Revenue futures</span></div>
+    <div class="predict-sub">A feature-decision workspace for Qatar Airways: what competitors and partners are doing well, which ideas QR should copy, adapt, partner on or watch, and what each move could do for conversion, loyalty, premium yield and service cost.</div>
+    <div class="exec-aud"><span>Feature benchmarking</span><span>Deploy or watch</span><span>Partner acceleration</span><span>Business value</span></div>
   </div>
-  <div class="predict-tabs-note"><strong>Backend integration note:</strong> this frontend is ready for future backend endpoints such as <code>/api/executive-summary</code>, <code>/api/predictive-intel</code>, <code>/api/opportunity-simulation</code> and <code>/api/innovation-radar</code>. Until those are connected, the page only uses loaded Radar cache and clearly labels derived intelligence.</div>
-  <div class="predict-grid" id="predictiveCategories"></div>
-  <div class="exec-panel" style="margin-bottom:18px">
-    <div class="exec-panel-h"><div><div class="exec-panel-t">Predictive signals from current cache</div><div class="exec-panel-m">Forward-looking opportunities and risk windows</div></div><button class="exec-refresh" onclick="renderPredictivePage()">Refresh view</button></div>
-    <div id="predictiveSignals"></div>
+  <div class="predict-tabs-note" id="predictBackendStatus"><strong>Feature intelligence:</strong> loading <code>/api/innovation-radar</code> and competitor/partner evidence. Bad reviews are treated as guardrails; the main view ranks useful features and business decisions.</div>
+  <div class="predict-tabbar" role="tablist" aria-label="Predictive Intelligence sections">
+    <button type="button" class="predict-tab-btn" data-predict-tab="innovation" role="tab" aria-controls="predictTabInnovation" onclick="showPredictiveInnerTab('innovation')">
+      <span class="predict-tab-icon">IR</span>
+      <span><strong>Innovation Radar</strong><em>Business cases</em></span>
+    </button>
+    <button type="button" class="predict-tab-btn" data-predict-tab="predictive" role="tab" aria-controls="predictTabPredictive" onclick="showPredictiveInnerTab('predictive')">
+      <span class="predict-tab-icon">PI</span>
+      <span><strong>Predictive Intelligence</strong><em>Signal forecast</em></span>
+    </button>
+    <button type="button" class="predict-tab-btn" data-predict-tab="appintel" role="tab" aria-controls="predictTabAppintel" onclick="showPredictiveInnerTab('appintel')">
+      <span class="predict-tab-icon">CF</span>
+      <span><strong>Competitor Features</strong><em>What to adapt</em></span>
+    </button>
+    <button type="button" class="predict-tab-btn" data-predict-tab="partners" role="tab" aria-controls="predictTabPartners" onclick="showPredictiveInnerTab('partners')">
+      <span class="predict-tab-icon">PN</span>
+      <span><strong>Partner Opportunities</strong><em>Network leverage</em></span>
+    </button>
+    <button type="button" class="predict-tab-btn" data-predict-tab="discovery" role="tab" aria-controls="predictTabDiscovery" onclick="showPredictiveInnerTab('discovery')">
+      <span class="predict-tab-icon">DS</span>
+      <span><strong>Discovery Status</strong><em>Source proof</em></span>
+    </button>
   </div>
-  <div class="exec-panel">
-    <div class="exec-panel-h"><div><div class="exec-panel-t">Opportunity simulation concepts</div><div class="exec-panel-m">Frontend-ready concepts for backend modelling</div></div></div>
-    <div class="sim-grid" id="simulationConcepts"></div>
-  </div>
-  <div class="predict-operating-grid">
-    <div class="predict-op-panel">
-      <div class="predict-op-ey">Future opportunity pipeline</div>
-      <div class="predict-op-sub">Ideas that can become experiments, pilots or business cases once backend models are connected.</div>
-      <div id="futureOpportunityPipeline"></div>
+
+  <div id="predictTabInnovation" class="predict-inner-tab">
+    <div class="roadmap-kpis" id="predictInnovationStats"></div>
+    <div class="exec-panel" style="margin-bottom:18px">
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Feature decision radar</div><div class="exec-panel-m">Competitor and partner moves translated into QR build, partner, test or watch decisions</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="exec-refresh" onclick="downloadInnovationRadarBrief()">Export PPTX</button><button class="exec-refresh" onclick="fetchPredictiveInnovation(true); fetchPredictiveAux(true)">Refresh evidence</button></div></div>
+      <div id="predictInnovationIdeas"></div>
     </div>
-    <div class="predict-op-panel">
-      <div class="predict-op-ey">Customer future signals</div>
-      <div class="predict-op-sub">Forward-looking expectations detected from the current intelligence cache.</div>
-      <div id="customerFutureSignals"></div>
+  </div>
+
+  <div id="predictTabPredictive" class="predict-inner-tab" style="display:none">
+    <div class="predict-grid" id="predictiveCategories"></div>
+    <div class="exec-panel" style="margin-bottom:18px">
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Predictive signals from current cache</div><div class="exec-panel-m">Forward-looking opportunities and risk windows</div></div><button class="exec-refresh" onclick="renderPredictivePage()">Refresh view</button></div>
+      <div id="predictiveSignals"></div>
     </div>
-    <div class="predict-op-panel wide">
-      <div class="predict-op-ey">Strategic simulation backlog</div>
-      <div class="predict-op-sub">Frontend-ready business questions for the future backend simulation engine.</div>
-      <div id="strategicSimulationBacklog"></div>
+    <div class="exec-panel">
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Opportunity simulation concepts</div><div class="exec-panel-m">Live innovation ideas and backend-modelled concepts</div></div></div>
+      <div class="sim-grid" id="simulationConcepts"></div>
+    </div>
+    <div class="predict-operating-grid">
+      <div class="predict-op-panel">
+        <div class="predict-op-ey">Future opportunity pipeline</div>
+        <div class="predict-op-sub">Ideas that can become experiments, pilots or business cases from live predictive innovation evidence.</div>
+        <div id="futureOpportunityPipeline"></div>
+      </div>
+      <div class="predict-op-panel">
+        <div class="predict-op-ey">Customer future signals</div>
+        <div class="predict-op-sub">Forward-looking expectations detected from the current intelligence cache.</div>
+        <div id="customerFutureSignals"></div>
+      </div>
+      <div class="predict-op-panel wide">
+        <div class="predict-op-ey">Strategic simulation backlog</div>
+        <div class="predict-op-sub">Model-ready business questions built from Radar evidence and live innovation discovery.</div>
+        <div id="strategicSimulationBacklog"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="predictTabAppintel" class="predict-inner-tab" style="display:none">
+    <div class="exec-panel">
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Competitor feature intelligence</div><div class="exec-panel-m">What rival apps, digital products and service experiences are doing right, and whether QR should deploy, test or watch</div></div><button class="exec-refresh" onclick="fetchPredictiveAux(true)">Refresh feature evidence</button></div>
+      <div id="predictAppIntel"></div>
+    </div>
+  </div>
+
+  <div id="predictTabPartners" class="predict-inner-tab" style="display:none">
+    <div class="exec-panel">
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Partner-enabled innovation</div><div class="exec-panel-m">Useful features QR can build faster by using partner network, loyalty and journey data</div></div><button class="exec-refresh" onclick="fetchPredictiveAux(true)">Refresh partner proof</button></div>
+      <div id="predictPartnerFeatureIdeas"></div>
+    </div>
+  </div>
+
+  <div id="predictTabDiscovery" class="predict-inner-tab" style="display:none">
+    <div class="exec-panel">
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Discovery status</div><div class="exec-panel-m">External source freshness and evidence base for Innovation Radar</div></div><button class="exec-refresh" onclick="fetchPredictiveAux(true)">Refresh status</button></div>
+      <div id="predictDiscoveryStatus"></div>
     </div>
   </div>
 </div>

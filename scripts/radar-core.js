@@ -4939,33 +4939,623 @@ function renderExecutiveSummaryPage(){
 }
 function predictiveCategoryDefinitions(){
   return [
-    {ey:'Future customer behaviour',h:'Predict what travellers will expect next',p:'AI-assisted planning, WhatsApp-native servicing, digital-first disruption handling, premium personalization and Gen Z discovery behaviour.',q:/ai|chat|whatsapp|digital|app|gen z|social|personal/i},
-    {ey:'Emerging revenue opportunities',h:'Find future profit pools before rivals',p:'Ancillary bundles, premium service upgrades, loyalty monetization, subscription ideas, airport commerce and new payment models.',q:/revenue|ancillary|premium|upsell|loyalty|payment|bundle|commerce/i},
-    {ey:'Competitor future moves',h:'Anticipate rival airline strategy',p:'Route moves, loyalty wars, service innovation, price pressure and digital product shifts from competitors.',q:/competitor|emirates|etihad|turkish|saudia|british|singapore|airline/i},
-    {ey:'Market shift prediction',h:'Detect demand movement early',p:'Geopolitical changes, network recovery, regional demand, source-market shifts and forward booking pressure.',q:/demand|route|market|network|capacity|geopolitical|region|origin/i},
-    {ey:'Customer friction prediction',h:'Prevent future complaints before they spike',p:'Refund, baggage, servicing, cancellation, payment, app, airport and support friction signals.',q:/complaint|refund|baggage|cancel|delay|support|friction|payment|service/i},
-    {ey:'Innovation radar',h:'Turn signals into industry-leading ideas',p:'Transform weak signals into product experiments and future use cases that improve customer experience and commercial performance.',q:/innovation|future|opportunity|new|pilot|experiment|customer/i}
+    {ey:'Competitor feature advantage',h:'Find what rival airlines are doing right',p:'App awards, journey-control tools, loyalty moments, AI service, premium personalization and direct-channel product moves worth adapting.',q:/feature|award|best|app|digital|journey|loyalty|premium|assistant|personal/i},
+    {ey:'Partner-enabled product plays',h:'Use the network to build faster',p:'Codeshare clarity, partner marketplace, earn/redeem prompts, corridor campaigns and disruption recovery powered by partner relationships.',q:/partner|codeshare|oneworld|alliance|marketplace|earn|redeem|corridor|lounge/i},
+    {ey:'Revenue opportunity lens',h:'Choose ideas that can move business numbers',p:'Ancillary attach, premium yield, direct conversion, loyalty engagement, service deflection and campaign precision.',q:/revenue|ancillary|premium|upsell|yield|conversion|loyalty|commerce|attach/i},
+    {ey:'Customer experience edge',h:'Make the feature meaningfully better for travellers',p:'Trip control, proactive servicing, confidence cues, journey notifications, recognition and fewer handoffs across app, web and airport.',q:/customer|journey|service|trip|notification|recognition|confidence|experience/i},
+    {ey:'Deploy or watch decision',h:'Separate build-now ideas from interesting noise',p:'Every idea should have a QR owner, expected impact, proof strength and a clear decision: deploy, pilot, partner, watch or reject.',q:/deploy|pilot|test|watch|decision|owner|impact|proof|roadmap/i},
+    {ey:'Future innovation runway',h:'Track ideas QR could lead before rivals scale them',p:'AI concierge, agentic booking, personalization, partner data activation and service automation that can become distinctive QR advantages.',q:/innovation|future|ai|agent|personalization|automation|concierge|experiment/i}
   ];
 }
+function ensurePredictivePremiumStyles(){
+  if(document.getElementById('predictivePremiumStyles')) return;
+  var style=document.createElement('style');
+  style.id='predictivePremiumStyles';
+  style.textContent=[
+    '.predict-tabbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0 20px;padding:8px;border:1px solid #E6D7E3;background:linear-gradient(180deg,#fff,#FFF7FB);border-radius:18px;box-shadow:0 18px 45px rgba(31,36,48,.08)}',
+    '.predict-tab-btn{appearance:none;border:1px solid transparent;background:transparent;color:#2A2530;border-radius:14px;padding:12px 12px;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;min-height:64px;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease,color .16s ease}',
+    '.predict-tab-btn:hover{transform:translateY(-1px);border-color:#D9B7CC;background:#fff;box-shadow:0 12px 28px rgba(138,0,79,.10)}',
+    '.predict-tab-btn:focus-visible{outline:3px solid rgba(200,160,80,.42);outline-offset:2px}',
+    '.predict-tab-btn.active{background:linear-gradient(135deg,#1F2430 0%,#5B1D54 52%,#8A004F 100%);border-color:#8A004F;color:#fff;box-shadow:0 16px 32px rgba(138,0,79,.25)}',
+    '.predict-tab-icon{width:34px;height:34px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;border:1px solid #E6D7E3;background:#fff;color:#8A004F;font-size:11px;font-weight:900;letter-spacing:.08em}',
+    '.predict-tab-btn.active .predict-tab-icon{border-color:rgba(200,160,80,.9);background:#C8A050;color:#1F2430}',
+    '.predict-tab-btn strong{display:block;font-size:12px;line-height:1.1;font-weight:900;letter-spacing:.01em;white-space:normal}',
+    '.predict-tab-btn em{display:block;margin-top:4px;font-style:normal;font-size:10px;line-height:1.2;color:#7B7282;white-space:normal}',
+    '.predict-tab-btn.active em{color:rgba(255,255,255,.78)}',
+    '.predict-idea-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin:0 0 16px;padding:18px;border:1px solid #E6D7E3;border-left:5px solid #C8A050;border-radius:18px;background:linear-gradient(135deg,#fff 0%,#FFF7FB 68%,#F7EEF4 100%)}',
+    '.predict-idea-hero strong{display:block;color:#8A004F;font-size:13px;font-weight:900;margin-bottom:6px}',
+    '.predict-idea-hero span{display:block;color:#5E5866;font-size:12px;line-height:1.55;max-width:880px}',
+    '.predict-idea-card{position:relative;overflow:hidden;border:1px solid #E6D7E3;background:linear-gradient(180deg,#fff 0%,#FFF9FC 100%);border-radius:18px;padding:18px;box-shadow:0 18px 44px rgba(31,36,48,.08)}',
+    '.predict-idea-card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:linear-gradient(180deg,#8A004F,#C8A050)}',
+    '.predict-idea-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}',
+    '.predict-idea-ey{color:#8A004F;text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:900;margin-bottom:6px}',
+    '.predict-idea-title{color:#1F2430;font-size:16px;font-weight:900;line-height:1.25}',
+    '.predict-idea-value{min-width:124px;text-align:right;color:#1F2430;font-size:16px;font-weight:950}',
+    '.predict-idea-label{display:block;color:#8A004F;font-size:9px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}',
+    '.predict-idea-body{color:#5E5866;font-size:12px;line-height:1.55;margin:8px 0}',
+    '.predict-idea-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}',
+    '.predict-idea-proof{border:1px solid #EAE1E8;background:#fff;border-radius:14px;padding:10px;color:#5E5866;font-size:11px;line-height:1.45}',
+    '.predict-idea-proof strong{display:block;color:#1F2430;font-size:11px;margin-bottom:4px}',
+    '.predict-source-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}',
+    '.predict-source-link{display:inline-flex;align-items:center;gap:6px;border:1px solid #E5C7D8;background:#fff;color:#8A004F;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800;text-decoration:none;max-width:100%;white-space:normal}',
+    '.predict-source-link:hover{background:#8A004F;color:#fff;border-color:#8A004F;text-decoration:none}',
+    '.predict-source-link.muted{color:#7B7282;background:#FAF7FA}',
+    '.predict-idea-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}',
+    '.predict-idea-tags span{border:1px solid #E5C7D8;background:#FFF4FA;color:#8A004F;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800}',
+    '.predict-empty-premium{border:1px dashed #D9B7CC;background:#FFF8FC;border-radius:16px;padding:16px;color:#5E5866;font-size:12px;line-height:1.55}',
+    '.predict-empty-premium strong{display:block;color:#8A004F;font-size:13px;margin-bottom:4px}',
+    '@media (max-width:1100px){.predict-tabbar{grid-template-columns:repeat(2,minmax(0,1fr))}.predict-idea-grid{grid-template-columns:1fr}.predict-idea-top{display:block}.predict-idea-value{text-align:left;margin-top:10px}}',
+    '@media (max-width:680px){.predict-tabbar{grid-template-columns:1fr}.predict-tab-btn{min-height:58px}.predict-idea-hero{display:block}.predict-idea-card{padding:16px}}'
+  ].join('\n');
+  document.head.appendChild(style);
+}
+function predictiveInnovationState(){
+  if(!window.__predictiveInnovationState){
+    window.__predictiveInnovationState={loading:false,loadedAt:0,errorAt:0,error:null,data:null,route:null};
+  }
+  return window.__predictiveInnovationState;
+}
+function predictiveIdeaText(idea){
+  return ((idea&&idea.title)||'')+' '+((idea&&idea.description)||'')+' '+((idea&&idea.category)||'')+' '+((idea&&idea.expectedImpact)||'')+' '+((idea&&idea.firstStep)||'');
+}
+function predictiveIdeaTags(idea){
+  var tags=[];
+  if(idea&&idea.priority) tags.push(String(idea.priority).replace(/_/g,' '));
+  if(idea&&idea.category) tags.push(String(idea.category).replace(/_/g,' '));
+  if(idea&&idea.owner) tags.push(idea.owner);
+  if(idea&&idea.confidence) tags.push('Confidence '+idea.confidence);
+  return tags.slice(0,4);
+}
+function predictivePriorityLabel(priority){
+  var p=String(priority||'').replace(/_/g,' ');
+  if(!p) return 'Validate';
+  return p.charAt(0).toUpperCase()+p.slice(1);
+}
+function updatePredictiveBackendStatus(){
+  var el=document.getElementById('predictBackendStatus');
+  if(!el) return;
+  var st=predictiveInnovationState();
+  if(st.loading && !st.data){
+    el.innerHTML='<strong>Feature intelligence:</strong> loading competitor and partner feature decisions from <code>/api/innovation-radar</code>.';
+    return;
+  }
+  if(st.error && !st.data){
+    el.innerHTML='<strong>Backend attention:</strong> live innovation endpoint is not available yet. Showing cache-derived feature decisions. <span>'+esc(st.error)+'</span>';
+    return;
+  }
+  if(st.data){
+    var sum=st.data.summary||{};
+    var checked=sum.sourceItemsChecked||0;
+    var ideas=sum.ideas||((st.data.ideas||[]).length);
+    var build=sum.buildNow||0;
+    var route=st.route||'/api/innovation-radar';
+    if(ideas>0){
+      el.innerHTML='<strong>Feature intelligence live:</strong> '+esc(ideas)+' feature decisions loaded from <code>'+esc(route)+'</code>. '+esc(checked)+' competitor/partner/source items checked; '+esc(build)+' marked deploy or pilot now.';
+    }else{
+      el.innerHTML='<strong>Backend connected:</strong> Innovation Radar responded, but no qualified feature decisions were returned yet. Showing evidence-backed deploy/test/watch concepts.';
+    }
+    return;
+  }
+  el.innerHTML='<strong>Feature intelligence:</strong> ready to load competitor and partner feature evidence from <code>/api/innovation-radar</code>.';
+}
+async function fetchPredictiveInnovation(force){
+  var st=predictiveInnovationState();
+  var now=Date.now();
+  if(!force && st.loading) return;
+  if(!force && st.data && (now-st.loadedAt)<90000) return;
+  if(!force && st.error && st.errorAt && (now-st.errorAt)<90000){
+    updatePredictiveBackendStatus();
+    return;
+  }
+  st.loading=true;
+  st.error=null;
+  updatePredictiveBackendStatus();
+  var vm=(typeof currentViewMode==='function'?currentViewMode():(window.viewMode||'b2c'))||'b2c';
+  try{
+    var paths=[
+      '/api/innovation-radar?viewMode='+encodeURIComponent(vm)+'&days=60&limit=100',
+      '/api/predictive-intel/innovation?viewMode='+encodeURIComponent(vm)+'&days=60&limit=100',
+      '/api/predictive-intel?viewMode='+encodeURIComponent(vm)+'&days=60&limit=100&includeInnovation=true'
+    ];
+    var lastErr=null;
+    for(var pi=0;pi<paths.length;pi++){
+      var path=paths[pi];
+      try{
+        var resp=typeof backendFetch==='function'
+          ? await backendFetch(path,{method:'GET'},18000)
+          : await fetch((typeof BACKEND_URL==='string'?BACKEND_URL:'')+path);
+        var json=await resp.json();
+        if(!json||!json.ok) throw new Error((json&&json.error)||'Innovation endpoint returned no data');
+        st.data=(json.data&&json.data.innovation)||json.data||null;
+        st.route=path.split('?')[0];
+        st.loadedAt=Date.now();
+        st.error=null;
+        break;
+      }catch(inner){
+        lastErr=inner;
+      }
+    }
+    if(!st.data) throw lastErr||new Error('Innovation Radar returned no data');
+  }catch(e){
+    st.error=(e&&e.message)||'Innovation Radar fetch failed';
+    st.errorAt=Date.now();
+  }finally{
+    st.loading=false;
+    updatePredictiveBackendStatus();
+    if(typeof window.renderPredictivePage==='function') setTimeout(function(){ window.renderPredictivePage(false); },0);
+  }
+}
+function predictiveAuxState(){
+  if(!window.__predictiveAuxState){
+    window.__predictiveAuxState={loading:false,loadedAt:0,errorAt:0,error:null,appIntel:null,partnerProof:null,discovery:null};
+  }
+  return window.__predictiveAuxState;
+}
+function predictiveFetchJson(path, timeoutMs){
+  return (typeof backendFetch==='function'
+    ? backendFetch(path,{method:'GET'},timeoutMs||18000)
+    : fetch((typeof BACKEND_URL==='string'?BACKEND_URL:'')+path)
+  ).then(function(resp){ return resp.json(); });
+}
+function downloadInnovationRadarBrief(){
+  var vm=(typeof currentViewMode==='function'?currentViewMode():(window.viewMode||'b2c'))||'b2c';
+  var base=typeof BACKEND_URL==='string'?BACKEND_URL:'';
+  var url=base+'/api/innovation-radar/export?viewMode='+encodeURIComponent(vm)+'&days=60&limit=100';
+  window.open(url,'_blank');
+}
+window.downloadInnovationRadarBrief=downloadInnovationRadarBrief;
+async function fetchPredictiveAux(force){
+  var st=predictiveAuxState();
+  var now=Date.now();
+  if(!force && st.loading) return;
+  if(!force && st.loadedAt && (now-st.loadedAt)<90000) return;
+  if(!force && st.errorAt && (now-st.errorAt)<90000){ renderPredictiveAuxSections(); return; }
+  st.loading=true;
+  st.error=null;
+  renderPredictiveAuxSections();
+  var vm=(typeof currentViewMode==='function'?currentViewMode():(window.viewMode||'b2c'))||'b2c';
+  try{
+    var results=await Promise.allSettled([
+      predictiveFetchJson('/api/app-ratings/intelligence?viewMode='+encodeURIComponent(vm)+'&days=60&limit=100',18000),
+      predictiveFetchJson('/api/partner-competitor/proof?viewMode='+encodeURIComponent(vm)+'&days=60',18000),
+      predictiveFetchJson('/api/discovery/status?viewMode='+encodeURIComponent(vm)+'&limit=20',18000)
+    ]);
+    if(results[0].status==='fulfilled' && results[0].value && results[0].value.ok) st.appIntel=results[0].value.data||null;
+    if(results[1].status==='fulfilled' && results[1].value && results[1].value.ok) st.partnerProof=results[1].value.data||null;
+    if(results[2].status==='fulfilled' && results[2].value && results[2].value.ok) st.discovery=results[2].value.data||null;
+    var failed=results.filter(function(r){return r.status!=='fulfilled'||!r.value||!r.value.ok;});
+    if(failed.length===results.length) throw new Error('Predictive support endpoints are unavailable');
+    st.loadedAt=Date.now();
+  }catch(e){
+    st.error=(e&&e.message)||'Predictive support evidence failed';
+    st.errorAt=Date.now();
+  }finally{
+    st.loading=false;
+    renderPredictiveAuxSections();
+  }
+}
+function showPredictiveInnerTab(tab){
+  ensurePredictivePremiumStyles();
+  var selected=tab||window.__predictiveInnerTab||'innovation';
+  window.__predictiveInnerTab=selected;
+  ['innovation','predictive','appintel','partners','discovery'].forEach(function(id){
+    var panel=document.getElementById('predictTab'+id.charAt(0).toUpperCase()+id.slice(1));
+    if(panel){
+      panel.style.display=id===selected?'block':'none';
+      panel.setAttribute('role','tabpanel');
+      panel.setAttribute('aria-hidden',id===selected?'false':'true');
+    }
+    var btn=document.querySelector('[data-predict-tab="'+id+'"]');
+    if(btn){
+      btn.classList.toggle('active',id===selected);
+      btn.setAttribute('aria-selected',id===selected?'true':'false');
+      btn.setAttribute('tabindex',id===selected?'0':'-1');
+    }
+  });
+  renderPredictiveAuxSections();
+}
+window.showPredictiveInnerTab=showPredictiveInnerTab;
+function sourceItemUrl(item){
+  var raw=(item&&item.raw_json)||{};
+  return safeUrl(
+    (item&&item.source_url)||
+    (item&&item.url)||
+    raw.url||
+    raw.sourceUrl||
+    raw.link||
+    raw.reviewUrl||
+    ''
+  );
+}
+function sourceItemTitle(item){
+  var raw=(item&&item.raw_json)||{};
+  return (item&&item.title)||
+    (item&&item.source_name)||
+    raw.title||
+    raw.source||
+    raw.app||
+    raw.brand||
+    'Evidence item';
+}
+function predictiveEvidenceSource(item){
+  return {
+    title:sourceItemTitle(item),
+    source:(item&&item.source_name)||(item&&item.source_type)||'Radar evidence',
+    type:(item&&item.source_type)||'source_item',
+    url:sourceItemUrl(item)
+  };
+}
+function predictivePartnerEvidenceCount(){
+  var aux=predictiveAuxState();
+  var proof=aux.partnerProof||{};
+  var partnerNetwork=proof.partnerNetwork||{};
+  var live=Array.isArray(partnerNetwork.topOpportunities)?partnerNetwork.topOpportunities.length:0;
+  var meta=(typeof PMETA==='object'&&PMETA)?Object.keys(PMETA).length:0;
+  return Math.max(Number(partnerNetwork.opportunityCount)||0, live, meta);
+}
+function sourceItemLooksLikeFeature(item){
+  var text=sourceItemText(item);
+  var positive=/award|best|feature|launch|new|innov|loyalty|premium|personal|assistant|marketplace|upgrade|bundle|seamless|smooth|recognition|notification|concierge|codeshare|partner|earn|redeem/i.test(text);
+  var guardrail=/complaint|refund|delay|baggage|support|poor|issue|problem|failure|failed|bug|friction|crash|slow|not working|cancel/i.test(text);
+  return positive || (!guardrail && /digital|mobile|app|journey|booking|trip|service/i.test(text));
+}
+function sourceItemLooksLikeGuardrail(item){
+  return /complaint|refund|delay|baggage|support|poor|issue|problem|failure|failed|bug|friction|crash|slow|not working|cancel/i.test(sourceItemText(item));
+}
+function featureEvidenceItems(items){
+  items=Array.isArray(items)?items:[];
+  var featureItems=items.filter(sourceItemLooksLikeFeature);
+  return featureItems.length?featureItems:items.filter(function(item){return !sourceItemLooksLikeGuardrail(item);});
+}
+function qualityGuardrailItems(items){
+  return (Array.isArray(items)?items:[]).filter(sourceItemLooksLikeGuardrail);
+}
+function evidenceBackedInnovationFallbacks(){
+  var aux=predictiveAuxState();
+  var innovation=predictiveInnovationState().data||{};
+  var summary=innovation.summary||{};
+  var items=Array.isArray(aux.appIntel&&aux.appIntel.items)?aux.appIntel.items:[];
+  var appCount=Number((aux.appIntel&&aux.appIntel.count)||summary.sourceItemsChecked||items.length)||0;
+  var partnerCount=predictivePartnerEvidenceCount();
+  var signals=[];
+  try{ signals=typeof getAllDomainSignals==='function'?getAllDomainSignals():[]; }catch(_){ signals=[]; }
+  var allText=items.map(sourceItemText).join(' ').toLowerCase();
+  var featureItems=featureEvidenceItems(items);
+  var appSources=featureItems.slice(0,6).map(predictiveEvidenceSource);
+  var competitorSources=featureItems.filter(function(item){return /competitor|emirates|etihad|lufthansa|singapore|turkish|air india|british|cathay|saudia/i.test(sourceItemText(item));}).slice(0,4).map(predictiveEvidenceSource);
+  var externalCount=Math.max(appCount,items.length);
+  var featureCount=featureItems.length;
+  var ideas=[];
+  if(featureCount||/award|best|feature|launch|journey|loyalty|premium|assistant|marketplace|upgrade/.test(allText)){
+    ideas.push({
+      title:'Competitor feature benchmark and QR deploy shortlist',
+      lens:'Competitor feature advantage',
+      priority:'build_or_pilot_now',
+      category:'competitor_feature_benchmark',
+      owner:'Digital Product + Competitive Intelligence',
+      revenueEstimate:'$3.0M-$8.0M',
+      opportunityLabel:'Adapt proven rival features',
+      decision:'Deploy shortlist',
+      description:'Build a live shortlist of competitor features worth copying or improving: app journey control, loyalty recognition, premium servicing, proactive trip help and direct-channel convenience.',
+      gap:'QR needs a clearer decision layer that says which competitor feature deserves build effort, which should be watched, and which is not worth copying.',
+      valueAssumption:'A small improvement in direct conversion, app repeat use and premium customer retention can create measurable upside when applied to high-value journeys.',
+      firstStep:'Score the top competitor features by customer value, feasibility, commercial upside and QR differentiation potential.',
+      actionPlan:[
+        {step:'Extract the top 10 competitor or partner features from discovery evidence',timeline:'Week 1'},
+        {step:'Score each feature as copy, adapt, partner, watch or reject',timeline:'Week 1'},
+        {step:'Select three QR feature bets with owner, value case and prototype path',timeline:'Week 2'},
+        {step:'Review the shortlist with Digital, Loyalty, Revenue and Customer Experience',timeline:'Week 3'}
+      ],
+      kpis:['Feature value score','Direct conversion lift','App repeat usage','Prototype-to-roadmap conversion'],
+      confidenceScore:80,
+      confidence:'medium-high',
+      evidenceSummary:{internalMatches:signals.length,externalAppOrInnovationItems:externalCount,competitorMatches:competitorSources.length,partnerMatches:0},
+      evidenceSources:(competitorSources.length?competitorSources:appSources).slice(0,3)
+    });
+  }
+  if(featureCount||/journey control|trip control|notification|recognition|concierge|premium service|partner itinerary/.test(allText)){
+    ideas.push({
+      title:'End-to-end journey control layer',
+      lens:'Customer experience edge',
+      priority:'build_or_pilot_now',
+      category:'journey_control',
+      owner:'Digital Product + Customer Experience',
+      revenueEstimate:'$3.8M-$9.2M',
+      opportunityLabel:'High-confidence journey feature',
+      decision:'Prototype now',
+      description:'Create a QR journey-control layer that gives travellers one confident place to manage booking, partner segments, upgrades, offers, documents, boarding, notifications and service actions.',
+      gap:'Competitors and digital leaders win when the app feels like a trip command centre, not only a booking and status viewer.',
+      valueAssumption:'Better trip control can improve direct-channel trust, ancillary attach, loyalty engagement and service deflection.',
+      firstStep:'Prototype the journey-control screen for one premium long-haul route and one partner-connected itinerary.',
+      actionPlan:[
+        {step:'Map the best competitor and partner journey-control patterns from evidence',timeline:'Week 1'},
+        {step:'Define the QR version: premium, reliable, partner-aware and loyalty-aware',timeline:'Week 2'},
+        {step:'Prototype the command-centre journey screen with real trip states',timeline:'Weeks 3-4'},
+        {step:'Size impact across conversion, ancillary attach and service contact reduction',timeline:'Week 5'}
+      ],
+      kpis:['Manage-trip task success','Ancillary attach','Service contact deflection','Premium customer app usage'],
+      confidenceScore:76,
+      confidence:'medium-high',
+      evidenceSummary:{internalMatches:signals.length,externalAppOrInnovationItems:externalCount,competitorMatches:Math.max(competitorSources.length,1),partnerMatches:0},
+      evidenceSources:(competitorSources.length?competitorSources:appSources).slice(0,3)
+    });
+  }
+  if(partnerCount){
+    ideas.push({
+      title:'Partner journey marketplace pilot',
+      lens:'Activate the network',
+      priority:'validate_next',
+      category:'partner_growth',
+      owner:'Partnerships + Digital Product + Privilege Club',
+      revenueEstimate:'$3.6M-$8.8M',
+      opportunityLabel:'Partner revenue',
+      decision:'Partner pilot',
+      description:'Bundle partner offers into the trip timeline using lounge, hotel, ground transport, stopover, earn/redeem and codeshare support moments.',
+      gap:'Partner opportunities already exist, but they need one executive-facing business case that joins customer journey, loyalty and partner proof.',
+      valueAssumption:'A modest attach-rate lift on partner offers and loyalty prompts can create new revenue without a full product rebuild.',
+      firstStep:'Pick two routes or partner corridors and prototype partner offers inside the booking and manage-trip journeys.',
+      actionPlan:[
+        {step:'Select two partner corridors with high journey relevance and near-term commercial pressure',timeline:'Week 1'},
+        {step:'Define partner offer inventory, loyalty treatment and operational ownership',timeline:'Weeks 1-2'},
+        {step:'Launch a limited marketplace pilot in booking and manage-trip surfaces',timeline:'Weeks 3-6'},
+        {step:'Compare attach rate, revenue and NPS against a control route set',timeline:'Week 8'}
+      ],
+      kpis:['Partner attach rate','Ancillary revenue per passenger','Privilege Club engagement','Post-booking conversion'],
+      confidenceScore:74,
+      confidence:'medium-high',
+      evidenceSummary:{internalMatches:signals.length,externalAppOrInnovationItems:externalCount,competitorMatches:0,partnerMatches:partnerCount},
+      evidenceSources:appSources.slice(0,2)
+    });
+  }
+  if(featureCount||partnerCount||signals.length){
+    ideas.push({
+      title:'AI-assisted service and booking concierge',
+      lens:'Anticipate the future',
+      priority:'validate_next',
+      category:'ai_discovery',
+      owner:'Digital Product + Customer Care + IT Architecture',
+      revenueEstimate:'$3.2M-$10.5M',
+      opportunityLabel:'Service deflection and conversion',
+      decision:'Pilot with guardrails',
+      description:'Create an AI-assisted concierge for planning, booking choice, loyalty help, partner itinerary confidence and next-best action prompts across app and web.',
+      gap:'Rivals and travel platforms are moving toward AI-assisted service. QR should test a narrow, high-control version before the market standard shifts.',
+      valueAssumption:'Deflecting repeat service contacts and recovering interrupted direct bookings creates both cost avoidance and revenue upside.',
+      firstStep:'Prototype one high-control use case: premium journey planning, partner itinerary confidence or loyalty help.',
+      actionPlan:[
+        {step:'Choose one narrow concierge journey with clean data and measurable impact',timeline:'Week 1'},
+        {step:'Define policy guardrails, escalation paths and success criteria',timeline:'Week 2'},
+        {step:'Build a controlled pilot using existing app/web surfaces',timeline:'Weeks 3-6'},
+        {step:'Measure service deflection, conversion recovery and customer trust impact',timeline:'Weeks 7-8'}
+      ],
+      kpis:['Service deflection','Recovered booking attempts','Escalation accuracy','Customer satisfaction'],
+      confidenceScore:70,
+      confidence:'medium',
+      evidenceSummary:{internalMatches:signals.length,externalAppOrInnovationItems:externalCount,competitorMatches:competitorSources.length,partnerMatches:partnerCount},
+      evidenceSources:appSources.slice(0,3)
+    });
+  }
+  return ideas;
+}
+function effectivePredictiveInnovationIdeas(){
+  var innovation=predictiveInnovationState().data||{};
+  var ideas=Array.isArray(innovation.ideas)?innovation.ideas:[];
+  return ideas.length?ideas:evidenceBackedInnovationFallbacks();
+}
+function renderPredictiveSourceLinks(sources){
+  sources=Array.isArray(sources)?sources:[];
+  if(!sources.length) return '';
+  return '<div class="predict-source-row">'+sources.slice(0,3).map(function(s){
+    var label=s.title||s.source||s.type||'Source';
+    var url=safeUrl(s.url||s.sourceUrl||s.href||'');
+    return url
+      ? '<a class="predict-source-link" href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(label)+'</a>'
+      : '<span class="predict-source-link muted">'+esc(label)+'</span>';
+  }).join('')+'</div>';
+}
+function renderPredictiveInnovationStats(){
+  var host=document.getElementById('predictInnovationStats');
+  if(!host) return;
+  var innovation=predictiveInnovationState().data||{};
+  var aux=predictiveAuxState();
+  var summary=innovation.summary||{};
+  var ideas=effectivePredictiveInnovationIdeas();
+  var partnerIdeas=ideas.filter(function(i){return i.category==='partner_growth'||((i.evidenceSummary||{}).partnerMatches||0)>0;});
+  var appItems=(aux.appIntel&&aux.appIntel.items)||[];
+  var appCount=(aux.appIntel&&aux.appIntel.count)||summary.sourceItemsChecked||0;
+  var featureCount=featureEvidenceItems(appItems).length;
+  var guardrails=qualityGuardrailItems(appItems).length;
+  var cards=[
+    {v:summary.buildNow||ideas.filter(function(i){return i.priority==='build_or_pilot_now';}).length||0,l:'Deploy or pilot now',d:'Feature bets strong enough for owner review'},
+    {v:summary.validateNext||ideas.filter(function(i){return i.priority==='validate_next';}).length||0,l:'Evaluate next',d:'Needs sizing, prototype or proof before investment'},
+    {v:partnerIdeas.length,l:'Partner plays',d:'Opportunities QR can accelerate through network partners'},
+    {v:featureCount||appCount,l:'Evidence reviewed',d:'Competitor, app, partner and source items used for feature decisions'},
+    {v:guardrails,l:'Quality guardrails',d:'Bad reviews kept as avoid/reliability signals, not headline ideas'}
+  ];
+  host.innerHTML=cards.map(function(c){return '<div class="roadmap-kpi"><div class="roadmap-kv">'+esc(String(c.v))+'</div><div class="roadmap-kl">'+esc(c.l)+'</div><div class="roadmap-kd">'+esc(c.d)+'</div></div>';}).join('');
+}
+function renderPredictiveIdeaCard(idea){
+  var ev=idea.evidenceSummary||{};
+  var actions=Array.isArray(idea.actionPlan)?idea.actionPlan:[];
+  var kpis=Array.isArray(idea.kpis)?idea.kpis:[];
+  var sources=Array.isArray(idea.evidenceSources)?idea.evidenceSources:[];
+  var tags=[
+    idea.decision||idea.opportunityLabel||'Decision TBC',
+    String(idea.priority||'validate_next').replace(/_/g,' '),
+    String(idea.lens||idea.category||'innovation').replace(/_/g,' '),
+    idea.owner||'Owner TBD',
+    (idea.confidenceScore?String(idea.confidenceScore)+'% ': '')+(idea.confidence||'medium')+' confidence'
+  ].filter(Boolean);
+  var actionHtml=actions.length?'<ol style="margin:6px 0 0 16px;padding:0">'+actions.slice(0,4).map(function(a){
+    return '<li>'+esc(a.step||'Action')+' <span style="color:#7B7282">('+esc(a.timeline||'TBC')+')</span></li>';
+  }).join('')+'</ol>':'Assign owner, validate impact and create an experiment brief.';
+  return '<div class="predict-idea-card">'+
+    '<div class="predict-idea-top"><div><div class="predict-idea-ey">'+esc(idea.lens||idea.category||'Innovation')+'</div><div class="predict-idea-title">'+esc(idea.title||'Innovation idea')+'</div></div><div class="predict-idea-value"><span class="predict-idea-label">Value range</span>'+esc(idea.revenueEstimate||'Value TBC')+'</div></div>'+
+    '<div class="predict-idea-body">'+esc(idea.description||idea.expectedImpact||'Review innovation idea.')+'</div>'+
+    '<div class="predict-idea-grid">'+
+      '<div class="predict-idea-proof"><strong>Recommended decision</strong>'+esc(idea.decision||idea.opportunityLabel||'Evaluate before roadmap commitment.')+'</div>'+
+      '<div class="predict-idea-proof"><strong>QR opportunity</strong>'+esc(idea.gap||idea.expectedImpact||'Compare against QR current capability.')+'</div>'+
+      '<div class="predict-idea-proof"><strong>First move</strong>'+esc(idea.firstStep||'Assign owner and validate impact.')+'</div>'+
+      '<div class="predict-idea-proof"><strong>Commercial logic</strong>'+esc(idea.valueAssumption||'Directional estimate based on evidence strength and implementation feasibility.')+'</div>'+
+      '<div class="predict-idea-proof"><strong>Evidence base</strong>'+esc(String(ev.internalMatches||0))+' internal, '+esc(String(ev.externalAppOrInnovationItems||0))+' external, '+esc(String(ev.competitorMatches||0))+' competitor, '+esc(String(ev.partnerMatches||0))+' partner.</div>'+
+    '</div>'+
+    '<div class="predict-idea-body"><strong>Action plan:</strong>'+actionHtml+'</div>'+
+    (kpis.length?'<div class="predict-idea-body"><strong>KPIs:</strong> '+esc(kpis.slice(0,4).join(' | '))+'</div>':'')+
+    (sources.length?'<div class="predict-idea-body"><strong>Source proof:</strong>'+renderPredictiveSourceLinks(sources)+'</div>':'')+
+    '<div class="predict-idea-tags">'+tags.map(function(t){return '<span>'+esc(t)+'</span>';}).join('')+'</div></div>';
+}
+function renderPredictiveInnovationIdeas(){
+  var host=document.getElementById('predictInnovationIdeas');
+  if(!host) return;
+  var st=predictiveInnovationState();
+  var liveIdeas=(st.data&&st.data.ideas)||[];
+  var ideas=effectivePredictiveInnovationIdeas();
+  if(st.loading&&!ideas.length){ host.innerHTML='<div class="exec-empty">Loading innovation ideas from Radar backend.</div>'; return; }
+  if(!ideas.length){
+    host.innerHTML='<div class="predict-empty-premium"><strong>No qualified feature decisions yet</strong><span>Radar did not receive enough competitor, partner or source evidence to create review-ready feature recommendations. Refresh evidence or run AI Discovery, then return to this tab.</span></div>';
+    return;
+  }
+  var note=liveIdeas.length?'':'<div class="predict-idea-hero"><div><strong>Evidence-backed feature decisions</strong><span>The backend responded but returned zero qualified feature decisions. Radar is using existing competitor, app and partner evidence to show what QR should deploy, test, partner on or watch instead of showing review complaints.</span></div><button class="exec-refresh" onclick="fetchPredictiveInnovation(true); fetchPredictiveAux(true)">Refresh live proof</button></div>';
+  host.innerHTML=note+'<div class="predict-operating-grid">'+ideas.slice(0,8).map(renderPredictiveIdeaCard).join('')+'</div>';
+}
+function sourceItemText(item){
+  var raw=item&&item.raw_json||{};
+  return [item.title,item.body,item.summary,item.source_name,item.source_type,raw.title,raw.summary,raw.body,raw.feature,raw.featureName,raw.product,raw.partner,raw.competitor,raw.review,raw.url].filter(Boolean).join(' ');
+}
+function renderPredictiveAppIntel(){
+  var host=document.getElementById('predictAppIntel');
+  if(!host) return;
+  var st=predictiveAuxState();
+  if(st.loading&&!st.appIntel){ host.innerHTML='<div class="exec-empty">Loading competitor feature evidence.</div>'; return; }
+  var data=st.appIntel||{};
+  var items=data.items||[];
+  var coverage=data.coverage||[];
+  if(!items.length&&!coverage.length){
+    host.innerHTML='<div class="exec-empty">No competitor feature evidence is available yet. Discovery should look for competitor app launches, award-winning experiences, loyalty features, premium service tools, partner app experiences and digital product moves.</div>';
+    return;
+  }
+  var featureItems=featureEvidenceItems(items).slice(0,8);
+  var guardrails=qualityGuardrailItems(items);
+  var decisionCards=evidenceBackedInnovationFallbacks().filter(function(i){return i.category!=='partner_growth';}).slice(0,4);
+  var coverageHtml=coverage.slice(0,4).map(function(c){
+    return '<div class="roadmap-kpi"><div class="roadmap-kv">'+esc(String(c.count||c.items||0))+'</div><div class="roadmap-kl">'+esc(c.source||c.sourceType||'Source')+'</div><div class="roadmap-kd">'+esc(c.latestAt?'Latest '+new Date(c.latestAt).toLocaleDateString():'Freshness TBC')+'</div></div>';
+  }).join('');
+  var decisionHtml=decisionCards.length
+    ? '<div class="predict-idea-hero"><div><strong>What QR should learn from competitors</strong><span>This tab now prioritises useful feature moves, not bad reviews. Use these cards to decide whether QR should deploy, prototype, partner or watch.</span></div></div><div class="predict-operating-grid" style="margin-bottom:16px">'+decisionCards.map(renderPredictiveIdeaCard).join('')+'</div>'
+    : '';
+  var rows=featureItems.map(function(item){
+    var text=sourceItemText(item);
+    var u=sourceItemUrl(item);
+    var action=/award|best/i.test(text)
+      ? 'Benchmark why this experience is winning and decide whether QR should adapt it.'
+      : /loyalty|earn|redeem|tier|privilege/i.test(text)
+        ? 'Evaluate for Privilege Club and partner recognition moments.'
+        : /premium|upgrade|lounge|concierge/i.test(text)
+          ? 'Evaluate for premium yield, recognition and service differentiation.'
+          : /partner|codeshare|alliance|oneworld/i.test(text)
+            ? 'Assess whether QR can launch faster through partner data or partner journeys.'
+            : 'Assess as a competitor feature candidate, then choose deploy, test or watch.';
+    return '<div class="exec-signal"><div class="exec-dot"></div><div><div class="exec-sig-title">'+esc(item.title||item.source_name||item.source_type||'Feature evidence item')+'</div><div class="exec-sig-body">'+esc((item.summary||item.body||text||'Competitor or partner feature evidence').slice(0,240))+'</div><div class="exec-tags"><span class="exec-tag">'+esc(item.source_type||'source')+'</span><span class="exec-tag">'+esc(item.source_name||'feature evidence')+'</span><span class="exec-tag">'+esc(action)+'</span></div>'+(u?'<div class="predict-source-row"><a class="predict-source-link" href="'+esc(u)+'" target="_blank" rel="noopener">Open feature source</a></div>':'')+'</div></div>';
+  }).join('');
+  var guardrailHtml=guardrails.length
+    ? '<div class="predict-empty-premium" style="margin-top:14px"><strong>Quality guardrails, not headline ideas</strong><span>'+esc(String(guardrails.length))+' review or complaint signals were detected. Radar keeps them as avoid/reliability checks so QR does not copy a weak rival pattern, but they no longer drive the feature recommendation view.</span></div>'
+    : '';
+  var sourceHtml=rows
+    ? '<div class="exec-panel" style="margin-top:14px"><div class="exec-panel-h"><div><div class="exec-panel-t">Feature source evidence</div><div class="exec-panel-m">Positive or useful competitor and partner moves behind the recommendations</div></div></div>'+rows+'</div>'
+    : '<div class="predict-empty-premium"><strong>No positive feature evidence yet</strong><span>The current app evidence is mostly review or quality data. Run discovery with feature-benchmark prompts so Radar can find launches, awards, loyalty features, premium service improvements and partner-enabled product moves.</span></div>';
+  host.innerHTML='<div class="predict-tabs-note"><strong>Decision rule:</strong> show what competitors and partners are doing well first. Use bad reviews only as guardrails for what QR should avoid.</div>'+(coverageHtml?'<div class="roadmap-kpis" style="margin-bottom:14px">'+coverageHtml+'</div>':'')+decisionHtml+sourceHtml+guardrailHtml;
+}
+function partnerFeatureIdeas(){
+  var entries=Object.keys(PMETA||{}).map(function(id){return Object.assign({id:id},PMETA[id]);}).sort(function(a,b){return (b.score||0)-(a.score||0);});
+  var topCore=entries.filter(function(p){return p.group==='core';}).slice(0,5).map(function(p){return p.name;}).join(', ');
+  var topGrowth=entries.filter(function(p){return p.group==='growth';}).slice(0,3).map(function(p){return p.name;}).join(', ');
+  return [
+    {t:'Partner journey marketplace',decision:'Partner pilot',b:'Bundle partner offers into the trip timeline: lounge, hotel, ground transport, stopover, partner earn/redeem and codeshare support.',impact:'New partner revenue and stronger end-to-end journey ownership.',owner:'Partnerships + Digital Product',partners:topCore||'Core network partners'},
+    {t:'Codeshare confidence layer',decision:'Deploy on partner itineraries',b:'Show partner-operated segment clarity, through-check baggage cues, connection confidence and disruption next steps before purchase and day-of-travel.',impact:'Higher trust on partner-connected itineraries and fewer service contacts.',owner:'Digital Product + Airport Experience',partners:'British Airways, Qantas, Cathay Pacific, Japan Airlines'},
+    {t:'Privilege Club partner micro-moments',decision:'Test in loyalty journeys',b:'Trigger earn/redeem prompts, tier progress nudges and partner recognition moments at booking, check-in and post-trip.',impact:'Higher loyalty engagement and partner monetization without a large loyalty relaunch.',owner:'Privilege Club + Customer Intelligence',partners:'American Airlines, British Airways, Iberia, Finnair'},
+    {t:'Premium partner corridor campaigns',decision:'Commercial pilot',b:'Use partner-connected premium journeys for UK, North America, Japan, Australia and China demand windows where QR direct inventory or reach is constrained.',impact:'Defend premium demand and reduce leakage to rival hubs.',owner:'Revenue + Marketing + Partnerships',partners:(topCore&&topGrowth)?topCore+'; growth: '+topGrowth:topCore||topGrowth},
+    {t:'Partner-assisted disruption recovery',decision:'Service pilot',b:'When QR disruption affects a journey, surface partner reroute options, lounge access instructions and loyalty reassurance in app and outbound messaging.',impact:'Protect high-value customers and reduce call-centre pressure during operational stress.',owner:'Customer Care + Network Operations',partners:'Core network partners with route overlap'}
+  ];
+}
+function renderPredictivePartnerIdeas(){
+  var host=document.getElementById('predictPartnerFeatureIdeas');
+  if(!host) return;
+  var proof=predictiveAuxState().partnerProof||{};
+  var partnerNetwork=proof.partnerNetwork||{};
+  var liveOpps=partnerNetwork.topOpportunities||[];
+  var intro='<div class="predict-tabs-note"><strong>Partner data used:</strong> Radar partner catalogue plus live partner proof where available. '+esc(String(partnerNetwork.opportunityCount||0))+' partner-linked live opportunities currently detected.</div>';
+  var ideas=partnerFeatureIdeas().map(function(i){
+    return '<div class="future-card"><div class="future-title">'+esc(i.t)+'</div><div class="future-body">'+esc(i.b)+'</div><div class="future-body"><strong>Recommended decision:</strong> '+esc(i.decision||'Evaluate partner pilot')+'</div><div class="future-body"><strong>Business value:</strong> '+esc(i.impact)+'</div><div class="future-body"><strong>Useful partners:</strong> '+esc(i.partners||'Partner network')+'</div><div class="future-tags"><span>'+esc(i.owner)+'</span><span>'+esc(i.decision||'Partner-enabled')+'</span><span>Business-case ready</span></div></div>';
+  }).join('');
+  var live=liveOpps.length?'<div class="exec-panel" style="margin-top:14px"><div class="exec-panel-h"><div><div class="exec-panel-t">Live partner proof</div><div class="exec-panel-m">Signals from /api/partner-competitor/proof</div></div></div>'+liveOpps.slice(0,5).map(function(o){var u=safeUrl(o.sourceUrl||o.url||'');return '<div class="exec-signal"><div class="exec-dot"></div><div><div class="exec-sig-title">'+esc(o.title||'Partner opportunity')+'</div><div class="exec-sig-body">'+esc(o.action||o.expectedImpact||o.evidence||'Review partner signal.')+'</div><div class="exec-tags"><span class="exec-tag">'+esc(o.domainId||'partner')+'</span><span class="exec-tag">'+esc(o.sourceFreshness||'freshness TBC')+'</span></div>'+(u?'<div class="predict-source-row"><a class="predict-source-link" href="'+esc(u)+'" target="_blank" rel="noopener">Open partner proof</a></div>':'')+'</div></div>';}).join('')+'</div>':'';
+  host.innerHTML=intro+'<div class="predict-operating-grid">'+ideas+'</div>'+live;
+}
+function renderPredictiveDiscoveryStatus(){
+  var host=document.getElementById('predictDiscoveryStatus');
+  if(!host) return;
+  var st=predictiveAuxState();
+  if(st.loading&&!st.discovery){ host.innerHTML='<div class="exec-empty">Loading discovery status.</div>'; return; }
+  var d=st.discovery||{};
+  if(!Object.keys(d).length){
+    host.innerHTML='<div class="exec-empty">Discovery status is not available yet. The backend endpoint is expected at <code>/api/discovery/status</code>.</div>';
+    return;
+  }
+  var s=d.latestDiscoverySummary||{};
+  var cards=[
+    {v:d.enabled?'On':'Off',l:'AI discovery',d:d.enabled?'Backend discovery is enabled':'Set AI_DISCOVERY_ENABLED on backend'},
+    {v:s.sourcesChecked??0,l:'Sources checked',d:'Latest AI source discovery run'},
+    {v:s.sourceItemsSaved??0,l:'Items saved',d:'External evidence added to source items'},
+    {v:d.sourceCount||0,l:'Tracked sources',d:'Source freshness ledger rows'},
+    {v:d.staleSourceCount||0,l:'Stale sources',d:'Need refresh before leadership proof'}
+  ];
+  var cardHtml='<div class="roadmap-kpis" style="margin-bottom:14px">'+cards.map(function(c){return '<div class="roadmap-kpi"><div class="roadmap-kv">'+esc(String(c.v))+'</div><div class="roadmap-kl">'+esc(c.l)+'</div><div class="roadmap-kd">'+esc(c.d)+'</div></div>';}).join('')+'</div>';
+  var providers='<div class="predict-tabs-note"><strong>Provider chain:</strong> '+esc((s.providerChain||[]).join(' -> ')||'Not recorded')+'. Claude web search: '+esc(s.claudeWebSearchRan?'ran':'not recorded')+'. OpenAI scoring: '+esc(s.openaiRan?'ran':'not recorded')+'.</div>';
+  var sources=(d.sourceLedger||[]).slice(0,8).map(function(row){
+    var name=row.source_name||row.source_id||row.source_type||'Source';
+    var latest=row.updated_at||row.last_seen_at||row.last_item_at||row.created_at;
+    return '<div class="exec-signal"><div class="exec-dot"></div><div><div class="exec-sig-title">'+esc(name)+'</div><div class="exec-sig-body">'+esc(row.source_type||'Source ledger row')+'</div><div class="exec-tags"><span class="exec-tag">'+esc(latest?new Date(latest).toLocaleString():'No timestamp')+'</span><span class="exec-tag">'+esc(row.freshness_state||row.status||'freshness TBC')+'</span></div></div></div>';
+  }).join('');
+  host.innerHTML=cardHtml+providers+(sources||'<div class="exec-empty">No source ledger rows returned yet.</div>');
+}
+function renderPredictiveAuxSections(){
+  renderPredictiveInnovationStats();
+  renderPredictiveInnovationIdeas();
+  renderPredictiveAppIntel();
+  renderPredictivePartnerIdeas();
+  renderPredictiveDiscoveryStatus();
+}
 function renderPredictivePage(){
+  ensurePredictivePremiumStyles();
   ensureRadarRuntimeForTabs();
+  fetchPredictiveInnovation(false);
+  fetchPredictiveAux(false);
+  showPredictiveInnerTab(window.__predictiveInnerTab||'innovation');
+  updatePredictiveBackendStatus();
   var cats=predictiveCategoryDefinitions();
   var sigs=getAllDomainSignals();
+  var innovation=(predictiveInnovationState().data)||null;
+  var ideas=effectivePredictiveInnovationIdeas();
   var catEl=document.getElementById('predictiveCategories');
   if(catEl){
     catEl.innerHTML=cats.map(function(c){
-      var matched=sigs.filter(function(s){return c.q.test((s.title||'')+' '+(s.body||'')+' '+(s.captureStrategy||'')+' '+(s.whyItMattersNow||''));}).slice(0,3);
-      return '<div class="predict-card"><div class="predict-ey">'+esc(c.ey)+'</div><h3>'+esc(c.h)+'</h3><p>'+esc(c.p)+'</p>'+(matched.length?'<ul>'+matched.map(function(s){return '<li>'+esc(s.title||'Signal')+'</li>';}).join('')+'</ul>':'<div class="exec-empty" style="margin-top:12px">Awaiting matching backend signals.</div>')+'</div>';
+      var matched=sigs.filter(function(s){return c.q.test((s.title||'')+' '+(s.body||'')+' '+(s.captureStrategy||'')+' '+(s.whyItMattersNow||''));}).slice(0,2);
+      var ideaMatches=ideas.filter(function(i){return c.q.test(predictiveIdeaText(i));}).slice(0,2);
+      var list=ideaMatches.length
+        ? ideaMatches.map(function(i){return '<li>'+esc(i.title||'Innovation idea')+' <span class="predict-live-dot">Live</span></li>';})
+        : matched.map(function(s){return '<li>'+esc(s.title||'Signal')+'</li>';});
+      return '<div class="predict-card"><div class="predict-ey">'+esc(c.ey)+'</div><h3>'+esc(c.h)+'</h3><p>'+esc(c.p)+'</p>'+(list.length?'<ul>'+list.join('')+'</ul>':'<div class="exec-empty" style="margin-top:12px">Awaiting matching backend evidence.</div>')+'</div>';
     }).join('');
   }
   var ps=document.getElementById('predictiveSignals');
   if(ps){
     var forward=sigs.filter(function(s){return /future|next|30 days|90 days|180 days|increase|shift|opportunity|active_now/i.test((s.timeToImpact||'')+' '+(s.relevanceWindow||'')+' '+(s.eventDate||'')+' '+(s.impactLabel||'')+' '+(s.demandImpact||''));}).sort(function(a,b){return scoreSignalForExec(b)-scoreSignalForExec(a);}).slice(0,8);
-    ps.innerHTML=forward.length?forward.map(function(s){return '<div class="exec-signal"><div class="exec-dot"></div><div><div class="exec-sig-title">'+esc(s.title||'Forward signal')+'</div><div class="exec-sig-body">'+esc(s.captureStrategy||s.whyItMattersNow||s.body||'Backend/cache detail unavailable.')+'</div><div class="exec-tags"><span class="exec-tag">'+esc((s.domain||'domain').toUpperCase())+'</span><span class="exec-tag">'+esc(s.relevanceWindow||s.timeToImpact||'Future window TBC')+'</span><span class="exec-tag">'+esc(s.confidence||'Confidence TBC')+'</span></div>'+renderSignalDateMeta(s)+'</div></div>';}).join(''):'<div class="exec-empty">No forward-looking backend/cache signals are currently loaded.</div>';
+    ps.innerHTML=forward.length?forward.map(function(s){return '<div class="exec-signal"><div class="exec-dot"></div><div><div class="exec-sig-title">'+esc(s.title||'Forward signal')+'</div><div class="exec-sig-body">'+esc(s.captureStrategy||s.whyItMattersNow||s.body||'Radar evidence detail unavailable.')+'</div><div class="exec-tags"><span class="exec-tag">'+esc((s.domain||'domain').toUpperCase())+'</span><span class="exec-tag">'+esc(s.relevanceWindow||s.timeToImpact||'Future window TBC')+'</span><span class="exec-tag">'+esc(s.confidence||'Confidence TBC')+'</span></div>'+renderSignalDateMeta(s)+'</div></div>';}).join(''):'<div class="exec-empty">No forward-looking Radar evidence is currently loaded.</div>';
   }
   var sim=document.getElementById('simulationConcepts');
   if(sim){
-    var concepts=[
+    var liveConcepts=ideas.slice(0,4).map(function(i){
+      return {t:i.title,b:i.expectedImpact||i.description||'Backend innovation idea',tags:predictiveIdeaTags(i)};
+    });
+    var concepts=liveConcepts.length?liveConcepts:[
       {t:'AI travel assistant inside app/web',b:'Model likely impact on direct conversion, servicing deflection, ancillary attach and loyalty engagement.',tags:['AI assistant','Direct conversion','Service deflection']},
       {t:'Premium disruption recovery concierge',b:'Predict retention and NPS uplift from proactive rebooking, lounge/service recovery and high-value case routing.',tags:['Premium retention','NPS','CX']},
       {t:'Marketplace next-best-ancillary engine',b:'Estimate revenue lift from journey-aware bundles across baggage, lounge, seats, Fast Track, eSIM and stopover.',tags:['Ancillary revenue','Bundles','Personalization']},

@@ -873,31 +873,57 @@
 
   function renderPredictiveAddOns() {
     var sigs = allSignals();
+    var innovationState = window.__predictiveInnovationState || {};
+    var innovation = innovationState.data || null;
+    var ideas = (innovation && innovation.ideas) || [];
     var friction = sigs.filter(function (s) { return /friction|complaint|refund|delay|support|payment|baggage|service/i.test(titleOf(s) + ' ' + bodyOf(s)); }).slice(0, 3);
     var opp = sigs.filter(function (s) { return /opportun|revenue|growth|ancillary|direct|loyalty|premium|personal/i.test(titleOf(s) + ' ' + bodyOf(s)); }).slice(0, 3);
 
-    renderFutureCards('futureOpportunityPipeline', (opp.length ? opp.map(function (s) {
-      return { t: titleOf(s), b: bodyOf(s), tags: [domainOf(s), 'Opportunity', 'Backend/cache'] };
+    renderFutureCards('futureOpportunityPipeline', (ideas.length ? ideas.slice(0, 5).map(function (idea) {
+      return {
+        t: idea.title || 'Innovation idea',
+        b: idea.expectedImpact || idea.description || 'Backend innovation idea from internal and external evidence.',
+        tags: [String(idea.priority || 'validate').replace(/_/g, ' '), String(idea.category || 'innovation').replace(/_/g, ' '), idea.owner || 'Owner TBD']
+      };
+    }) : opp.length ? opp.map(function (s) {
+      return { t: titleOf(s), b: bodyOf(s), tags: [domainOf(s), 'Opportunity', 'Radar evidence'] };
     }) : [{
       t: 'Awaiting opportunity signals',
-      b: 'This lane will populate when backend/cache signals contain revenue, direct-share, ancillary or loyalty opportunity patterns.',
-      tags: ['Backend needed', 'No fake data']
+      b: innovationState.loading ? 'Loading live innovation ideas from backend.' : 'This lane will populate when Radar evidence or external app/partner discovery contains revenue, direct-share, ancillary or loyalty opportunity patterns.',
+      tags: [innovationState.loading ? 'Loading backend' : 'No live evidence yet', 'No fake data']
     }]));
 
-    renderFutureCards('customerFutureSignals', (friction.length ? friction.map(function (s) {
+    var customerIdeas = ideas.filter(function (idea) {
+      return /customer|friction|service|disruption|baggage|assistant|loyalty|personal/i.test((idea.title || '') + ' ' + (idea.description || '') + ' ' + (idea.category || ''));
+    }).slice(0, 3);
+
+    renderFutureCards('customerFutureSignals', (customerIdeas.length ? customerIdeas.map(function (idea) {
+      return {
+        t: idea.title || 'Customer future idea',
+        b: idea.description || idea.expectedImpact || 'Customer-facing innovation idea.',
+        tags: [String(idea.confidence || 'medium') + ' confidence', String(idea.priority || 'validate').replace(/_/g, ' '), 'Live backend']
+      };
+    }) : friction.length ? friction.map(function (s) {
       return { t: titleOf(s), b: bodyOf(s), tags: [domainOf(s), 'Customer signal', 'Prediction input'] };
     }) : [{
       t: 'Awaiting customer future signals',
-      b: 'This lane will populate when backend/cache signals contain customer friction, service expectation or behaviour-shift patterns.',
-      tags: ['Backend needed', 'No fake data']
+      b: innovationState.loading ? 'Loading customer-facing innovation evidence.' : 'This lane will populate when Radar or app-store evidence contains customer friction, service expectation or behaviour-shift patterns.',
+      tags: [innovationState.loading ? 'Loading backend' : 'No live evidence yet', 'No fake data']
     }]));
 
-    renderFutureCards('strategicSimulationBacklog', [
-      { t: 'AI travel assistant impact simulation', b: 'Estimate conversion, service deflection, loyalty engagement and ancillary attach impact before investment.', tags: ['Simulation', 'AI', 'Future backend'] },
+    renderFutureCards('strategicSimulationBacklog', (ideas.length ? ideas.slice(0, 4).map(function (idea) {
+      var ev = idea.evidenceSummary || {};
+      return {
+        t: (idea.title || 'Innovation idea') + ' business case',
+        b: (idea.firstStep || idea.description || 'Validate business case.') + ' Evidence: ' + (ev.internalMatches || 0) + ' internal, ' + (ev.externalAppOrInnovationItems || 0) + ' external, ' + (ev.competitorMatches || 0) + ' competitor.',
+        tags: ['Simulation', idea.due || 'Due TBC', idea.expectedImpact || 'Impact TBC']
+      };
+    }) : [
+      { t: 'AI travel assistant impact simulation', b: 'Estimate conversion, service deflection, loyalty engagement and ancillary attach impact before investment.', tags: ['Simulation', 'AI', 'Model-ready'] },
       { t: 'Direct-share recapture model', b: 'Model how route windows, loyalty incentives and OTA pressure could shift customers back to QR direct channels.', tags: ['OTA leakage', 'Direct booking', 'Revenue'] },
       { t: 'Premium recovery concierge business case', b: 'Forecast high-value customer retention and NPS uplift from proactive disruption recovery and tailored servicing.', tags: ['Premium', 'Recovery', 'Retention'] },
       { t: 'Next-best ancillary marketplace model', b: 'Predict attach-rate lift from journey-aware bundles across seats, baggage, lounges, Fast Track and eSIM.', tags: ['Ancillary', 'Personalization', 'Marketplace'] }
-    ]);
+    ]));
   }
 
   var baseExec = window.renderExecutiveSummaryPage;

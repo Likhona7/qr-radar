@@ -527,6 +527,11 @@ function ciosNarrative(sources, issues, improvements, strengths){
 function ciosAppRatings(items){
   items = ciosLimit(items, 8);
   if(!items.length) return ciosEmpty('No app rating intelligence loaded from backend/cache.');
+  var appleCount = items.filter(function(i){ return /apple|app store|ios|iphone/i.test((ciosItemSource(i) + ' ' + ciosItemTitle(i)).toLowerCase()); }).length;
+  var googleCount = items.filter(function(i){ return /google|play store|google play|android/i.test((ciosItemSource(i) + ' ' + ciosItemTitle(i)).toLowerCase()); }).length;
+  var top = items.slice().sort(function(a,b){ return ciosScoreFromItem(b) - ciosScoreFromItem(a); })[0];
+  var topAction = top ? ciosItemTitle(top) : 'No dominant app action loaded';
+  var summary = '<div class="cios-app-summary"><div><div class="cios-app-summary-ey">App review intelligence</div><div class="cios-app-summary-title">' + esc(topAction) + '</div><div class="cios-app-summary-copy">Backend/cache signals are grouped into app review streams and converted into product actions. This does not claim official star ratings unless the backend supplies them.</div></div><div class="cios-app-summary-kpis"><div><strong>' + esc(String(items.length)) + '</strong><span>app signals</span></div><div><strong>' + esc(String(appleCount)) + '</strong><span>Apple lane</span></div><div><strong>' + esc(String(googleCount)) + '</strong><span>Google lane</span></div></div></div>';
   var cards = items.map(function(i){
     var score = ciosScoreFromItem(i);
     var title = ciosItemTitle(i);
@@ -536,9 +541,9 @@ function ciosAppRatings(items){
     var volume = ciosEstimatePostCount(i);
     var topCallout = /apple|ios/i.test(source + ' ' + title) ? 'iPhone review stream' : /google|android/i.test(source + ' ' + title) ? 'Android review stream' : 'App review stream';
     var action = score >= 75 ? 'Escalate product fixes and review response.' : score >= 60 ? 'Track rating movement and recurring complaint themes.' : 'Monitor the app rating trend weekly.';
-    return '<div class="cios-app-card"><div class="cios-app-top"><div><div class="cios-app-title">' + esc(title) + '</div><div class="cios-app-sub">' + esc(source) + '</div></div><div class="cios-app-score">' + score + '/100</div></div><div class="cios-app-body">' + esc(detail) + '</div><div class="cios-app-tags"><span class="cios-chip ' + ciosChipClass(i) + '">' + esc(impact) + '</span><span class="cios-chip cc-stable">' + esc(topCallout) + '</span><span class="cios-chip cc-med">' + (volume ? esc(volume) + ' reviews' : 'reviews n/a') + '</span></div><div class="cios-app-action">' + esc(action) + '</div></div>';
+    return '<div class="cios-app-card"><div class="cios-app-top"><div><div class="cios-app-stream">' + esc(topCallout) + '</div><div class="cios-app-title">' + esc(title) + '</div><div class="cios-app-sub">' + esc(source) + '</div></div><div class="cios-app-score"><strong>' + score + '</strong><span>/100</span></div></div><div class="cios-app-body">' + esc(detail) + '</div><div class="cios-app-tags"><span class="cios-chip ' + ciosChipClass(i) + '">' + esc(impact) + '</span><span class="cios-chip cc-stable">' + (volume ? esc(volume) + ' reviews' : 'backend signal') + '</span></div><div class="cios-app-action"><span>Action</span>' + esc(action) + '</div></div>';
   }).join('');
-  return '<div class="cios-app-grid">' + cards + '</div>';
+  return summary + '<div class="cios-app-grid">' + cards + '</div>';
 }
 
 function updateCIOSTabBadges(ctx){

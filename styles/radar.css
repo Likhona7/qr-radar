@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 :root{
   --qb:#5C0632;--qb2:#3d0421;--qb3:#7a0843;--qg:#C8A050;
   --bg:#fff;--bg2:#fafafa;--bg3:#f5f5f7;
@@ -2344,6 +2344,32 @@ table.cios-hm tr:hover td,table.cios-cmt tr:hover td,table.cios-kw tr:hover td{b
 .cios-cache-panel .cios-narr-rec{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.16);font-size:12px;color:rgba(255,255,255,.72);line-height:1.5}
 .cios-cache-panel .cios-grow-fill{height:100%;background:var(--qb);border-radius:2px}
 
+/* App ratings intelligence */
+.cios-app-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;background:linear-gradient(135deg,#fff 0%,#FFF7FB 100%);border:1px solid #E8E2EA;border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 12px 30px rgba(31,36,48,.06)}
+.cios-app-summary-ey{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#8A004F;margin-bottom:6px}
+.cios-app-summary-title{font-size:18px;font-weight:900;color:#231A29;line-height:1.25}
+.cios-app-summary-copy{font-size:12px;color:#665F6B;line-height:1.55;margin-top:6px;max-width:860px}
+.cios-app-summary-kpis{display:grid;grid-template-columns:repeat(3,minmax(86px,1fr));gap:8px;min-width:310px}
+.cios-app-summary-kpis div{background:#fff;border:1px solid #E8E2EA;border-radius:16px;padding:12px;text-align:center}
+.cios-app-summary-kpis strong{display:block;font-size:24px;color:#8A004F;line-height:1;font-weight:900}
+.cios-app-summary-kpis span{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#7B7382;margin-top:6px;text-transform:uppercase;letter-spacing:.08em}
+.cios-app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.cios-app-card{background:#fff;border:1px solid #E8E2EA;border-radius:22px;padding:16px;box-shadow:0 12px 30px rgba(31,36,48,.06);position:relative;overflow:hidden;min-height:190px;display:flex;flex-direction:column;gap:10px}
+.cios-app-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#8A004F}
+.cios-app-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+.cios-app-stream{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;color:#8A004F;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.cios-app-title{font-size:15px;font-weight:900;color:#231A29;line-height:1.28}
+.cios-app-sub{font-size:11px;color:#766E7D;margin-top:4px}
+.cios-app-score{min-width:74px;border-radius:16px;background:#FFF4FA;border:1px solid #EBC8D9;color:#8A004F;text-align:center;padding:10px 8px;font-family:'JetBrains Mono',monospace}
+.cios-app-score strong{display:block;font-size:22px;line-height:1;font-weight:900}
+.cios-app-score span{display:block;font-size:9px;margin-top:3px;color:#8A004F}
+.cios-app-body{font-size:12px;color:#5F5866;line-height:1.55;flex:1}
+.cios-app-tags{display:flex;gap:6px;flex-wrap:wrap}
+.cios-app-action{border-top:1px solid #EFE8F0;padding-top:10px;font-size:12px;color:#231A29;font-weight:800;line-height:1.45}
+.cios-app-action span{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;color:#8A004F;letter-spacing:.1em;text-transform:uppercase;margin-right:8px}
+@media(max-width:1100px){.cios-app-summary{grid-template-columns:1fr}.cios-app-summary-kpis{min-width:0}.cios-app-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.cios-app-summary-kpis{grid-template-columns:1fr}.cios-app-card{min-height:0}.cios-app-top{grid-template-columns:1fr}.cios-app-score{width:86px}}
+
 
 
 /* ======================================================================
@@ -2383,6 +2409,7 @@ table.cios-hm tr:hover td,table.cios-cmt tr:hover td,table.cios-kw tr:hover td{b
 .ai-kpi-l{font-size:11px;font-weight:900;color:#231A29;text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
 .ai-kpi-d{font-size:11px;color:#6B6572;line-height:1.45;margin-top:5px}
 .ai-split-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:18px}
+.ai-page .ai-panel{min-height:0!important;display:block;border-left:1px solid #E8E2EA!important}
 .ai-panel{background:#fff;border:1px solid #E8E2EA;border-radius:24px;box-shadow:0 14px 34px rgba(31,36,48,.07);padding:18px;position:relative;overflow:hidden}
 .ai-panel:before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:#8A004F}
 .ai-panel.ai-wide{margin-bottom:18px}
@@ -2392,6 +2419,13 @@ table.cios-hm tr:hover td,table.cios-cmt tr:hover td,table.cios-kw tr:hover td{b
 .ai-panel-pill{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;border-radius:999px;padding:4px 8px;color:#8A004F;background:#FFF4FA;border:1px solid #EBC8D9;white-space:nowrap}
 .ai-panel-pill.ai-ok{background:#ECFDF5;border-color:#A7F3D0;color:#047857}
 .ai-panel-pill.ai-warn{background:#FFF7ED;border-color:#FDBA74;color:#B45309}
+.ai-operating-panel{background:linear-gradient(180deg,#fff 0%,#FFFCFE 100%)}
+.ai-operating-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ai-operating-step{background:#FCFAFD;border:1px solid #E8E2EA;border-radius:18px;padding:14px;min-height:132px;position:relative;overflow:hidden}
+.ai-operating-step:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#8A004F;opacity:.8}
+.ai-operating-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;color:#8A004F;letter-spacing:.12em;margin-bottom:10px}
+.ai-operating-title{font-size:13px;font-weight:900;color:#231A29;line-height:1.3}
+.ai-operating-copy{font-size:11.5px;color:#665F6B;line-height:1.55;margin-top:6px}
 .ai-stack{display:grid;gap:10px}
 .ai-item{border:1px solid #E8E2EA;background:#FCFAFD;border-radius:18px;padding:14px}
 .ai-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
@@ -2422,8 +2456,8 @@ table.cios-hm tr:hover td,table.cios-cmt tr:hover td,table.cios-kw tr:hover td{b
 .ai-action-body{font-size:11.5px;color:#665F6B;line-height:1.6;margin-top:6px}
 .ai-action-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .ai-action-tags span{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:900;border-radius:999px;padding:4px 7px;color:#8A004F;background:#FFF4FA;border:1px solid #EBC8D9}
-@media(max-width:1100px){.ai-kpi-grid,.ai-split-grid,.ai-source-grid,.ai-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ai-query-row{grid-template-columns:1fr 1fr}.ai-hero{flex-direction:column}}
-@media(max-width:700px){.ai-page{padding:18px 14px}.ai-kpi-grid,.ai-split-grid,.ai-source-grid,.ai-action-grid{grid-template-columns:1fr}.ai-query-row{grid-template-columns:1fr}.ai-hero h1{font-size:28px}}
+@media(max-width:1100px){.ai-kpi-grid,.ai-split-grid,.ai-source-grid,.ai-action-grid,.ai-operating-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ai-query-row{grid-template-columns:1fr 1fr}.ai-hero{flex-direction:column}}
+@media(max-width:700px){.ai-page{padding:18px 14px}.ai-kpi-grid,.ai-split-grid,.ai-source-grid,.ai-action-grid,.ai-operating-grid{grid-template-columns:1fr}.ai-query-row{grid-template-columns:1fr}.ai-hero h1{font-size:28px}.ai-operating-step{min-height:0}}
 @media(max-width:1100px){.exec-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.exec-layout,.predict-grid,.exec-lane-grid,.exec-matrix{grid-template-columns:1fr}.sim-grid{grid-template-columns:1fr}}
 @media(max-width:700px){.exec-page,.predict-page{padding:18px 16px}.exec-title,.predict-title{font-size:28px}.exec-grid{grid-template-columns:1fr}}
 
@@ -3023,3 +3057,171 @@ html,body,#app-root{
 .ai-backend-detail{font-size:11px;color:#665F6B;line-height:1.45;margin-top:6px}
 @media(max-width:1100px){.ai-backend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.ai-backend-grid{grid-template-columns:1fr}}
+
+
+/* ======================================================================
+   Radar Unified Executive Design Contract - June 2026
+   Softens heavy black text and normalises cards, labels, badges and actions.
+   This is intentionally a cascade layer: it preserves data/layout logic while
+   making every tab feel like one premium Radar product.
+   ====================================================================== */
+:root{
+  --radar-brand:#8A004F;
+  --radar-brand-dark:#4A0028;
+  --radar-brand-soft:#FFF6FB;
+  --radar-brand-line:#EBC8D9;
+  --radar-gold:#C8A050;
+  --radar-page:#F6F4FA;
+  --radar-surface:#FFFFFF;
+  --radar-surface-soft:#FCFAFD;
+  --radar-line:#E8E2EA;
+  --radar-line-strong:#D8CEDD;
+  --radar-heading:#3A2E40;
+  --radar-ink:#453A4C;
+  --radar-body:#615A69;
+  --radar-muted:#817988;
+  --radar-success:#047857;
+  --radar-warning:#B45309;
+  --radar-danger:#B42318;
+  --radar-info:#1D4ED8;
+  --radar-radius-card:20px;
+  --radar-radius-panel:24px;
+  --radar-shadow-card:0 12px 30px rgba(61,48,69,.055);
+  --radar-shadow-lift:0 18px 44px rgba(61,48,69,.085);
+
+  --qb:var(--radar-brand);
+  --qb2:var(--radar-brand-dark);
+  --qb3:#A01661;
+  --qg:var(--radar-gold);
+  --bg:var(--radar-page);
+  --bg2:var(--radar-surface-soft);
+  --bg3:var(--radar-page);
+  --su:var(--radar-surface);
+  --bo:var(--radar-line);
+  --bo2:var(--radar-line-strong);
+  --t1:var(--radar-heading);
+  --t2:var(--radar-body);
+  --t3:var(--radar-muted);
+  --dark:var(--radar-heading);
+  --red:var(--radar-danger);
+  --amb:var(--radar-warning);
+  --grn:var(--radar-success);
+  --blu:var(--radar-info);
+}
+
+body{
+  background:var(--radar-page)!important;
+  color:var(--radar-body)!important;
+  font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* One readable text rhythm across all Radar tabs. */
+:where(.main,.exec-command-main,.team-actions-page,.ai-page,.roadmap-page,.backend-pulse-page,.partner-page,.cios-body,.comp-page,.sent-page,.ci-page){
+  color:var(--radar-body);
+}
+
+:where(.exec-command-top h1,.ta-hero h1,.backend-pulse-hero h1,.ai-hero h1,.roadmap-hero h1,.partner-hero h1,.exec-title,.predict-title,.cios-title){
+  font-family:'Inter',system-ui,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.025em!important;
+}
+
+:where(.exec-command-top h1,.ta-hero h1,.partner-hero h1){
+  color:var(--radar-heading)!important;
+}
+
+:where(.exec-panel-title,.exec-panel-title-v2,.exec-panel-label-v2,.exec-panel-t,.exec-list-title,.exec-signal-title,.exec-action-title,.exec-owner-title,.exec-theme-title,.exec-driver-name,.exec-status-verdict,.roadmap-panel-title,.roadmap-task-title,.roadmap-update-title,.roadmap-readiness-example strong,.ai-panel-title,.ai-item-title,.ai-source-name,.ai-action-title,.ai-operating-title,.ta-panel-title,.ta-action-copy strong,.ta-evidence-box strong,.ta-next-step strong,.backend-pulse-panel-title,.backend-pulse-list strong,.cios-app-title,.cios-cluster-title,.sent-det-title,.ci-hdr-t,.sent-hdr-t,.comp-tier-title,.partner-name,.future-title){
+  color:var(--radar-heading)!important;
+  font-family:'Inter',system-ui,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.01em!important;
+}
+
+:where(.exec-sub,.exec-command-top p,.exec-summary-sub,.exec-panel-copy-v2,.exec-list-body,.exec-signal-body,.exec-action-body,.exec-owner-body,.exec-theme-sub,.exec-theme-why,.exec-detail-body,.roadmap-task-evidence,.roadmap-update-body,.roadmap-kd,.roadmap-readiness-note,.ai-panel-copy,.ai-item-body,.ai-source-body,.ai-action-body,.ai-operating-copy,.ta-panel-copy,.ta-action-copy em,.ta-evidence-box p,.ta-next-step span,.backend-pulse-card-detail,.backend-pulse-list span,.cios-app-body,.cios-app-sub,.sent-det-sub,.ci-hdr-s,.sent-hdr-s,.comp-tier-sub,.partner-hero p,.future-body){
+  color:var(--radar-body)!important;
+  font-weight:400!important;
+}
+
+:where(.exec-summary-value,.exec-kv,.roadmap-kv,.roadmap-readiness-kv,.ta-summary-value,.backend-pulse-card-value,.ai-kpi-v,.partner-kv,.kv,.trust-v,.exec-metric-v,.exec-opp-grand,.cios-app-score strong){
+  color:var(--radar-brand)!important;
+  font-family:'Inter',system-ui,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.025em!important;
+}
+
+:where(.exec-summary-card,.exec-panel-v2,.exec-focus-panel,.exec-kpi,.exec-panel,.exec-viz-card,.exec-chart-box,.trust-tile,.exec-opp-lane-card,.exec-action-layer,.predict-card,.predict-op-panel,.future-card,.roadmap-kpi,.roadmap-section,.roadmap-updates-panel,.roadmap-update-card,.roadmap-evidence-panel,.roadmap-readiness-panel,.roadmap-readiness-card,.backend-pulse-card,.backend-pulse-panel,.backend-pulse-status,.ai-panel,.ai-kpi,.ai-item,.ai-source,.ai-action,.ai-operating-step,.ta-summary-card,.ta-queue-panel,.ta-detail-panel,.ta-leadership-panel,.ta-action-item,.ta-note,.partner-card,.partner-detail,.comp-card,.comp-detail,.sent-detail,.sent-tile,.ci-seg,.ci-detail,.cios-src,.cios-app-card,.cios-app-summary,.cios-cluster,.dom,.kpi,.det,.bcard,.bm-notice,.view-notice){
+  background:var(--radar-surface)!important;
+  border-color:var(--radar-line)!important;
+  box-shadow:var(--radar-shadow-card)!important;
+}
+
+:where(.exec-summary-card,.exec-panel-v2,.exec-focus-panel,.exec-kpi,.exec-panel,.predict-card,.predict-op-panel,.roadmap-section,.backend-pulse-panel,.ai-panel,.ta-queue-panel,.ta-detail-panel,.ta-leadership-panel,.partner-detail,.sent-detail,.ci-detail,.cios-app-summary){
+  border-radius:var(--radar-radius-panel)!important;
+}
+
+:where(.exec-mini-pill,.exec-mini-link,.exec-chip,.exec-tag,.exec-list-pill,.exec-severity,.exec-deep-chip,.exec-route-btn,.exec-summary-cta,.exec-inline-link,.exec-owner-assign,.exec-assign-btn,.exec-opp-summary-chip,.roadmap-status,.roadmap-update-badge,.roadmap-readiness-badge,.backend-pulse-card-title,.ai-panel-pill,.ai-item-pill,.ai-source-status,.ai-query-gap,.ai-chip,.ai-action-tags span,.ta-chip,.ta-primary-btn,.ta-light-btn,.ta-filter,.cios-src-time,.sig-date-chip,.sig-date-meta>span:first-child,.vbadge,.bmbadge,.spill,.sig-imp,.imp,.comp-nav-badge){
+  border-radius:999px!important;
+  font-family:'JetBrains Mono',ui-monospace,monospace!important;
+  font-weight:700!important;
+  letter-spacing:.06em!important;
+}
+
+:where(.sec-lbl,.bct,.sgs-hdr,.cios-sl-t,.ci-col-t,.sent-col-t,.roadmap-ey,.backend-pulse-ey,.ai-eyebrow,.ta-eyebrow,.exec-eyebrow-v2,.exec-panel-label-v2){
+  color:var(--radar-brand)!important;
+  font-family:'JetBrains Mono',ui-monospace,monospace!important;
+  font-weight:700!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+:where(button,.api-go,.prog-btn,.abt,.exec-refresh-v2,.exec-refresh,.ai-primary-btn,.ai-secondary-btn,.ta-primary-btn,.backend-pulse-refresh,.footer-links button){
+  font-family:'Inter',system-ui,sans-serif!important;
+  font-weight:700!important;
+}
+
+:where(.api-go,.prog-btn,.abt-p,.exec-refresh-v2,.exec-refresh,.exec-owner-assign,.exec-assign-btn,.ta-primary-btn,.footer-links button.active){
+  background:var(--radar-brand)!important;
+  border-color:var(--radar-brand)!important;
+  color:#fff!important;
+}
+
+:where(.api-go,.prog-btn,.abt,.view-btn,.comp-nav-btn,.exec-refresh-v2,.exec-refresh,.exec-owner-assign,.exec-assign-btn,.ta-primary-btn,.ta-light-btn,.footer-links button,.ai-primary-btn,.ai-secondary-btn){
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .2s ease,transform .2s ease!important;
+}
+
+:where(.dom:hover,.ta-action-item:hover,.exec-summary-card:hover,.ai-item:hover,.roadmap-task:hover){
+  transform:translateY(-1px)!important;
+  box-shadow:var(--radar-shadow-lift)!important;
+}
+
+/* Keep app-store intelligence on-brand instead of harsh black. */
+#sbar-appstore,#cbar-appstore{background:var(--radar-brand-dark)!important}
+.s-appstore .sent-score-fill{background:var(--radar-brand-dark)!important}
+
+/* Cormorant remains only for the Qatar Airways wordmark, not operational UI. */
+:where(.opp-v,.sent-hdr-t,.ci-hdr-t,.cios-pr-n,.cios-opp-val,.cios-exec-txt,.predict-title,.exec-title,.partner-hero h1,.comp-det-fl):not(.bn){
+  font-family:'Inter',system-ui,sans-serif!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+/* Radar final typography polish - softer executive weight */
+:where(strong,b):not(.bn):not(.logo-wordmark){
+  color:var(--radar-ink)!important;
+  font-weight:700!important;
+}
+:where(.exec-action-title,.exec-signal-title,.exec-list-title,.exec-driver-name,.ai-item-title,.ai-action-title,.roadmap-task-title,.backend-pulse-status strong,.backend-pulse-card-label,.comp-name,.comp-det-name,.partner-name,.ci-seg-title,.ci-detail-title,.sent-det-title,.cios-app-title,.ta-action-title){
+  color:var(--radar-heading)!important;
+  font-weight:700!important;
+}
+:where(.exec-action-body,.exec-signal-body,.exec-list-body,.exec-driver-note,.ai-item-body,.ai-action-body,.roadmap-task-evidence,.backend-pulse-card-detail,.comp-card-copy,.partner-copy,.ci-detail-body,.sent-det-sub,.cios-app-body,.ta-action-meta){
+  color:var(--radar-body)!important;
+  font-weight:400!important;
+}
+:where(.mono,.sig-date-meta,.sig-date-compact,.backend-pulse-card-title,.roadmap-status,.ai-source-status,.vbadge,.bmbadge){
+  font-family:'JetBrains Mono',ui-monospace,monospace!important;
+}
