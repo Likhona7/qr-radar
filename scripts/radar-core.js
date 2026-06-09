@@ -66,7 +66,7 @@ const STORE_KEY    = 'radar_v7_ant';
 const STORE_VIEW   = 'radar_v7_view';
 const STORE_SIGNAL_LIMIT = 'radar_v7_signal_limit';
 
-// Backend server used for Anthropic proxy + Supabase persistence.
+// Backend server used for provider proxy + Supabase persistence.
 // In local modular dev, use the same-origin dev proxy to avoid CORS.
 const RENDER_BACKEND_URL = 'https://qr-radar-backend.onrender.com';
 const BACKEND_URL = RENDER_BACKEND_URL;
@@ -388,9 +388,9 @@ function extractJSON(raw){
 
 
 // â”€â”€ SERVER-MANAGED BACKEND-FIRST NORMALISATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// All intelligence tabs must render saved backend/browser cache first. Claude is
+// All intelligence tabs must render saved backend/browser cache first. Provider refresh is
 // only used by explicit refresh/generate workflows. These helpers prevent old
-// Claude-shaped renderers from showing "undefined" when cached backend data has
+// Provider-shaped renderers from showing "undefined" when cached backend data has
 // a different schema.
 function asArray(v){ return Array.isArray(v) ? v : []; }
 function firstText(obj, keys, fallback){
@@ -984,11 +984,11 @@ async function connectKey(){
     return;
   }
 
-  // â”€â”€ Direct frontend Anthropic key mode retired in v11.4.5 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // Claude must only be accessed through the Render backend. This protects
+  // â”€â”€ Direct frontend provider key mode retired in v11.4.5 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Provider calls must only run through the Render backend. This protects
   // keys, removes CORS/header issues, and keeps enterprise governance clean.
   if(btn){ btn.textContent = ORIG_LABEL; btn.disabled = false; }
-  setConnectStatus('Direct frontend Claude keys are disabled. Radar now uses the Render backend only.', true);
+  setConnectStatus('Direct frontend model keys are disabled. Radar now uses the Render backend only.', true);
   return;
 }
 
@@ -1419,7 +1419,7 @@ function updateExecutiveNarrative(rows){
 
 // â”€â”€ BACKEND CACHE-FIRST LOADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // The backend/Supabase should be the first source of truth.
-// Claude is only used when the user explicitly refreshes or no cache exists.
+// Provider refresh is only used when the user explicitly refreshes or no cache exists.
 function normaliseBackendSignal(row){
   row = row || {};
   const raw = row.raw_json || {};
@@ -1480,7 +1480,7 @@ function domainResultFromBackend(domainId, payload){
     opp: {
       eyebrow: meta.cacheStatus ? ('Cache - ' + meta.cacheStatus) : 'Stored intelligence',
       title: top.captureStrategy || top.title || 'Stored Radar intelligence',
-      body: top.whyItMattersNow || top.body || 'Loaded from Supabase cache before using Claude.',
+      body: top.whyItMattersNow || top.body || 'Loaded from Supabase cache before refresh.',
       value: meta.cacheAgeHuman ? ('Updated ' + meta.cacheAgeHuman + ' ago') : 'Saved in backend'
     },
     actions: signals.slice(0,3).map(s => s.captureStrategy || s.title).filter(Boolean)
@@ -1512,7 +1512,7 @@ async function loadBackendCacheFirst(showMessages){
 
   try{
     if(showMessages) setStatus('Loading saved Radar intelligence from backend...', true);
-    setPhase('Checking Supabase cache before using Claude...');
+    setPhase('Checking Supabase cache before refresh...');
 
     const latestResp = await backendFetch(`/api/cache/latest?viewMode=${encodeURIComponent(viewMode)}&maxAgeHours=${maxAgeHours}`, {}, 20000);
     if(!latestResp.ok) throw new Error('Cache latest failed ' + latestResp.status);
@@ -1556,7 +1556,7 @@ async function loadBackendCacheFirst(showMessages){
       setStatus(loaded + ' of 14 domains loaded from backend/Supabase cache' + freshLabel);
       setPhase(latest?.meta?.backendRefreshedDoha ? ('Backend refreshed: ' + latest.meta.backendRefreshedDoha + ' - Hash ' + (latest.meta.dataHash || '')) : 'Backend cache loaded');
       const emptyTxt = document.getElementById('emptyTxt');
-      if(emptyTxt) emptyTxt.textContent = loaded + ' domains loaded from Supabase. Click any domain to explore, or use Refresh only when you need new AI scans.';
+      if(emptyTxt) emptyTxt.textContent = loaded + ' domains loaded from Supabase. Click any domain to explore, or use Refresh only when you need new source scans.';
       const liveLabel = document.getElementById('liveLabel');
       if(liveLabel) liveLabel.textContent = getViewProfile().label + ' - ' + loaded + '/14 backend cache';
       checkResumable();
@@ -1981,7 +1981,7 @@ function isUsefulCurrentOrFutureSignal(signal){
     if(age <= 120) return true;
   }
 
-  // If Claude followed the relevanceWindow rule, allow it; otherwise require active language.
+  // If the provider followed the relevanceWindow rule, allow it; otherwise require active language.
   return allowedWindows.includes(s.relevanceWindow) || hasCurrentImpact;
 }
 
@@ -2489,7 +2489,7 @@ function openDom(id){
           ${vb(s)}
           ${s.relevanceWindow?`<span class="bmbadge">${String(s.relevanceWindow).replaceAll('_',' ')}</span>`:''}
           ${s.sourceUrl?`<a class="vlink" href="${s.sourceUrl}" target="_blank">Verify -></a>`:`<a class="vlink" href="https://www.google.com/search?q=${encodeURIComponent(s.title+' Qatar Airways 2026')}" target="_blank">Research -></a>`}
-          <button class="sig-ap-btn" data-act="${encodeURIComponent(s.captureStrategy||s.title||'Signal action plan')}" data-dom="${id}" data-ti="${encodeURIComponent((m.ti||id).replace(/&amp;/g,'&'))}" onclick="domAct(this)">Plan -></button>
+          <button class="sig-ap-btn" data-act="${encodeURIComponent(s.captureStrategy||s.title||'Signal working note')}" data-dom="${id}" data-ti="${encodeURIComponent((m.ti||id).replace(/&amp;/g,'&'))}" onclick="domAct(this)">Plan -></button>
         </div>
       </div>
     </div>`).join('')
@@ -2534,8 +2534,8 @@ function openDom(id){
       <div class="ai-panel hidden" id="aiPanel">
         <div class="ai-hdr">
           <div class="ai-hdr-l">
-            <div class="ai-hdr-ti">Intelligence AI</div>
-            <div class="ai-hdr-su">Claude - QR context loaded</div>
+            <div class="ai-hdr-ti">Radar Notes</div>
+            <div class="ai-hdr-su">QR context loaded</div>
           </div>
           <button class="ai-close" onclick="closeAI()">x</button>
         </div>
@@ -2570,8 +2570,8 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && currentDom){ closeDom(); }
 });
 
-// â”€â”€ AI CHAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const SYS=`You are the Qatar Airways Digital/B2C Intelligence AI for Digital Product, Digital Marketing and Loyalty leadership. Give sharp, specific, actionable commercial strategy. Do not rely on stale static facts about Qatar Airways routes, fleet, fuel prices, regulatory notices or dates unless they are verified by the current domain data or source links. Treat old events as historical context only. If B2C view is active, focus on direct booking growth, loyalty, digital product, marketing demand capture, agent/OTA shift and customer intelligence/UCP value. Do not claim access to internal strategy or confidential internal data. Give numbered action plans with Digital/B2C value ranges and 30-day timelines. Under 200 words.`;
+// â”€â”€ RADAR NOTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const SYS=`You are the Qatar Airways Digital/B2C Radar Notes for Digital Product, Digital Marketing and Loyalty leadership. Give sharp, specific, actionable commercial strategy. Do not rely on stale static facts about Qatar Airways routes, fleet, fuel prices, regulatory notices or dates unless they are verified by the current domain data or source links. Treat old events as historical context only. If B2C view is active, focus on direct booking growth, loyalty, digital product, marketing demand capture, agent/OTA shift and customer intelligence/UCP value. Do not claim access to internal strategy or confidential internal data. Give numbered working notes with Digital/B2C value ranges and 30-day timelines. Under 200 words.`;
 
 async function callChat(msg){
   chatHistory.push({role:'user',content:msg});
@@ -2681,14 +2681,14 @@ function openAP(action, domainTitle, domainId){
   AP_CURRENT_DOMAIN = domainTitle;
   AP_CURRENT_DOMAIN_ID = domainId;
 
-  document.getElementById('apBadge').textContent = '30-Day Action Plan - ' + getViewProfile().label;
+  document.getElementById('apBadge').textContent = '30-Day Working Note - ' + getViewProfile().label;
   document.getElementById('apTitle').textContent = action;
   const apDomEl = document.getElementById('apDomain'); if(apDomEl) apDomEl.textContent = domainTitle;
   document.getElementById('apBody').innerHTML = `
     <div class="ap-loading">
       <div class="ap-spin-lg"></div>
-      <div class="ap-load-txt">Building your action plan...</div>
-      <div class="ap-load-sub">Analysing the signal and building a specific, costed 30-day plan with owner, timeline and dollar value.</div>
+      <div class="ap-load-txt">Preparing working note...</div>
+      <div class="ap-load-sub">Compiling the signal evidence into a focused owner checklist with timeline, value range and review points.</div>
     </div>`;
   document.getElementById('apOverlay').style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -2702,7 +2702,7 @@ function closeAP(){
 
 function regenerateAP(){
   if(!AP_CURRENT_ACTION){
-    renderAPError('Nothing to regenerate yet. Please open an action plan first.');
+    renderAPError('Nothing to refresh yet. Please open a working note first.');
     return;
   }
   openAP(AP_CURRENT_ACTION, AP_CURRENT_DOMAIN, AP_CURRENT_DOMAIN_ID);
@@ -2715,7 +2715,7 @@ async function generateAP(action, domainTitle, domainId){
   const domainData = domData[domainId] || {};
   const signals = getDomainSummaryForAP(domainId) || (domainData.signals || []).slice(0,4).map(s => s.title + ': ' + s.body).join(' | ');
 
-  const prompt = `You are the Qatar Airways Digital/B2C Intelligence AI. Today is ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}.
+  const prompt = `You are the Qatar Airways Digital/B2C Radar Notes. Today is ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}.
 
 CONTEXT:
 - View: ${viewProfile.title} | Domain: ${domainTitle}
@@ -2725,12 +2725,12 @@ CONTEXT:
 - Use only loaded backend/cache source facts for awards, rankings and social metrics
 - B2C SVP priorities: Adobe UCP rollout, direct booking growth, loyalty retention, personalisation at scale
 
-Build a rigorous 30-day B2C action plan for: "${action}"
+Draft a concise 30-day B2C working note for: "${action}"
 
 Return ONLY valid JSON - no markdown - all strings under 120 chars:
 {
-  "title": "Plan title under 55 chars",
-  "summary": "2-3 sentences for SVP: the signal, opportunity, and what this plan achieves",
+  "title": "Working note title under 55 chars",
+  "summary": "2-3 sentences for SVP: the signal, opportunity, and intended outcome",
   "totalValue": "$XM revenue impact or saving over 90 days",
   "confidence": "High|Medium|Low",
   "steps": [
@@ -2777,7 +2777,7 @@ RULES:
     const plan = extractJSON(raw);
     renderAP(plan);
   }catch(e){
-    renderAPError('Could not generate action plan: ' + (e.message||'Unknown error') + '. Please try again.');
+    renderAPError('Could not generate working note: ' + (e.message||'Unknown error') + '. Please try again.');
   }
 }
 
@@ -3467,33 +3467,33 @@ const PMETA = {
 };
 const AIDISCOVERY = {
   kpis: [
-    { v: '5', l: 'trackable signal families', d: 'AI referrals, crawler visibility, citations, query gaps and conversion.' },
+    { v: '5', l: 'trackable signal families', d: 'Referral sources, crawler visibility, citations, query gaps and conversion.' },
     { v: '3', l: 'core data sources', d: 'Server logs, Adobe Analytics and citation monitoring.' },
-    { v: '4', l: 'AI engines to compare', d: 'ChatGPT, Claude, Perplexity and Gemini.' },
+    { v: '4', l: 'answer sources to compare', d: 'Major answer platforms.' },
     { v: '7', l: 'query families', d: 'Premium, business, family, route, app and loyalty questions.' },
     { v: '1', l: 'weekly audit loop', d: 'Repeat the same query set to see movement and gaps.' }
   ],
   useful: [
     {
-      title: 'AI referral traffic',
+      title: 'Referral traffic',
       pill: 'Ready now',
       tone: 'ai-good',
-      body: 'Measure sessions from chatgpt.com, perplexity.ai, claude.ai and gemini.google.com inside Adobe using a dedicated AI Assistant channel group.',
-      sub: 'Why it helps: shows whether AI engines are sending real visitors and bookings to QR.'
+      body: 'Measure answer-assistant sessions inside Adobe using a dedicated referral channel group.',
+      sub: 'Why it helps: shows whether answer platforms are sending real visitors and bookings to QR.'
     },
     {
       title: 'Crawler visibility',
       pill: 'Ready now',
       tone: 'ai-good',
-      body: 'Track GPTBot, OAI-SearchBot, ClaudeBot, Claude-SearchBot, PerplexityBot and Google-Extended in server logs.',
-      sub: 'Why it helps: shows which pages AI engines are reading and where depth is strongest.'
+      body: 'Track known answer-platform crawler agents in server logs.',
+      sub: 'Why it helps: shows which pages answer platforms are reading and where depth is strongest.'
     },
     {
       title: 'Citation share and position',
       pill: 'Ready now',
       tone: 'ai-good',
-      body: 'Run the same travel queries across Claude, ChatGPT, Perplexity and Gemini to see whether QR is cited, where it ranks, and which competitor appears instead.',
-      sub: 'Why it helps: turns AI visibility into a compare-and-improve score.'
+      body: 'Run the same travel queries across major answer platforms to see whether QR is cited, where it ranks, and which competitor appears instead.',
+      sub: 'Why it helps: turns search visibility into a compare-and-improve score.'
     },
     {
       title: 'Query gap analysis',
@@ -3506,27 +3506,27 @@ const AIDISCOVERY = {
       title: 'Landing page and conversion quality',
       pill: 'Ready now',
       tone: 'ai-good',
-      body: 'Measure which landing pages AI referrals choose, and compare bounce rate, conversion rate and revenue per session.',
-      sub: 'Why it helps: proves whether AI discovery is commercial or just noisy traffic.'
+      body: 'Measure which landing pages Referral sources choose, and compare bounce rate, conversion rate and revenue per session.',
+      sub: 'Why it helps: proves whether source discovery is commercial or just noisy traffic.'
     },
     {
-      title: 'Dark AI traffic estimate',
+      title: 'Unattributed answer traffic estimate',
       pill: 'Exploratory',
       tone: 'ai-mid',
-      body: 'Use trend matching to estimate AI sessions that arrive as Direct because referrer data is missing.',
+      body: 'Use trend matching to estimate sessions that arrive as Direct because referrer data is missing.',
       sub: 'Why it helps: recovers part of the blind spot, but should be treated as directional rather than exact.'
     }
   ],
   exclude: [
     {
-      title: 'AI training-data inclusion',
+      title: 'Training-data inclusion claims',
       tone: 'ai-bad',
       body: 'Crawl frequency is only a proxy. It does not prove that QR content was used in training or how a model will answer tomorrow.'
     },
     {
-      title: 'Exact Google AI Mode traffic',
+      title: 'Exact Google answer-mode traffic',
       tone: 'ai-bad',
-      body: 'Google uses noreferrer in AI Mode links, so exact traffic attribution is not dependable in client-side analytics.'
+      body: 'Google uses noreferrer in answer-mode links, so exact traffic attribution is not dependable in client-side analytics.'
     },
     {
       title: 'Hype-only social counts',
@@ -3543,17 +3543,17 @@ const AIDISCOVERY = {
     {
       name: 'Server logs',
       status: 'No API key',
-      body: 'Filter known crawler user agents such as GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot, PerplexityBot and Google-Extended.'
+      body: 'Filter known answer-platform crawler user agents in server logs.'
     },
     {
       name: 'Adobe Analytics',
       status: 'Config only',
-      body: 'Add a regex channel group for AI referrals so sessions from chatgpt.com, perplexity.ai, claude.ai and gemini.google.com are captured cleanly.'
+      body: 'Add a regex channel group for Referral sources so sessions from chatgpt.com, perplexity.ai, claude.ai and gemini.google.com are captured cleanly.'
     },
     {
       name: 'Citation monitor',
       status: 'API or vendor',
-      body: 'Use a weekly Claude audit or a citation-monitoring tool to compare citation share, query gaps and engine position across brands.'
+      body: 'Use a weekly citation audit or monitoring tool to compare citation share, query gaps and source position across brands.'
     }
   ],
   queries: [
@@ -3565,25 +3565,25 @@ const AIDISCOVERY = {
   ],
   actions: [
     {
-      title: 'Create the AI visibility baseline',
+      title: 'Create the Search visibility baseline',
       body: 'Start the weekly query audit and store results so the business can see citation share, position and gaps over time.',
       tags: ['Weekly', 'Fast start', 'High value']
     },
     {
-      title: 'Add the Adobe AI referral channel group',
-      body: 'Capture AI sessions in existing analytics first; this gives the team a cheap baseline before buying extra tools.',
+      title: 'Add the Adobe Referral source channel group',
+      body: 'Capture referral sessions in existing analytics first; this gives the team a cheap baseline before buying extra tools.',
       tags: ['Adobe', 'No extra API', 'Direct value']
     },
     {
       title: 'Publish a structured content and llms.txt plan',
-      body: 'Make QR easier for AI engines to read by tightening authoritative content, schema and machine-readable summaries.',
-      tags: ['SEO', 'Structured data', 'AI readable']
+      body: 'Make QR easier for answer platforms to read by tightening authoritative content, schema and machine-readable summaries.',
+      tags: ['SEO', 'Structured data', 'Machine readable']
     }
   ]
 };
 let APARTNER = null;
 let AAIDISC = null;
-const AI_DISCOVERY_API_PATH = '/api/ai-discovery/status';
+const AI_DISCOVERY_API_PATH = '/api/discovery/status';
 let AI_DISCOVERY_BACKEND = {
   loading: false,
   loadedAt: null,
@@ -3620,6 +3620,87 @@ function aiDiscoveryBackendData(){
   return (AI_DISCOVERY_BACKEND && AI_DISCOVERY_BACKEND.data) || {};
 }
 
+function aiDiscoverySummaryData(data){
+  data = data || aiDiscoveryBackendData();
+  const run = data.latestDiscoveryRun || {};
+  return data.latestDiscoverySummary || run.metadata || {};
+}
+
+function aiDiscoveryBestNumber(values, fallback){
+  for(let i=0;i<values.length;i++){
+    const n = Number(values[i]);
+    if(Number.isFinite(n)) return n;
+  }
+  return fallback;
+}
+
+function aiDiscoveryDateLabel(value){
+  if(!value) return '';
+  const d = new Date(value);
+  if(!Number.isFinite(d.getTime())) return String(value);
+  return d.toLocaleString('en-GB', {
+    day:'2-digit',
+    month:'short',
+    hour:'2-digit',
+    minute:'2-digit'
+  });
+}
+
+function aiDiscoveryRunStatus(data){
+  data = data || aiDiscoveryBackendData();
+  const run = data.latestDiscoveryRun || {};
+  const summary = aiDiscoverySummaryData(data);
+  return summary.status || run.status || (summary.completedAt || run.completed_at ? 'completed' : 'not confirmed');
+}
+
+function aiDiscoverySourceResults(data){
+  const summary = aiDiscoverySummaryData(data || aiDiscoveryBackendData());
+  return Array.isArray(summary.sourceResults) ? summary.sourceResults : [];
+}
+
+function renderAIDiscoveryRunProof(data, hasLive){
+  const host = document.getElementById('aiDiscoveryRunProof');
+  if(!host) return;
+  data = data || aiDiscoveryBackendData();
+  if(!hasLive){
+    host.innerHTML = '<div class="ai-proof-empty">Connect the backend, then refresh this page to show latest source checks, saved items and created signals.</div>';
+    return;
+  }
+  const summary = aiDiscoverySummaryData(data);
+  const sourceRows = aiDiscoverySourceResults(data).slice(0, 6);
+  const ledgerRows = (Array.isArray(data.sourceLedger) ? data.sourceLedger : []).slice(0, 6);
+  const rows = sourceRows.length ? sourceRows.map(function(row){
+    return {
+      name: row.sourceName || row.sourceId || 'Source',
+      meta: row.sourceId || 'Discovery source',
+      value: String(aiDiscoverySafeNum(row.itemsFound, 0)) + ' items',
+      state: row.status || 'checked'
+    };
+  }) : ledgerRows.map(function(row){
+    return {
+      name: row.source_name || row.source_id || row.source_type || 'Tracked source',
+      meta: row.source_type || 'Ledger source',
+      value: String(aiDiscoverySafeNum(row.items_saved || row.items_seen || row.item_count, 0)) + ' saved',
+      state: row.freshness_state || row.status || 'tracked'
+    };
+  });
+  if(!rows.length){
+    host.innerHTML = '<div class="ai-proof-empty">Backend is connected, but no source-level proof rows were returned yet. Run source discovery once, then refresh.</div>';
+    return;
+  }
+  host.innerHTML =
+    '<div class="ai-proof-title">Latest source proof</div>' +
+    '<div class="ai-proof-list">' +
+      rows.map(function(row){
+        return '<div class="ai-proof-row">' +
+          '<div><div class="ai-proof-name">'+esc(row.name)+'</div><div class="ai-proof-meta">'+esc(row.meta)+'</div></div>' +
+          '<div class="ai-proof-value">'+esc(row.value)+'</div>' +
+          '<span class="ai-proof-state">'+esc(row.state)+'</span>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+}
+
 function aiDiscoveryStatusLabel(){
   if(AI_DISCOVERY_BACKEND.loading) return 'Checking backend';
   if(AI_DISCOVERY_BACKEND.status === 'connected') return 'Backend connected';
@@ -3639,44 +3720,57 @@ function renderAIDiscoveryBackendStatus(){
     pill.classList.toggle('ai-warn', !hasLive);
   }
 
+  const summary = aiDiscoverySummaryData(data);
+  const run = data.latestDiscoveryRun || {};
+  const latestContent = data.latestContentRefresh || {};
+  const sourceResults = aiDiscoverySourceResults(data);
+  const completedAt = summary.completedAt || run.completed_at || run.run_at || latestContent.refreshed_at || data.lastCheckedAt;
+  const sourcesChecked = aiDiscoveryBestNumber([summary.sourcesChecked, run.sources_checked, sourceResults.length, data.sourceCount], 0);
+  const itemsSaved = aiDiscoveryBestNumber([summary.sourceItemsSaved, run.source_items_saved, summary.itemsSeen, run.signals_checked], 0);
+  const signalsSaved = aiDiscoveryBestNumber([summary.signalsSaved, summary.newSignalsFound, run.signals_created, run.critical_signals], 0);
+  const ledgerCount = aiDiscoveryBestNumber([data.sourceCount, (data.sourceLedger || []).length], 0);
+  const staleCount = aiDiscoveryBestNumber([data.staleSourceCount], 0);
+  const contentStatus = data.contentStatus || latestContent.status || 'not confirmed';
+
   const cards = [
     {
-      label: 'Server route',
-      value: hasLive ? 'Live' : 'Backend API pending',
+      label: 'Latest run',
+      value: hasLive ? aiDiscoveryRunStatus(data) : 'Backend pending',
       detail: hasLive
-        ? 'Reading ' + AI_DISCOVERY_API_PATH + ' from the backend.'
-        : 'Add GET ' + AI_DISCOVERY_API_PATH + ' on the backend/server to return AI discovery proof.'
+        ? (completedAt ? 'Completed ' + aiDiscoveryDateLabel(completedAt) : 'Backend connected; waiting for first run timestamp.')
+        : 'Backend should return source proof, freshness and confidence.'
     },
     {
-      label: 'AI referrals',
-      value: hasLive ? String(aiDiscoverySafeNum(data.aiReferralSessions, 0)) : 'Awaiting API',
-      detail: 'Sessions from ChatGPT, Perplexity, Claude, Gemini or other AI referrers.'
+      label: 'Sources checked',
+      value: hasLive ? String(sourcesChecked) : 'Awaiting run',
+      detail: 'Source groups checked in the latest discovery cycle.'
     },
     {
-      label: 'Crawler visibility',
-      value: hasLive ? String(aiDiscoverySafeNum(data.crawlerHits, 0)) : 'Awaiting logs',
-      detail: 'GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot and Google-Extended page visibility.'
+      label: 'Items saved',
+      value: hasLive ? String(itemsSaved) : 'Awaiting run',
+      detail: 'Evidence items captured before scoring and dedupe.'
     },
     {
-      label: 'Citation monitor',
-      value: hasLive ? String(aiDiscoverySafeNum(data.citedQueries, 0)) : 'Awaiting monitor',
-      detail: 'Weekly query set showing where QR is cited, missing, or behind competitors.'
+      label: 'Signals created',
+      value: hasLive ? String(signalsSaved) : 'Awaiting run',
+      detail: 'New signals saved into Radar from the latest source cycle.'
     },
     {
-      label: 'Query gaps',
-      value: hasLive ? String(aiDiscoverySafeNum(data.queryGaps, 0)) : 'Awaiting API',
-      detail: 'Travel questions where competitors appear and Qatar Airways does not.'
+      label: 'Source ledger',
+      value: hasLive ? (String(ledgerCount) + ' tracked') : 'Awaiting ledger',
+      detail: staleCount ? (String(staleCount) + ' source(s) need refresh.') : 'Source freshness ledger is clean or not yet stale.'
     },
     {
-      label: 'Last checked',
-      value: hasLive ? (data.lastCheckedDoha || data.lastCheckedAt || 'Live') : 'Not confirmed',
-      detail: AI_DISCOVERY_BACKEND.error || 'Backend should return freshness, source count and confidence.'
+      label: 'Content freshness',
+      value: hasLive ? contentStatus : 'Not confirmed',
+      detail: latestContent.domain_id ? ('Latest domain: ' + String(latestContent.domain_id).toUpperCase()) : (AI_DISCOVERY_BACKEND.error || 'Waiting for latest refresh proof.')
     }
   ];
 
   host.innerHTML = cards.map(function(card){
     return '<div class="ai-backend-card"><div class="ai-backend-label">'+esc(card.label)+'</div><div class="ai-backend-value">'+esc(card.value)+'</div><div class="ai-backend-detail">'+esc(card.detail)+'</div></div>';
   }).join('');
+  renderAIDiscoveryRunProof(data, hasLive);
 }
 
 async function loadAIDiscoveryBackend(force){
@@ -3694,12 +3788,12 @@ async function loadAIDiscoveryBackend(force){
     }else{
       AI_DISCOVERY_BACKEND.status = 'error';
       AI_DISCOVERY_BACKEND.data = null;
-      AI_DISCOVERY_BACKEND.error = (json && json.error && json.error.message) || 'Backend route did not return AI Discovery data.';
+      AI_DISCOVERY_BACKEND.error = (json && json.error && json.error.message) || 'Backend route did not return Discovery Monitor data.';
     }
   }catch(err){
     AI_DISCOVERY_BACKEND.status = 'error';
     AI_DISCOVERY_BACKEND.data = null;
-    AI_DISCOVERY_BACKEND.error = (err && err.message) || 'AI Discovery backend route unavailable.';
+    AI_DISCOVERY_BACKEND.error = (err && err.message) || 'Discovery Monitor backend route unavailable.';
   }finally{
     AI_DISCOVERY_BACKEND.loading = false;
     renderAIDiscoveryBackendStatus();
@@ -3953,7 +4047,7 @@ function renderPartnerDetail(id){
         <li>Route and market coverage</li>
         <li>Loyalty / Avios value</li>
         <li>External news and connection signals</li>
-        <li>Actionable recommendation for Qatar Airways</li>
+        <li>Useful follow-up for Qatar Airways</li>
       </ul>
     </div>
   </div>
@@ -3988,7 +4082,39 @@ function renderAIDiscoveryPage(){
 
   const kpiHost = document.getElementById('aiDiscoveryKpis');
   if(kpiHost){
-    kpiHost.innerHTML = AIDISCOVERY.kpis.map(function(card){
+    const data = aiDiscoveryBackendData();
+    const hasLive = AI_DISCOVERY_BACKEND.status === 'connected';
+    const summary = aiDiscoverySummaryData(data);
+    const run = data.latestDiscoveryRun || {};
+    const latestContent = data.latestContentRefresh || {};
+    const liveKpis = [
+      {
+        v: hasLive ? aiDiscoveryBestNumber([summary.sourcesChecked, run.sources_checked, aiDiscoverySourceResults(data).length, data.sourceCount], 0) : 5,
+        l: hasLive ? 'sources checked' : 'trackable signal families',
+        d: hasLive ? 'Latest backend discovery cycle' : 'Referral sources, crawler visibility, citations, query gaps and conversion.'
+      },
+      {
+        v: hasLive ? aiDiscoveryBestNumber([summary.sourceItemsSaved, summary.itemsSeen, run.signals_checked], 0) : 3,
+        l: hasLive ? 'items saved' : 'core data sources',
+        d: hasLive ? 'Source items captured for scoring' : 'Server logs, Adobe Analytics and citation monitoring.'
+      },
+      {
+        v: hasLive ? aiDiscoveryBestNumber([summary.signalsSaved, summary.newSignalsFound, run.signals_created, run.critical_signals], 0) : 4,
+        l: hasLive ? 'signals created' : 'answer sources to compare',
+        d: hasLive ? 'New Radar signals from source discovery' : 'Major answer platforms.'
+      },
+      {
+        v: hasLive ? aiDiscoveryBestNumber([data.sourceCount, (data.sourceLedger || []).length], 0) : 7,
+        l: hasLive ? 'ledger sources' : 'query families',
+        d: hasLive ? 'Source freshness ledger coverage' : 'Premium, business, family, route, app and loyalty questions.'
+      },
+      {
+        v: hasLive ? (data.contentStatus || latestContent.status || 'live') : 1,
+        l: hasLive ? 'content status' : 'weekly audit loop',
+        d: hasLive ? (latestContent.refreshed_at ? ('Latest refresh ' + aiDiscoveryDateLabel(latestContent.refreshed_at)) : 'Waiting for refresh timestamp') : 'Repeat the same query set to see movement and gaps.'
+      }
+    ];
+    kpiHost.innerHTML = liveKpis.map(function(card){
       return '<div class="ai-kpi"><div class="ai-kpi-v">'+esc(card.v)+'</div><div class="ai-kpi-l">'+esc(card.l)+'</div><div class="ai-kpi-d">'+esc(card.d)+'</div></div>';
     }).join('');
   }
@@ -4843,7 +4969,7 @@ function renderExecutiveSummaryPage(){
     if(!all.length){ cross.innerHTML='<div class="exec-empty">Executive analyst summary will appear once backend/cache data is loaded.</div>'; }
     else{
       var top1=sigs[0]||{}; var top2=sigs[1]||{}; var top3=sigs[2]||{};
-      cross.innerHTML='<div class="exec-summary-copy"><strong>Verdict:</strong> Commercial status is <strong>'+stateLabel.toLowerCase()+'</strong>. <strong>'+esc(topTheme.name)+'</strong> is the strongest driver. The top ranked movement is <strong>'+esc(top1.title||'No signal title')+'</strong>. Leadership should align on the first recommended move below and then validate supporting evidence across the deep-dive views.</div><div class="exec-summary-actions"><div class="exec-action-card"><div class="exec-action-title">Protect</div><div class="exec-action-body">'+esc(top1.captureStrategy||top1.whyItMattersNow||'Protect revenue and customer trust using the strongest loaded signal.')+'</div></div><div class="exec-action-card"><div class="exec-action-title">Capture</div><div class="exec-action-body">'+esc(top2.captureStrategy||top2.whyItMattersNow||'Use opportunity signals to capture direct demand and customer value.')+'</div></div><div class="exec-action-card"><div class="exec-action-title">Scale</div><div class="exec-action-body">'+esc(top3.captureStrategy||top3.whyItMattersNow||'Convert repeated signals into repeatable playbooks and owner workflows.')+'</div></div></div>';
+      cross.innerHTML='<div class="exec-summary-copy"><strong>Verdict:</strong> Commercial status is <strong>'+stateLabel.toLowerCase()+'</strong>. <strong>'+esc(topTheme.name)+'</strong> is the strongest driver. The top ranked movement is <strong>'+esc(top1.title||'No signal title')+'</strong>. Leadership should align on the first priority move below and then validate supporting evidence across the deep-dive views.</div><div class="exec-summary-actions"><div class="exec-action-card"><div class="exec-action-title">Protect</div><div class="exec-action-body">'+esc(top1.captureStrategy||top1.whyItMattersNow||'Protect revenue and customer trust using the strongest loaded signal.')+'</div></div><div class="exec-action-card"><div class="exec-action-title">Capture</div><div class="exec-action-body">'+esc(top2.captureStrategy||top2.whyItMattersNow||'Use opportunity signals to capture direct demand and customer value.')+'</div></div><div class="exec-action-card"><div class="exec-action-title">Scale</div><div class="exec-action-body">'+esc(top3.captureStrategy||top3.whyItMattersNow||'Convert repeated signals into repeatable playbooks and owner workflows.')+'</div></div></div>';
     }
   }
   var top1=sigs[0]||{};
@@ -4939,12 +5065,12 @@ function renderExecutiveSummaryPage(){
 }
 function predictiveCategoryDefinitions(){
   return [
-    {ey:'Competitor feature advantage',h:'Find what rival airlines are doing right',p:'App awards, journey-control tools, loyalty moments, AI service, premium personalization and direct-channel product moves worth adapting.',q:/feature|award|best|app|digital|journey|loyalty|premium|assistant|personal/i},
+    {ey:'Competitor feature advantage',h:'Find what rival airlines are doing right',p:'App awards, journey-control tools, loyalty moments, digital service, premium personalization and direct-channel product moves worth adapting.',q:/feature|award|best|app|digital|journey|loyalty|premium|assistant|personal/i},
     {ey:'Partner-enabled product plays',h:'Use the network to build faster',p:'Codeshare clarity, partner marketplace, earn/redeem prompts, corridor campaigns and disruption recovery powered by partner relationships.',q:/partner|codeshare|oneworld|alliance|marketplace|earn|redeem|corridor|lounge/i},
     {ey:'Revenue opportunity lens',h:'Choose ideas that can move business numbers',p:'Ancillary attach, premium yield, direct conversion, loyalty engagement, service deflection and campaign precision.',q:/revenue|ancillary|premium|upsell|yield|conversion|loyalty|commerce|attach/i},
     {ey:'Customer experience edge',h:'Make the feature meaningfully better for travellers',p:'Trip control, proactive servicing, confidence cues, journey notifications, recognition and fewer handoffs across app, web and airport.',q:/customer|journey|service|trip|notification|recognition|confidence|experience/i},
     {ey:'Deploy or watch decision',h:'Separate build-now ideas from interesting noise',p:'Every idea should have a QR owner, expected impact, proof strength and a clear decision: deploy, pilot, partner, watch or reject.',q:/deploy|pilot|test|watch|decision|owner|impact|proof|roadmap/i},
-    {ey:'Future innovation runway',h:'Track ideas QR could lead before rivals scale them',p:'AI concierge, agentic booking, personalization, partner data activation and service automation that can become distinctive QR advantages.',q:/innovation|future|ai|agent|personalization|automation|concierge|experiment/i}
+    {ey:'Future innovation runway',h:'Track ideas QR could lead before rivals scale them',p:'digital concierge, guided booking, personalization, partner data activation and service automation that can become distinctive QR advantages.',q:/innovation|future|ai|agent|personalization|automation|concierge|experiment/i}
   ];
 }
 function ensurePredictivePremiumStyles(){
@@ -5309,7 +5435,7 @@ function evidenceBackedInnovationFallbacks(){
   }
   if(featureCount||partnerCount||signals.length){
     ideas.push({
-      title:'AI-assisted service and booking concierge',
+      title:'Digital service and booking concierge',
       lens:'Anticipate the future',
       priority:'validate_next',
       category:'ai_discovery',
@@ -5317,8 +5443,8 @@ function evidenceBackedInnovationFallbacks(){
       revenueEstimate:'$3.2M-$10.5M',
       opportunityLabel:'Service deflection and conversion',
       decision:'Pilot with guardrails',
-      description:'Create an AI-assisted concierge for planning, booking choice, loyalty help, partner itinerary confidence and next-best action prompts across app and web.',
-      gap:'Rivals and travel platforms are moving toward AI-assisted service. QR should test a narrow, high-control version before the market standard shifts.',
+      description:'Create an digital concierge for planning, booking choice, loyalty help, partner itinerary confidence and priority note prompts across app and web.',
+      gap:'Rivals and travel platforms are moving toward guided digital servicing. QR should test a narrow, high-control version before the market standard shifts.',
       valueAssumption:'Deflecting repeat service contacts and recovering interrupted direct bookings creates both cost avoidance and revenue upside.',
       firstStep:'Prototype one high-control use case: premium journey planning, partner itinerary confidence or loyalty help.',
       actionPlan:[
@@ -5398,7 +5524,7 @@ function renderPredictiveIdeaCard(idea){
       '<div class="predict-idea-proof"><strong>Commercial logic</strong>'+esc(idea.valueAssumption||'Directional estimate based on evidence strength and implementation feasibility.')+'</div>'+
       '<div class="predict-idea-proof"><strong>Evidence base</strong>'+esc(String(ev.internalMatches||0))+' internal, '+esc(String(ev.externalAppOrInnovationItems||0))+' external, '+esc(String(ev.competitorMatches||0))+' competitor, '+esc(String(ev.partnerMatches||0))+' partner.</div>'+
     '</div>'+
-    '<div class="predict-idea-body"><strong>Action plan:</strong>'+actionHtml+'</div>'+
+    '<div class="predict-idea-body"><strong>Working note:</strong>'+actionHtml+'</div>'+
     (kpis.length?'<div class="predict-idea-body"><strong>KPIs:</strong> '+esc(kpis.slice(0,4).join(' | '))+'</div>':'')+
     (sources.length?'<div class="predict-idea-body"><strong>Source proof:</strong>'+renderPredictiveSourceLinks(sources)+'</div>':'')+
     '<div class="predict-idea-tags">'+tags.map(function(t){return '<span>'+esc(t)+'</span>';}).join('')+'</div></div>';
@@ -5411,7 +5537,7 @@ function renderPredictiveInnovationIdeas(){
   var ideas=effectivePredictiveInnovationIdeas();
   if(st.loading&&!ideas.length){ host.innerHTML='<div class="exec-empty">Loading innovation ideas from Radar backend.</div>'; return; }
   if(!ideas.length){
-    host.innerHTML='<div class="predict-empty-premium"><strong>No qualified feature decisions yet</strong><span>Radar did not receive enough competitor, partner or source evidence to create review-ready feature recommendations. Refresh evidence or run AI Discovery, then return to this tab.</span></div>';
+    host.innerHTML='<div class="predict-empty-premium"><strong>No qualified feature decisions yet</strong><span>Radar did not receive enough competitor, partner or source evidence to create review-ready feature recommendations. Refresh evidence or run Discovery Monitor, then return to this tab.</span></div>';
     return;
   }
   var note=liveIdeas.length?'':'<div class="predict-idea-hero"><div><strong>Evidence-backed feature decisions</strong><span>The backend responded but returned zero qualified feature decisions. Radar is using existing competitor, app and partner evidence to show what QR should deploy, test, partner on or watch instead of showing review complaints.</span></div><button class="exec-refresh" onclick="fetchPredictiveInnovation(true); fetchPredictiveAux(true)">Refresh live proof</button></div>';
@@ -5501,14 +5627,14 @@ function renderPredictiveDiscoveryStatus(){
   }
   var s=d.latestDiscoverySummary||{};
   var cards=[
-    {v:d.enabled?'On':'Off',l:'AI discovery',d:d.enabled?'Backend discovery is enabled':'Set AI_DISCOVERY_ENABLED on backend'},
-    {v:s.sourcesChecked??0,l:'Sources checked',d:'Latest AI source discovery run'},
+    {v:d.enabled?'On':'Off',l:'source discovery',d:d.enabled?'Backend discovery is enabled':'Enable backend discovery in server settings'},
+    {v:s.sourcesChecked??0,l:'Sources checked',d:'Latest source discovery run'},
     {v:s.sourceItemsSaved??0,l:'Items saved',d:'External evidence added to source items'},
     {v:d.sourceCount||0,l:'Tracked sources',d:'Source freshness ledger rows'},
     {v:d.staleSourceCount||0,l:'Stale sources',d:'Need refresh before leadership proof'}
   ];
   var cardHtml='<div class="roadmap-kpis" style="margin-bottom:14px">'+cards.map(function(c){return '<div class="roadmap-kpi"><div class="roadmap-kv">'+esc(String(c.v))+'</div><div class="roadmap-kl">'+esc(c.l)+'</div><div class="roadmap-kd">'+esc(c.d)+'</div></div>';}).join('')+'</div>';
-  var providers='<div class="predict-tabs-note"><strong>Provider chain:</strong> '+esc((s.providerChain||[]).join(' -> ')||'Not recorded')+'. Claude web search: '+esc(s.claudeWebSearchRan?'ran':'not recorded')+'. OpenAI scoring: '+esc(s.openaiRan?'ran':'not recorded')+'.</div>';
+  var providers='<div class="predict-tabs-note"><strong>Discovery proof:</strong> '+esc((s.providerChain||[]).join(' -> ')||'Not recorded')+'. Source search: '+esc(s.claudeWebSearchRan?'ran':'not recorded')+'. Signal scoring: '+esc(s.openaiRan?'ran':'not recorded')+'.</div>';
   var sources=(d.sourceLedger||[]).slice(0,8).map(function(row){
     var name=row.source_name||row.source_id||row.source_type||'Source';
     var latest=row.updated_at||row.last_seen_at||row.last_item_at||row.created_at;
@@ -5556,9 +5682,9 @@ function renderPredictivePage(){
       return {t:i.title,b:i.expectedImpact||i.description||'Backend innovation idea',tags:predictiveIdeaTags(i)};
     });
     var concepts=liveConcepts.length?liveConcepts:[
-      {t:'AI travel assistant inside app/web',b:'Model likely impact on direct conversion, servicing deflection, ancillary attach and loyalty engagement.',tags:['AI assistant','Direct conversion','Service deflection']},
+      {t:'Digital service assistant inside app/web',b:'Model likely impact on direct conversion, servicing deflection, ancillary attach and loyalty engagement.',tags:['Service assistant','Direct conversion','Service deflection']},
       {t:'Premium disruption recovery concierge',b:'Predict retention and NPS uplift from proactive rebooking, lounge/service recovery and high-value case routing.',tags:['Premium retention','NPS','CX']},
-      {t:'Marketplace next-best-ancillary engine',b:'Estimate revenue lift from journey-aware bundles across baggage, lounge, seats, Fast Track, eSIM and stopover.',tags:['Ancillary revenue','Bundles','Personalization']},
+      {t:'Marketplace ancillary bundle engine',b:'Estimate revenue lift from journey-aware bundles across baggage, lounge, seats, Fast Track, eSIM and stopover.',tags:['Ancillary revenue','Bundles','Personalization']},
       {t:'OTA recapture intelligence campaign',b:'Simulate direct-share recovery using route windows, loyalty incentives, flexible booking and paid-search timing.',tags:['OTA leakage','Direct share','Revenue']}
     ];
     sim.innerHTML=concepts.map(function(c){return '<div class="sim-card"><div class="sim-title">'+esc(c.t)+'</div><div class="sim-body">'+esc(c.b)+'</div><div class="sim-badges">'+c.tags.map(function(t){return '<span>'+esc(t)+'</span>';}).join('')+'</div></div>';}).join('');
@@ -5677,7 +5803,7 @@ async function loadChannelIntel(){
       headline: cached.opp?.title || 'Saved channel intelligence loaded from backend cache',
       directShare: {estimate:'Cached', source:'Supabase backend', sourceUrl:'', confidence:'Medium', note:cached.opp?.body || 'Backend-first mode'},
       signals: channelSignals.slice(0,6).map(function(row){const s=row.signal; return {title:s.title, body:s.body || s.whyItMattersNow, type:isRiskSignal(s)?'ota_risk':'direct_growth', impact:isRiskSignal(s)?'negative':'positive', value:s.impactLabel || '', source:s.source || (DOM_LABELS[row.domain] || 'Backend cache'), sourceUrl:s.sourceUrl || '', verified:!!s.verified};}),
-      factCheckItems: [{claim:'Backend cache available', reality:'Radar loads saved data before any Claude call', source:'Render/Supabase', verdict:'Supported'}]
+      factCheckItems: [{claim:'Backend cache available', reality:'Radar loads saved data before any provider refresh', source:'Render/Supabase', verdict:'Supported'}]
     });
   } else {
     document.getElementById('channelBody').innerHTML = getChannelCacheEmptyHTML();
@@ -5767,7 +5893,7 @@ function renderAP(plan){
           <div class="ap-sum-title">Executive summary</div>
           <div style="display:flex;gap:6px">
             <span class="comp-pill ${confClass}">${plan.confidence||'Medium'} confidence</span>
-            <span class="comp-pill cp-b">30-day plan</span>
+            <span class="comp-pill cp-b">30-day note</span>
           </div>
         </div>
         <div class="ap-sum-body">${plan.summary||''}</div>
@@ -5781,7 +5907,7 @@ function renderAP(plan){
 
   const footer = document.getElementById('apFooterNote');
   if(footer){
-    footer.textContent = 'Generated from verified B2C intelligence - ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + ' - Internal use only';
+    footer.textContent = 'Drafted from verified B2C intelligence - ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + ' - Internal use only';
   }
 
   fetch(BACKEND_URL+'/api/actionplans/save', {

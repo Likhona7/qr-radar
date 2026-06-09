@@ -82,7 +82,7 @@ addCheck(
   bundle.includes('Approval-Ready Finish Line (Before Internal Data)') &&
   bundle.includes('Discovery status endpoint') &&
   bundle.includes('Full source discovery cron') &&
-  bundle.includes('AI Discovery backend API contract') &&
+  bundle.includes('Discovery Monitor backend contract') &&
   bundle.includes('App ratings intelligence feed'),
   'Roadmap lists the remaining non-internal-data finish-line work'
 );
@@ -92,16 +92,19 @@ addCheck(
   'Partner network tab and catalog present'
 );
 addCheck(
-  'ai-discovery:tab',
-  bundle.includes('AI Discovery Intelligence') && bundle.includes('AI referral traffic') && bundle.includes('AI referral traffic'),
-  'AI Discovery tab and useful-metrics framework present'
+  'discovery-monitor:tab',
+  bundle.includes('Discovery Monitor') &&
+    bundle.includes('Live discovery proof') &&
+    bundle.includes('Latest source proof') &&
+    bundle.includes('signals created'),
+  'Discovery Monitor tab and useful-metrics framework present'
 );
 addCheck(
-  'ai-discovery:backend-api',
+  'discovery-monitor:backend-api',
   bundle.includes('aiDiscoveryBackendStatus') &&
-  bundle.includes('/api/ai-discovery/status') &&
+  bundle.includes('/api/discovery/status') &&
   bundle.includes('Backend API pending'),
-  'AI Discovery is wired to a backend API contract with honest pending state'
+  'Discovery Monitor is wired to a backend API contract with honest pending state'
 );
 addCheck(
   'devserver:use-stubs',
