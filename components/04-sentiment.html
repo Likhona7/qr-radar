@@ -9,6 +9,22 @@
       <button onclick="clearSentCache()" style="font-size:10px;font-weight:600;padding:6px 12px;background:var(--bg3);border:1px solid var(--bo);border-radius:6px;color:var(--t3);cursor:pointer">&#8635; Clear all</button>
     </div>
   </div>
+  <div style="background:var(--su);border:1px solid var(--bo);border-radius:var(--r3);padding:16px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--t1)">Sentiment Trajectory</div>
+        <div style="font-size:10px;color:var(--t2)">Track how sentiment on a topic is trending over the last 30 days</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="sentTrajectoryTopic" placeholder="e.g. booking, baggage, pricing" onkeydown="if(event.key==='Enter')loadSentimentTrajectory()" style="font-size:11px;padding:6px 10px;border:1px solid var(--bo);border-radius:6px;min-width:180px">
+        <button onclick="loadSentimentTrajectory()" style="font-size:10px;font-weight:700;padding:6px 12px;background:var(--qb);border:1px solid var(--qb);border-radius:6px;color:#fff;cursor:pointer">Load trajectory</button>
+      </div>
+    </div>
+    <div id="sentTrajectoryStatus" style="font-size:10px;color:var(--t3);margin-bottom:8px">Enter a topic and click "Load trajectory" to see how sentiment is trending.</div>
+    <div style="position:relative;height:180px;display:none" id="sentTrajectoryChartWrap">
+      <canvas id="sentTrajectoryChart"></canvas>
+    </div>
+  </div>
   <div class="sent-gauge" id="sentGauge" style="display:none">
     <div><div style="font-size:11px;font-weight:600;color:var(--t1);margin-bottom:2px">Overall Sentiment Score</div><div style="font-size:10px;color:var(--t2)">Weighted across all loaded sources</div></div>
     <div style="flex:1"><div class="sent-gauge-bar"><div class="sent-gauge-fill" id="sentGaugeFill" style="width:0%;background:#1abc9c"></div></div><div class="sent-gauge-labels"><span>Very Negative</span><span>Neutral</span><span>Very Positive</span></div></div>

@@ -1,7 +1,7 @@
-﻿// â”€â”€ External library fallback flags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+﻿// ── External library fallback flags ────────────────────────────────────────
 window.RADAR_CHARTS_AVAILABLE = (typeof Chart !== 'undefined');
 
-// â”€â”€ Clock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Clock ──────────────────────────────────────────────────────────────────
 setInterval(()=>{
   const clk = document.getElementById('clk');
   if(!clk) return;
@@ -9,7 +9,7 @@ setInterval(()=>{
   clk.textContent=p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds())+' DOH';
 },1000);
 
-// â”€â”€ Situation ribbon safety guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Situation ribbon safety guard ──────────────────────────────────────────
 // Keeps the landing view empty until backend/cache data is available.
 function initialiseSituationRibbon(){
   const sit = document.getElementById('sitTxt');
@@ -28,9 +28,9 @@ if(document.readyState === 'loading'){
   initialiseSituationRibbon();
 }
 
-// â”€â”€ Chart / cache rendering helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Chart / cache rendering helpers ───────────────────────────────────────
 
-// â”€â”€ CONSTANTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
 const DEFAULT_DOMAINS = ['rev','dig','loy','prd','cmp','geo','agt','sml','soc','spt','sec','reg','ops','rep'];
 const B2C_DOMAINS = ['dig','agt','loy','prd','rev','sml','cmp','spt','rep','reg','geo','ops','sec','soc'];
 let DOMAINS = [...DEFAULT_DOMAINS];
@@ -88,7 +88,7 @@ function claudePayloadWithWebSearch(basePayload, flow){
 }
 window.claudePayloadWithWebSearch = claudePayloadWithWebSearch;
 
-// â”€â”€ BACKEND FETCH HELPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── BACKEND FETCH HELPER ────────────────────────────────────────────────────
 // Wraps fetch with CORS headers, timeout, and structured error reporting.
 // Use this for ALL backend calls instead of raw fetch() to avoid CORS errors
 // when running from file:// or a different origin.
@@ -123,7 +123,7 @@ async function backendFetch(path, options, timeoutMs){
   }
 }
 
-// â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── STATE ──────────────────────────────────────────────────────────────────
 function radarWebSocketUrl(){
   const base = (
     location.hostname === 'localhost' ||
@@ -204,7 +204,7 @@ function loadedDomainCount(){
   return DOMAINS.filter(id => !!runtimeDomains[id]).length;
 }
 
-// â”€â”€ GLOBAL RUNTIME STATE - v11.4.5 cache-first hydration layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── GLOBAL RUNTIME STATE - v11.4.5 cache-first hydration layer ─────────────
 // The backend/Supabase cache and browser backup can contain valid intelligence,
 // but older renderers expect an in-memory runtime object. This keeps the new
 // backend-first architecture while preventing missing/partial signals in tabs.
@@ -360,7 +360,7 @@ function syncDomainRuntimeState(id, data, source){
   return normalised;
 }
 
-// â”€â”€ HARDENING HELPERS - safe rendering, URLs and API errors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── HARDENING HELPERS - safe rendering, URLs and API errors ───────────────
 function esc(v){
   return String(v ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch] || ch));
 }
@@ -387,7 +387,7 @@ function extractJSON(raw){
 }
 
 
-// â”€â”€ SERVER-MANAGED BACKEND-FIRST NORMALISATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SERVER-MANAGED BACKEND-FIRST NORMALISATION ─────────────────────────────
 // All intelligence tabs must render saved backend/browser cache first. Provider refresh is
 // only used by explicit refresh/generate workflows. These helpers prevent old
 // Provider-shaped renderers from showing "undefined" when cached backend data has
@@ -891,7 +891,7 @@ function normalizeCIOSSource(src, data){
   return {source:src, score:safeScore(data.score || data.overallSentiment, null), label:firstText(data,['label','sentimentLabel'],'Loaded'), topComplaint:firstText(data,['topComplaint'],''), topStrength:firstText(data,['topStrength','topPraise'],'')};
 }
 
-// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── INIT ───────────────────────────────────────────────────────────────────
 function init(){
   if(!VIEW_PROFILES[VIEW_MODE]) VIEW_MODE = 'enterprise';
   DOMAINS = getDomainOrder();
@@ -927,7 +927,7 @@ async function connectKey(){
   if(btn){ btn.disabled = true; btn.textContent = 'Connecting...'; }
   setConnectStatus('Contacting server...', false);
 
-  // â”€â”€ Backend server mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Backend server mode ────────────────────────────────────────────
   if(BACKEND_URL && BACKEND_URL.includes('onrender.com')){
 
     // Countdown ticker
@@ -984,7 +984,7 @@ async function connectKey(){
     return;
   }
 
-  // â”€â”€ Direct frontend provider key mode retired in v11.4.5 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Direct frontend provider key mode retired in v11.4.5 ─────────────
   // Provider calls must only run through the Render backend. This protects
   // keys, removes CORS/header issues, and keeps enterprise governance clean.
   if(btn){ btn.textContent = ORIG_LABEL; btn.disabled = false; }
@@ -1010,7 +1010,7 @@ function loadSavedCacheOnly(){
 function skipStatic(){ return loadSavedCacheOnly(); }
 
 
-// â”€â”€ VIEW MODE - Enterprise / B2C â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── VIEW MODE - Enterprise / B2C ───────────────────────────────────────────
 function getDomainOrder(){
   return VIEW_MODE === 'b2c' ? [...B2C_DOMAINS] : [...DEFAULT_DOMAINS];
 }
@@ -1083,7 +1083,7 @@ function getSignalLimit(){
 }
 
 
-// â”€â”€ DOMAIN PRIORITY / REORDERING - stable, cache-safe â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DOMAIN PRIORITY / REORDERING - stable, cache-safe ──────────────────────
 // Keeps the existing localStorage keys unchanged. The goal is to prevent partial
 // async loads from constantly reshuffling the UI and breaking KPI refreshes.
 const BASE_DOMAIN_ORDER = [...DEFAULT_DOMAINS];
@@ -1217,7 +1217,7 @@ function refreshRadarDerivedState(forceOrder=false){
 }
 
 
-// â”€â”€ EXECUTIVE SCORECARD - derived from loaded signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── EXECUTIVE SCORECARD - derived from loaded signals ──────────────────────
 function allLoadedSignals(){
   const rows = [];
   DOMAINS.forEach(id => {
@@ -1417,7 +1417,7 @@ function updateExecutiveNarrative(rows){
   }
 }
 
-// â”€â”€ BACKEND CACHE-FIRST LOADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── BACKEND CACHE-FIRST LOADING ────────────────────────────────────────────
 // The backend/Supabase should be the first source of truth.
 // Provider refresh is only used when the user explicitly refreshes or no cache exists.
 function normaliseBackendSignal(row){
@@ -1582,7 +1582,7 @@ async function loadBackendCacheFirst(showMessages){
 }
 
 
-// â”€â”€ STORAGE - one key per domain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── STORAGE - one key per domain ───────────────────────────────────────────
 function saveDomain(id, data){
   try{
     const normalised = syncDomainRuntimeState(id, data, 'saveDomain');
@@ -1596,7 +1596,7 @@ function saveDomain(id, data){
 }
 
 
-// â”€â”€ SUPABASE PERSISTENCE VIA BACKEND â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SUPABASE PERSISTENCE VIA BACKEND ───────────────────────────────────────
 // This saves every loaded domain to Supabase through the Render backend.
 // localStorage remains as a browser backup, but Supabase becomes the persistent database.
 async function saveDomainToSupabase(domainId, result){
@@ -1701,7 +1701,7 @@ function clearSaved(){
   closeDom();
 }
 
-// â”€â”€ PROGRESS UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PROGRESS UI ────────────────────────────────────────────────────────────
 function buildProgressUI(){
   const track = document.getElementById('progTrack');
   const labels = document.getElementById('progLabels');
@@ -1751,10 +1751,10 @@ function checkResumable(){
   }
 }
 
-// â”€â”€ SLEEP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SLEEP ──────────────────────────────────────────────────────────────────
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-// â”€â”€ RATE LIMIT COUNTDOWN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RATE LIMIT COUNTDOWN ───────────────────────────────────────────────────
 async function rateLimitPause(seconds){
   for(let s=seconds; s>0; s--){
     if(stopFlag) return;
@@ -1765,7 +1765,7 @@ async function rateLimitPause(seconds){
 }
 
 
-// â”€â”€ RECENCY + FUTURE RELEVANCE FILTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RECENCY + FUTURE RELEVANCE FILTER ─────────────────────────────────────
 // Radar should be useful for decisions now and in the next 30-180 days.
 // Old news is allowed only when the business impact is still active today.
 function parseSignalDate(value){
@@ -2041,7 +2041,7 @@ function postProcessDomainData(data, domId){
   return d;
 }
 
-// â”€â”€ PROGRESS UI - single domain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PROGRESS UI - single domain ─────────────────────────────────────────
 async function callDomain(domId, context){
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 
@@ -2207,7 +2207,7 @@ For captureStrategy, write the action as if advising Digital/B2C leadership disc
   }
 }
 
-// â”€â”€ CONTEXT - shared facts passed to every domain call â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONTEXT - shared facts passed to every domain call ─────────────────────
 function buildContext(){
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   const base = `- Today is ${today}.
@@ -2232,7 +2232,7 @@ function buildContext(){
 - Keep wording discreet: do not say you know internal strategy; say 'Digital/B2C implication' or 'B2C implication'`;
 }
 
-// â”€â”€ MAIN REFRESH LOOP - one domain at a time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── MAIN REFRESH LOOP - one domain at a time ───────────────────────────────
 async function runDomains(domainsToProcess){
   isBusy = true;
   stopFlag = false;
@@ -2379,7 +2379,7 @@ function resumeRefresh(){
   runDomains(toRun);
 }
 
-// â”€â”€ UPDATE TILE FROM DOMAIN DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── UPDATE TILE FROM DOMAIN DATA ───────────────────────────────────────────
 function updateTile(id, data){
   const cb = document.getElementById('cb-'+id);
   const of = document.getElementById('of-'+id);
@@ -2397,7 +2397,7 @@ function updateTile(id, data){
   }, 200);
 }
 
-// â”€â”€ UPDATE FEED FROM LOADED DOMAINS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── UPDATE FEED FROM LOADED DOMAINS ───────────────────────────────────────
 function updateFeedFromDomains(){
   const allSignals = [];
   DOMAINS.forEach(id => {
@@ -2434,7 +2434,7 @@ function updateFeedFromDomains(){
   }
 }
 
-// â”€â”€ DOMAIN META â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DOMAIN META ────────────────────────────────────────────────────────────
 const META = {
   rev:{cls:'d-rev',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l3-8 4 4 4-8 4 6"/><path d="M21 21H3"/></svg>',ti:'Revenue &amp; pricing',su:'Yield - Route economics - Fare strategy - Ancillary'},
   dig:{cls:'d-dig',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1"/></svg>',ti:'Digital &amp; direct channel',su:'Direct booking - Conversion - Agent migration - App - Payments'},
@@ -2452,7 +2452,7 @@ const META = {
   rep:{cls:'d-rep',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',ti:'Brand &amp; reputation',su:'Social sentiment - Media - Passenger feedback - Crisis communications'}
 };
 
-// â”€â”€ OPEN DOMAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── OPEN DOMAIN ────────────────────────────────────────────────────────────
 function openDom(id){
   // Toggle behaviour: clicking the same active category again closes the detail window.
   // This keeps the existing localStorage/data flow untouched and only changes UX.
@@ -2570,7 +2570,7 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && currentDom){ closeDom(); }
 });
 
-// â”€â”€ RADAR NOTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RADAR NOTES ────────────────────────────────────────────────────────────────
 const SYS=`You are the Qatar Airways Digital/B2C Radar Notes for Digital Product, Digital Marketing and Loyalty leadership. Give sharp, specific, actionable commercial strategy. Do not rely on stale static facts about Qatar Airways routes, fleet, fuel prices, regulatory notices or dates unless they are verified by the current domain data or source links. Treat old events as historical context only. If B2C view is active, focus on direct booking growth, loyalty, digital product, marketing demand capture, agent/OTA shift and customer intelligence/UCP value. Do not claim access to internal strategy or confidential internal data. Give numbered working notes with Digital/B2C value ranges and 30-day timelines. Under 200 words.`;
 
 async function callChat(msg){
@@ -2633,7 +2633,7 @@ function closeAI(){
   chatHistory=[];
 }
 
-// â”€â”€ ACTION PLAN - inline modal, no redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ACTION PLAN - inline modal, no redirect ────────────────────────────────
 // Declared before init() so any startup path that opens/regenerates AP can read them safely.
 let AP_CURRENT_ACTION = '';
 let AP_CURRENT_DOMAIN = '';
@@ -2672,7 +2672,7 @@ window.radarInspect = function(){
   return {summary, domainRows, state};
 };
 
-// â”€â”€ START â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── START ──────────────────────────────────────────────────────────────────
 init();
 
 
@@ -2796,7 +2796,7 @@ function getEffortClass(e){
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAP(); });
 
 
-// â”€â”€ SAFE ACTION HELPERS - no inline escape needed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SAFE ACTION HELPERS - no inline escape needed ─────────────────────────
 function domAct(btn){
   const a=decodeURIComponent(btn.dataset.act||'');
   const d=btn.dataset.dom||'';
@@ -2816,7 +2816,7 @@ function compActBtn(btn){
   if(a) openAP(a,m+' - competitive response',d);
 }
 
-// â”€â”€ KPI TOOLTIPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── KPI TOOLTIPS ───────────────────────────────────────────────────────────
 function updateKpiTooltips(){
   const rows=allLoadedSignals().filter(r=>isForwardSignal(r.signal));
   const risks=rows.filter(r=>isRiskSignal(r.signal));
@@ -2925,7 +2925,7 @@ function updateKpiTooltips(){
 // Patch updateTile to refresh tooltips
 // KPI tooltips updated in updateTile directly
 
-// â”€â”€ COMPETITOR INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── COMPETITOR INTELLIGENCE ────────────────────────────────────────────────
 const CDATA={};
 const CSTORE='radar_v11_comp_';
 let ACOMP=null;
@@ -4452,7 +4452,7 @@ function showAIDiscovery(){
 }
 
 
-// â”€â”€ EXECUTIVE SUMMARY + PREDICTIVE INTELLIGENCE - backend/cache-derived â”€â”€
+// ── EXECUTIVE SUMMARY + PREDICTIVE INTELLIGENCE - backend/cache-derived ──
 function ensureRadarRuntimeForTabs(){
   try{
     if(!window.radarData || !window.radarData.meta || !window.radarData.meta.hydratedAt){
@@ -5692,7 +5692,7 @@ function renderPredictivePage(){
 }
 window.radarExecutiveInspect=function(){ ensureRadarRuntimeForTabs(); var out={kpis:executiveMetricCards(), topSignals:getExecSignals(5), runtime:window.radarData&&window.radarData.meta}; console.log('Radar executive inspect',out); return out; };
 
-// â”€â”€ TOOLTIP POSITIONING - compact fixed viewport coords â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── TOOLTIP POSITIONING - compact fixed viewport coords ───────────────
 (function(){
   let activeTooltip = null;
   let hideTimer = null;
@@ -5770,7 +5770,7 @@ window.radarExecutiveInspect=function(){ ensureRadarRuntimeForTabs(); var out={k
   }
 })();
 
-// â”€â”€ CHANNEL INTELLIGENCE - backend/cache-first rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CHANNEL INTELLIGENCE - backend/cache-first rendering ───────────────────
 // Channel intelligence renders saved backend/browser cache only. No browser-side benchmark generation.
 function getChannelCacheEmptyHTML(){
   return `
@@ -5850,7 +5850,7 @@ setTimeout(()=>{
 
 
 
-// â”€â”€ SAFE RENDER OVERRIDES - keep features, prevent broken/unsafe HTML â”€â”€â”€â”€â”€
+// ── SAFE RENDER OVERRIDES - keep features, prevent broken/unsafe HTML ─────
 function renderAP(plan){
   plan = plan || {};
   const stepsHTML = (plan.steps || []).map(function(s){
@@ -6053,7 +6053,7 @@ function renderChannelIntel(data){
   document.getElementById('channelBody').innerHTML = `<div style="background:var(--gbg);border:0.5px solid var(--gb);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--grn);flex-shrink:0"></div><div style="font-size:11px;color:var(--grn);font-weight:500;flex:1">${esc(data.headline||'')}</div><div style="font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;flex-shrink:0">${esc(data.refreshed||'')}</div></div>${data.directShare?`<div class="ch-kpi-row" style="margin-bottom:12px"><div class="ch-kpi" style="grid-column:span 2;background:linear-gradient(135deg,rgba(92,6,50,.05),transparent);border-color:rgba(92,6,50,.2)"><div class="ch-kv" style="font-size:22px">${esc(ds.estimate||'-')}</div><div class="ch-kl">Direct booking share</div><div class="ch-kb">${esc(ds.confidence||'')} confidence - ${esc(ds.source||'')}</div>${ds.note?`<div style="font-size:9px;color:var(--t3);margin-top:3px;line-height:1.3">${esc(ds.note)}</div>`:''}</div><div class="ch-kpi" style="grid-column:span 2;background:var(--bg3)"><div class="ch-kv" style="color:var(--amb)">-</div><div class="ch-kl">Direct shift value</div><div class="ch-kb">Requires backend value model</div></div></div>`:''}<div style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:8px">Live channel signals</div><div class="ch-live-row">${sigsHTML}</div>${factHTML.length?`<div style="font-size:9px;font-weight:700;color:var(--pur);letter-spacing:.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin:12px 0 8px">Fact-check panel - for VP review</div>${factHTML}`:''}`;
 }
 
-// â”€â”€ COMPETITOR CACHE CLEAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── COMPETITOR CACHE CLEAR ─────────────────────────────────────────────────
 function clearCompCache(){
   if(!confirm('Clear all saved competitor analyses and reload fresh intelligence?')) return;
   Object.keys(CMETA).forEach(id=>{
@@ -6075,7 +6075,7 @@ function clearCompCache(){
   Object.keys(CDATA).forEach(k=>delete CDATA[k]);
 }
 
-// â”€â”€ DOMAIN STATUS QUICK SUMMARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DOMAIN STATUS QUICK SUMMARY ────────────────────────────────────────────
 function getDomainSummaryForAP(domId){
   const d = domData[domId];
   if(!d || !d.signals) return 'No domain data loaded';

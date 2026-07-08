@@ -1313,6 +1313,11 @@
     daily: null,
     warnings: null,
     performance: null,
+    trends: null,
+    anomalies: null,
+    systemMetrics: null,
+    dataQuality: null,
+    alerts: null,
     error: null,
     lastFetchedAt: null
   };
@@ -1384,8 +1389,8 @@
     '</div>';
   }
 
-  function renderBackendPulseList(items) {
-    if (!items || !items.length) return '<div class="backend-pulse-empty">No attention items right now.</div>';
+  function renderBackendPulseList(items, emptyMessage) {
+    if (!items || !items.length) return '<div class="backend-pulse-empty">' + safeEsc(emptyMessage || 'No attention items right now.') + '</div>';
     return '<ul class="backend-pulse-list">' + items.map(function (x) {
       return '<li class="' + safeEsc(x.tone || 'neutral') + '"><strong>' + safeEsc(x.title) + '</strong><span>' + safeEsc(x.body) + '</span></li>';
     }).join('') + '</ul>';
@@ -1396,6 +1401,9 @@
     var gridEl = document.getElementById('backendPulseGrid');
     var meaningEl = document.getElementById('backendPulseMeaning');
     var attentionEl = document.getElementById('backendPulseAttention');
+    var trendsEl = document.getElementById('backendPulseTrendsList');
+    var anomaliesEl = document.getElementById('backendPulseAnomaliesList');
+    var alertsEl = document.getElementById('backendPulseAlertsList');
     if (!statusEl || !gridEl || !meaningEl || !attentionEl) return;
 
     var tone = backendPulseTone();
@@ -1421,6 +1429,11 @@
     var requestCount = perf.requestCount || perf.totalRequests || perf.requests || 'Unknown';
     var warnCount = warnings.warnCount || 0;
     var errorCount = warnings.errorCount || 0;
+    var trendsData = pulseData(backendPulseState.trends);
+    var anomaliesData = pulseData(backendPulseState.anomalies);
+    var sysMetrics = pulseData(backendPulseState.systemMetrics);
+    var dataQuality = pulseData(backendPulseState.dataQuality);
+    var alertsData = pulseData(backendPulseState.alerts);
 
     var statusTitle = tone === 'good' ? 'Backend is clean' : tone === 'warn' ? 'Backend has warnings' : tone === 'error' ? 'Backend needs attention' : 'Checking backend';
     var statusBody = backendPulseState.lastFetchedAt
@@ -1479,6 +1492,20 @@
         'Requests tracked',
         'Uptime: ' + pulseText(uptime, 'Unknown'),
         'neutral'
+      ),
+      renderBackendPulseCard(
+        'System metrics',
+        pulseText(sysMetrics.system && sysMetrics.system.uptimeHuman, 'Unknown'),
+        'Signals today: ' + pulseText(sysMetrics.database && sysMetrics.database.signalsToday, 'Unknown'),
+        'AI cost today: $' + pulseText(sysMetrics.ai && sysMetrics.ai.costTodayUsd, '0') + ' | Tokens: ' + pulseText(sysMetrics.ai && sysMetrics.ai.tokensUsedToday, '0'),
+        'neutral'
+      ),
+      renderBackendPulseCard(
+        'Data quality',
+        dataQuality.qualityScore != null ? dataQuality.qualityScore + '%' : 'Unknown',
+        'Verified: ' + pulseText(dataQuality.completeness && dataQuality.completeness.verifiedPct, 'Unknown') + '%',
+        'Signals analyzed (7d): ' + pulseText(dataQuality.totalSignals, 'Unknown'),
+        dataQuality.qualityScore >= 70 ? 'good' : dataQuality.qualityScore >= 40 ? 'warn' : dataQuality.qualityScore != null ? 'error' : 'neutral'
       )
     ].join('');
 
@@ -1506,6 +1533,45 @@
       });
     }
     attentionEl.innerHTML = renderBackendPulseList(attention);
+
+    if (trendsEl) {
+      var trendItems = (trendsData.trends || []).map(function (t) {
+        var trendTone = t.trajectory === 'explosive' ? 'error' : t.trajectory === 'rapid' ? 'warn' : 'neutral';
+        return {
+          tone: trendTone,
+          title: 'Domain ' + (t.domainId || 'unknown') + ': ' + (t.trajectory || 'growing') + ' (' + t.acceleration + 'x)',
+          body: t.signalCount + ' signals, avg score ' + t.averageRankScore + '. ' + (t.recommendedAction || '')
+        };
+      });
+      trendsEl.innerHTML = renderBackendPulseList(trendItems, 'No accelerating domains detected in the last 7 days.');
+    }
+
+    if (anomaliesEl) {
+      var anomalyItems = (anomaliesData.anomalies || []).map(function (a) {
+        var anomalyTone = a.severity === 'extreme' ? 'error' : a.severity === 'severe' ? 'warn' : 'neutral';
+        return {
+          tone: anomalyTone,
+          title: (a.anomalyType === 'spike' ? 'Spike' : 'Drop') + ' on ' + a.timestamp,
+          body: 'z-score ' + a.zScore + ', ' + (a.severity || 'moderate') + ' severity, value ' + a.value
+        };
+      });
+      anomaliesEl.innerHTML = renderBackendPulseList(anomalyItems, 'No volume anomalies detected in the last 30 days.');
+    }
+
+    if (alertsEl) {
+      var alertItems = (alertsData.alerts || []).map(function (a) {
+        var sev = String(a.severity || '').toLowerCase();
+        var alertTone = sev.indexOf('critical') >= 0 ? 'error' : sev.indexOf('high') >= 0 ? 'warn' : 'neutral';
+        var channels = a.notified_to;
+        try { channels = JSON.parse(a.notified_to).join(', '); } catch (e) {}
+        return {
+          tone: alertTone,
+          title: '[' + (a.severity || 'Alert') + '] ' + (a.signal_title || 'Untitled signal'),
+          body: 'Domain ' + (a.domain_id || 'n/a') + ' · sent ' + pulseDate(a.alert_sent_at) + ' via ' + (channels || 'n/a')
+        };
+      });
+      alertsEl.innerHTML = renderBackendPulseList(alertItems, 'No alerts have been sent yet.');
+    }
   }
 
   async function loadBackendPulse(force) {
@@ -1518,12 +1584,22 @@
         fetchBackendPulsePath('/api/health/full', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Health request failed' } }; }),
         fetchBackendPulsePath('/api/refresh/daily-status?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Daily status request failed' } }; }),
         fetchBackendPulsePath('/api/diagnostics/runtime-warnings?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Runtime warnings request failed' } }; }),
-        fetchBackendPulsePath('/api/diagnostics/performance', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Performance request failed' } }; })
+        fetchBackendPulsePath('/api/diagnostics/performance', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Performance request failed' } }; }),
+        fetchBackendPulsePath('/api/trends/detect?viewMode=b2c&windowDays=7', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Trends request failed' } }; }),
+        fetchBackendPulsePath('/api/anomalies/detect?viewMode=b2c&windowDays=30', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Anomalies request failed' } }; }),
+        fetchBackendPulsePath('/api/metrics/system', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'System metrics request failed' } }; }),
+        fetchBackendPulsePath('/api/metrics/data-quality?viewMode=b2c&days=7', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Data quality request failed' } }; }),
+        fetchBackendPulsePath('/api/alerts?limit=20', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Alerts request failed' } }; })
       ]);
       backendPulseState.health = results[0];
       backendPulseState.daily = results[1];
       backendPulseState.warnings = results[2];
       backendPulseState.performance = results[3];
+      backendPulseState.trends = results[4];
+      backendPulseState.anomalies = results[5];
+      backendPulseState.systemMetrics = results[6];
+      backendPulseState.dataQuality = results[7];
+      backendPulseState.alerts = results[8];
       backendPulseState.lastFetchedAt = new Date().toISOString();
       var failed = results.filter(function (r) { return !r || r.ok === false; });
       if (failed.length) {

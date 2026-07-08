@@ -187,7 +187,7 @@ async function testSupabaseSaves(){console.log('Testing...');try{const r=await f
 window.testSupabaseSaves=testSupabaseSaves;
 
 
-// â”€â”€ CUSTOMER SENTIMENT INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CUSTOMER SENTIMENT INTELLIGENCE ─────────────────────────────────
 var SENT_DATA = {};
 var SENT_STORE = 'qr_v10_sent_';
 var SENT_LOADED = false;
@@ -537,7 +537,7 @@ function hydrateSentimentFromDomainCache(){
   refreshSentimentSourceFreshness();
 }
 
-// â”€â”€ CUSTOMER INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CUSTOMER INTELLIGENCE ─────────────────────────────────────────────
 var CI_DATA = {};
 var CI_STORE = 'qr_v10_ci_';
 var ACTIVE_CI = null;
@@ -1853,6 +1853,69 @@ setTimeout(function(){
   }
 
   window.loadSentFromStorage = loadSentFromStorage = safeLoadSentFromStorage;
+
+  var sentTrajectoryChartInstance = null;
+
+  window.loadSentimentTrajectory = async function(topicOverride){
+    var input = document.getElementById('sentTrajectoryTopic');
+    var topic = (topicOverride || (input && input.value) || '').trim();
+    var statusEl = document.getElementById('sentTrajectoryStatus');
+    var wrapEl = document.getElementById('sentTrajectoryChartWrap');
+    if(!topic){
+      if(statusEl) statusEl.textContent = 'Enter a topic first (e.g. booking, baggage, pricing).';
+      return;
+    }
+    if(statusEl) statusEl.textContent = 'Loading trajectory for "' + topic + '"...';
+    try{
+      var path = '/api/sentiment/trajectory?topic=' + encodeURIComponent(topic) + '&days=30';
+      var resp = typeof backendFetch === 'function'
+        ? await backendFetch(path, { method:'GET' }, 15000)
+        : await fetch((typeof BACKEND_URL === 'string' ? BACKEND_URL : '') + path);
+      var json = await resp.json();
+      if(!json || !json.ok || !json.data || !json.data.trajectory || !json.data.trajectory.length){
+        if(statusEl) statusEl.textContent = 'No sentiment data found for "' + topic + '" in the last 30 days.';
+        if(wrapEl) wrapEl.style.display = 'none';
+        return;
+      }
+
+      var trajectory = json.data.trajectory;
+      var labels = trajectory.map(function(t){ return t.timestamp; });
+      var positive = trajectory.map(function(t){ return t.positiveRatio; });
+      var negative = trajectory.map(function(t){ return t.negativeRatio; });
+
+      if(wrapEl) wrapEl.style.display = 'block';
+      var canvas = document.getElementById('sentTrajectoryChart');
+      if(canvas && typeof Chart !== 'undefined'){
+        if(sentTrajectoryChartInstance){ sentTrajectoryChartInstance.destroy(); }
+        sentTrajectoryChartInstance = new Chart(canvas, {
+          type:'line',
+          data:{
+            labels: labels,
+            datasets:[
+              { label:'Positive %', data: positive, borderColor:'#1abc9c', backgroundColor:'rgba(26,188,156,.12)', tension:.3, fill:true },
+              { label:'Negative %', data: negative, borderColor:'#e74c3c', backgroundColor:'rgba(231,76,60,.12)', tension:.3, fill:true }
+            ]
+          },
+          options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{ legend:{ display:true, labels:{ font:{ size:10 } } } },
+            scales:{
+              y:{ beginAtZero:true, max:100, ticks:{ font:{ size:9 } } },
+              x:{ ticks:{ font:{ size:9 }, maxRotation:0 } }
+            }
+          }
+        });
+      }
+
+      var direction = json.data.trendDirection || 'stable';
+      var directionLabel = direction === 'worsening' ? 'Worsening ⚠️' : direction === 'improving' ? 'Improving ✅' : 'Stable';
+      if(statusEl) statusEl.textContent = 'Trend for "' + topic + '": ' + directionLabel + ' (' + trajectory.length + ' data points)';
+    }catch(err){
+      if(statusEl) statusEl.textContent = 'Could not load trajectory: ' + (err && err.message ? err.message : 'request failed');
+      if(wrapEl) wrapEl.style.display = 'none';
+    }
+  };
 
   window.selSent = selSent = function(src){
     document.querySelectorAll('.sent-tile').forEach(function(t){ t.classList.remove('on'); });
