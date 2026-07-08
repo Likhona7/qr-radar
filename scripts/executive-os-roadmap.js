@@ -974,7 +974,15 @@
     'Watchlists and threshold alerts': 'watchlist',
     'Action-to-outcome attribution': 'outcome',
     'Executive delta brief': 'delta',
-    'All primary tabs backend-valid': 'empty_state'
+    'All primary tabs backend-valid': 'empty_state',
+    'Circuit breaker fault tolerance': 'circuit_breakers',
+    'Automatic retry with backoff': 'retry_backoff',
+    'Trend and anomaly detection': 'trend_anomaly_detection',
+    'Sentiment trend tracking': 'sentiment_trajectory',
+    'Automated critical-signal alerting': 'alert_digest',
+    'Alert history endpoint': 'alerts_history_api',
+    'Automatic topic tagging': 'topic_classification',
+    'Scheduled job reliability on free hosting': 'cron_reliability_workaround'
   };
 
   function proofToLocalStatus(v) {
@@ -1050,6 +1058,16 @@
         ['Executive briefing export', 'progress', 'Export button exists; finish one-click PowerPoint brief with verdict, top signals, top actions, evidence, commercial impact and next decision needed.'],
         ['Partner and competitor business proof', 'progress', 'Partner Network and Competitor tabs are visible; close with data proof showing partner opportunity, competitor threat, action and source freshness.'],
         ['Deployment and release stability', 'progress', 'Keep GitHub, Vercel and Render deployment paths stable with post-deploy smoke checks and clear rollback instructions.']
+      ]},
+      { s: 'Phase 4 - Reliability, Analytics & Alerting Upgrade (Jul 2026)', tasks: [
+        ['Circuit breaker fault tolerance', 'progress', 'Awaiting live backend proof checks.'],
+        ['Automatic retry with backoff', 'progress', 'Awaiting live backend proof checks.'],
+        ['Trend and anomaly detection', 'progress', 'Awaiting live backend proof checks.'],
+        ['Sentiment trend tracking', 'progress', 'Awaiting live backend proof checks.'],
+        ['Automated critical-signal alerting', 'progress', 'Awaiting live backend proof checks.'],
+        ['Alert history endpoint', 'progress', 'Awaiting live backend proof checks.'],
+        ['Automatic topic tagging', 'progress', 'Awaiting live backend proof checks.'],
+        ['Scheduled job reliability on free hosting', 'progress', 'Awaiting live backend proof checks.']
       ]}
     ];
   }
