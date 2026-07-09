@@ -12,8 +12,8 @@ function addCheck(name, pass, detail) {
 }
 
 const requiredIds = [
-  'navMain', 'navComp', 'navPartner', 'navSent', 'navCI', 'navCIOS', 'navTeamActions', 'navExec', 'navPredict', 'navAI', 'navRoadmap',
-  'compPage', 'partnerPage', 'sentPage', 'ciPage', 'ciosPage', 'teamActionsPage', 'execPage', 'predictPage', 'aiDiscoveryPage', 'roadmapPage', 'backendPulsePage',
+  'navMain', 'navComp', 'navPartner', 'navSent', 'navCI', 'navCIOS', 'navTeamActions', 'navExec', 'navPredict', 'navAI', 'navPublicApis', 'navRoadmap',
+  'compPage', 'partnerPage', 'sentPage', 'ciPage', 'ciosPage', 'teamActionsPage', 'execPage', 'predictPage', 'aiDiscoveryPage', 'publicApisPage', 'roadmapPage', 'backendPulsePage',
   'footerBackendPulseLink'
 ];
 requiredIds.forEach(id => addCheck(`id:${id}`, bundle.includes(`id="${id}"`), 'Required tab/page id'));
@@ -29,6 +29,7 @@ const requiredFns = [
   'function showExecSummary(',
   'function showPredictive(',
   'function showAIDiscovery(',
+  'function showPublicApis(',
   'window.showRoadmap=function(',
   'function loadComp(',
   'function loadCI(',
@@ -105,6 +106,22 @@ addCheck(
   bundle.includes('/api/discovery/status') &&
   bundle.includes('Backend API pending'),
   'Discovery Monitor is wired to a backend API contract with honest pending state'
+);
+
+addCheck(
+  'public-apis:live-registry-tab',
+  bundle.includes('Public APIs enabled for Radar') &&
+    bundle.includes('/api/public-sources') &&
+    bundle.includes('expectedPublicApiIds') &&
+    bundle.includes('youtube') &&
+    bundle.includes('itunes') &&
+    bundle.includes('reddit') &&
+    bundle.includes('mastodon') &&
+    bundle.includes('gdelt') &&
+    bundle.includes('bluesky') &&
+    bundle.includes('mediawiki') &&
+    bundle.includes('commoncrawl'),
+  'Public APIs tab reads the backend registry and includes all requested public API ids'
 );
 addCheck(
   'devserver:use-stubs',

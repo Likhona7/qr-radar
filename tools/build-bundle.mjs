@@ -8,6 +8,7 @@ const components = [
   '04-sentiment.html',
   '05-customer-intelligence.html',
   '06-ai-discovery.html',
+    '08-public-apis.html',
   '06-team-actions.html',
   '06-executive-pages-footer.html',
   '07-action-plan-overlay.html'
@@ -19,10 +20,12 @@ const scripts = [
   'visual-fixes.js',
   'backend-cache-cleanup.js',
   'team-actions.js',
-  'executive-os-roadmap.js'
+  'executive-os-roadmap.js',
+  'public-apis.js'
 ];
 
 const css = await fs.readFile(new URL('../styles/radar.css', import.meta.url), 'utf8');
+const publicApisCss = await fs.readFile(new URL('../styles/public-apis.css', import.meta.url), 'utf8');
 const body = (
   await Promise.all(
     components.map(file => fs.readFile(new URL('../components/' + file, import.meta.url), 'utf8'))
@@ -37,7 +40,7 @@ const scriptBlocks = (
 
 const html =
   '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Qatar Airways Radar v11.4.14 - Executive Intelligence Operating System</title>\n<style>\n' +
-  css +
+  css + publicApisCss +
   '\n</style>\n</head>\n<body>\n' +
   body +
   '\n<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>\n<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>\n' +

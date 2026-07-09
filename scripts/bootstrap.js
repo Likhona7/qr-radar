@@ -6,6 +6,7 @@ const componentFiles = [
   '04-sentiment.html',
   '05-customer-intelligence.html',
   '06-ai-discovery.html',
+    '08-public-apis.html',
   '06-team-actions.html',
   '06-executive-pages-footer.html',
   '07-action-plan-overlay.html'
@@ -17,7 +18,8 @@ const localScripts = [
   './scripts/visual-fixes.js',
   './scripts/backend-cache-cleanup.js',
   './scripts/team-actions.js',
-  './scripts/executive-os-roadmap.js'
+  './scripts/executive-os-roadmap.js',
+  './scripts/public-apis.js'
 ];
 
 function loadScript(src) {

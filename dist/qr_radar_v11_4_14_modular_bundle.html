@@ -3241,7 +3241,34 @@ body{
 :where(.mono,.sig-date-meta,.sig-date-compact,.backend-pulse-card-title,.roadmap-status,.ai-source-status,.vbadge,.bmbadge){
   font-family:'JetBrains Mono',ui-monospace,monospace!important;
 }
-
+.public-apis-page{display:none;min-height:calc(100vh - 76px);padding:26px 38px;background:#f7f3f8}
+.public-apis-page.visible{display:block}
+.public-apis-shell{max-width:1500px;margin:0 auto}
+.public-apis-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;padding:24px 26px;border-radius:18px;color:#fff;background:linear-gradient(135deg,#251626 0%,#5b0030 54%,#8a004f 100%);box-shadow:0 18px 48px rgba(90,0,46,.22);margin-bottom:16px}
+.public-apis-kicker{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:8px}
+.public-apis-hero h1{font-family:'Cormorant Garamond',serif;font-size:36px;line-height:1;font-weight:600;margin:0}
+.public-apis-hero p{max-width:830px;margin:10px 0 0;color:rgba(255,255,255,.84);font-size:13px;line-height:1.65}
+.public-apis-scorecard{min-width:220px;padding:15px 17px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.08)}
+.public-apis-scorecard strong,.public-apis-scorecard span{display:block}.public-apis-scorecard strong{font-size:20px}.public-apis-scorecard span{font-size:11px;color:rgba(255,255,255,.75);margin-top:2px}
+.public-apis-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.public-apis-summary-grid div{background:#fff;border:1px solid #e8e2ea;border-radius:12px;padding:14px;box-shadow:0 10px 26px rgba(31,36,48,.06)}
+.public-apis-summary-grid strong{display:block;color:#8a004f;font-size:12px;font-weight:900}.public-apis-summary-grid span{display:block;color:#665f6b;font-size:11.5px;line-height:1.5;margin-top:5px}
+.public-apis-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.public-api-filter{border:1px solid #e5ccda;background:#fff;color:#6e1749;border-radius:999px;padding:8px 13px;font-size:11px;font-weight:900;cursor:pointer}
+.public-api-filter.active{background:#8a004f;color:#fff;border-color:#8a004f}
+.public-apis-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.public-api-card{background:#fff;border:1px solid #e8e2ea;border-radius:14px;padding:16px;box-shadow:0 12px 30px rgba(31,36,48,.07);display:flex;flex-direction:column;min-height:340px}
+.public-api-card.needs-key{border-color:#e8c39a}
+.public-api-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.public-api-top span{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;color:#8a004f;background:#fff4fa;border:1px solid #ebc8d9;border-radius:999px;padding:5px 8px}.public-api-top em{font-style:normal;font-size:10px;font-weight:900;color:#6b6572;text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.public-api-card h2{font-size:15px;color:#231a29;margin:0 0 8px;font-weight:900}.public-api-card p{font-size:12px;line-height:1.55;color:#665f6b;margin:0 0 12px}
+.public-api-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.public-api-pills span{font-size:10px;font-weight:900;border-radius:999px;background:#f4eef6;color:#6c5d70;padding:5px 8px}.public-api-pills span.ok{background:#edf9f2;color:#087443}.public-api-pills span.warn{background:#fff6e9;color:#9a5b00}
+.public-api-row{display:grid;grid-template-columns:56px 1fr;gap:8px;margin-top:7px;font-size:11px}.public-api-row b{color:#8a004f}.public-api-row span{color:#665f6b}
+.public-api-governance{margin-top:11px;border-top:1px solid #eee8f1;padding-top:10px;font-size:11px;line-height:1.45;color:#4a4050}
+.public-api-links{margin-top:auto;display:flex;gap:8px;padding-top:12px}.public-api-links a{flex:1;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:8px 10px;background:#8a004f;color:#fff;text-decoration:none;font-size:11px;font-weight:900}.public-api-links a:first-child{background:#f3e8ef;color:#8a004f}
+.public-api-empty{grid-column:1/-1;background:#fff;border:1px dashed #d9c7d2;border-radius:12px;padding:18px;color:#6b5d68;font-size:13px}.public-api-empty strong,.public-api-empty span{display:block}.public-api-empty span{margin-top:4px;font-size:12px}
+.public-apis-plan{display:grid;grid-template-columns:1fr 1.2fr;gap:18px;margin-top:18px;background:#fff;border:1px solid #e8e2ea;border-radius:14px;padding:18px;box-shadow:0 12px 30px rgba(31,36,48,.07)}
+.public-apis-plan-ey{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#8a004f}.public-apis-plan h2{font-size:20px;color:#231a29;margin:6px 0}.public-apis-plan p,.public-apis-plan li{font-size:12px;line-height:1.65;color:#665f6b}.public-apis-plan ol{margin:0 0 0 18px}
+@media(max-width:1200px){.public-apis-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:900px){.public-apis-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.public-apis-summary-grid,.public-apis-plan{grid-template-columns:1fr}}@media(max-width:650px){.public-apis-page{padding:18px 16px}.public-apis-hero{display:block}.public-apis-scorecard{margin-top:16px}.public-apis-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -3405,8 +3432,13 @@ body{
   </button>
   <button class="comp-nav-btn ai-discovery" id="navAI" onclick="showAIDiscovery()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3.2"/><path d="M9.5 9.5L14 14"/><path d="M6 3.8v.8M6 7.4v.8M3.8 6h.8M7.4 6h.8"/></svg>
-    Discovery Monitor
+    AI Discovery
     <span class="comp-nav-badge ai-nav-badge">new</span>
+  </button>
+  <button class="comp-nav-btn strategic" id="navPublicApis" onclick="showPublicApis()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10v8H3z"/><path d="M5 6.5h6M5 9.5h3"/><path d="M11 2.5v3M13.5 5h-3"/></svg>
+    Public APIs
+    <span class="comp-nav-badge" id="publicApisNavBadge">live registry</span>
   </button>
   <button class="comp-nav-btn strategic" id="navRoadmap" onclick="showRoadmap()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h10v10H3z"/><path d="M5 6h6M5 9h4"/></svg>
@@ -3725,11 +3757,27 @@ body{
   <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px">
     <div>
       <div class="sent-hdr-t">Customer Sentiment Intelligence</div>
-      <div class="sent-hdr-s">Aggregated voice-of-customer from 8 public platforms — pain points, praise, recurring complaints, and specific improvement signals. Each source loads independently and saves to your browser.</div>
+      <div class="sent-hdr-s">Aggregated voice-of-customer from 8 public platforms — pain points, praise, recurring complaints, and specific improvement signals. Each source loads independently and saves to your browser. Sources marked <span style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span> have no live data connection yet — their score is estimated from other cached signals, not real platform content.</div>
     </div>
     <div style="display:flex;gap:8px;flex-shrink:0;margin-top:4px">
       <button onclick="loadAllSentiment()" style="font-size:10px;font-weight:700;padding:6px 12px;background:var(--qb);border:1px solid var(--qb);border-radius:6px;color:#fff;cursor:pointer">Load all</button>
       <button onclick="clearSentCache()" style="font-size:10px;font-weight:600;padding:6px 12px;background:var(--bg3);border:1px solid var(--bo);border-radius:6px;color:var(--t3);cursor:pointer">&#8635; Clear all</button>
+    </div>
+  </div>
+  <div style="background:var(--su);border:1px solid var(--bo);border-radius:var(--r3);padding:16px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--t1)">Sentiment Trajectory</div>
+        <div style="font-size:10px;color:var(--t2)">Track how sentiment on a topic is trending over the last 30 days</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="sentTrajectoryTopic" placeholder="e.g. booking, baggage, pricing" onkeydown="if(event.key==='Enter')loadSentimentTrajectory()" style="font-size:11px;padding:6px 10px;border:1px solid var(--bo);border-radius:6px;min-width:180px">
+        <button onclick="loadSentimentTrajectory()" style="font-size:10px;font-weight:700;padding:6px 12px;background:var(--qb);border:1px solid var(--qb);border-radius:6px;color:#fff;cursor:pointer">Load trajectory</button>
+      </div>
+    </div>
+    <div id="sentTrajectoryStatus" style="font-size:10px;color:var(--t3);margin-bottom:8px">Enter a topic and click "Load trajectory" to see how sentiment is trending.</div>
+    <div style="position:relative;height:180px;display:none" id="sentTrajectoryChartWrap">
+      <canvas id="sentTrajectoryChart"></canvas>
     </div>
   </div>
   <div class="sent-gauge" id="sentGauge" style="display:none">
@@ -3739,13 +3787,13 @@ body{
   </div>
   <div class="sent-sources">
     <div class="sent-tile s-reddit" data-src="reddit" onclick="selSent('reddit')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128992;</span><div><div class="sent-tile-name">Reddit</div><div class="sent-tile-sub">r/QatarAirways r/flights r/awardtravel</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-reddit" style="width:0%;background:#FF4500"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-reddit">-</span></div><button class="sent-load-btn" id="sbtn-reddit" onclick="event.stopPropagation();loadSent('reddit')">No data</button></div>
-    <div class="sent-tile s-flyertalk" data-src="flyertalk" onclick="selSent('flyertalk')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#9992;&#65039;</span><div><div class="sent-tile-name">FlyerTalk</div><div class="sent-tile-sub">Qatar Airways forum frequent flyers</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-flyertalk" style="width:0%;background:#1a3a8a"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-flyertalk">-</span></div><button class="sent-load-btn" id="sbtn-flyertalk" onclick="event.stopPropagation();loadSent('flyertalk')">No data</button></div>
-    <div class="sent-tile s-trustpilot" data-src="trustpilot" onclick="selSent('trustpilot')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#11088;</span><div><div class="sent-tile-name">Trustpilot</div><div class="sent-tile-sub">6,084 verified customer reviews</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-trustpilot" style="width:0%;background:#00b67a"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-trustpilot">-</span></div><button class="sent-load-btn" id="sbtn-trustpilot" onclick="event.stopPropagation();loadSent('trustpilot')">No data</button></div>
-    <div class="sent-tile s-tripadvisor" data-src="tripadvisor" onclick="selSent('tripadvisor')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#127807;</span><div><div class="sent-tile-name">TripAdvisor</div><div class="sent-tile-sub">Airline reviews passenger ratings</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-tripadvisor" style="width:0%;background:#34e0a1"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-tripadvisor">-</span></div><button class="sent-load-btn" id="sbtn-tripadvisor" onclick="event.stopPropagation();loadSent('tripadvisor')">No data</button></div>
-    <div class="sent-tile s-skytrax" data-src="skytrax" onclick="selSent('skytrax')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#127942;</span><div><div class="sent-tile-name">Skytrax</div><div class="sent-tile-sub">Industry ratings verified travellers</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-skytrax" style="width:0%;background:#1a1a6a"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-skytrax">-</span></div><button class="sent-load-btn" id="sbtn-skytrax" onclick="event.stopPropagation();loadSent('skytrax')">No data</button></div>
-    <div class="sent-tile s-quora" data-src="quora" onclick="selSent('quora')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128172;</span><div><div class="sent-tile-name">Quora</div><div class="sent-tile-sub">Q&amp;A passenger experiences shared</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-quora" style="width:0%;background:#b92b27"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-quora">-</span></div><button class="sent-load-btn" id="sbtn-quora" onclick="event.stopPropagation();loadSent('quora')">No data</button></div>
-    <div class="sent-tile s-twitter" data-src="twitter" onclick="selSent('twitter')"><div class="sent-tile-hdr"><span class="sent-tile-icon">X</span><div><div class="sent-tile-name">X / Twitter</div><div class="sent-tile-sub">Real-time complaints viral moments</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-twitter" style="width:0%;background:#1da1f2"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-twitter">-</span></div><button class="sent-load-btn" id="sbtn-twitter" onclick="event.stopPropagation();loadSent('twitter')">No data</button></div>
-    <div class="sent-tile s-consumer" data-src="consumer" onclick="selSent('consumer')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128203;</span><div><div class="sent-tile-name">Consumer Affairs</div><div class="sent-tile-sub">PissedConsumer AirlineQuality</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-consumer" style="width:0%;background:#e67e22"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-consumer">-</span></div><button class="sent-load-btn" id="sbtn-consumer" onclick="event.stopPropagation();loadSent('consumer')">No data</button></div>
+    <div class="sent-tile s-flyertalk" data-src="flyertalk" onclick="selSent('flyertalk')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#9992;&#65039;</span><div><div class="sent-tile-name">FlyerTalk <span title="No live data source connected — score estimated from other cached signals, not real FlyerTalk content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">Qatar Airways forum frequent flyers</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-flyertalk" style="width:0%;background:#1a3a8a"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-flyertalk">-</span></div><button class="sent-load-btn" id="sbtn-flyertalk" onclick="event.stopPropagation();loadSent('flyertalk')">No data</button></div>
+    <div class="sent-tile s-trustpilot" data-src="trustpilot" onclick="selSent('trustpilot')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#11088;</span><div><div class="sent-tile-name">Trustpilot <span title="No live data source connected — score estimated from other cached signals, not real Trustpilot content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">6,084 verified customer reviews</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-trustpilot" style="width:0%;background:#00b67a"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-trustpilot">-</span></div><button class="sent-load-btn" id="sbtn-trustpilot" onclick="event.stopPropagation();loadSent('trustpilot')">No data</button></div>
+    <div class="sent-tile s-tripadvisor" data-src="tripadvisor" onclick="selSent('tripadvisor')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#127807;</span><div><div class="sent-tile-name">TripAdvisor <span title="No live data source connected — score estimated from other cached signals, not real TripAdvisor content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">Airline reviews passenger ratings</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-tripadvisor" style="width:0%;background:#34e0a1"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-tripadvisor">-</span></div><button class="sent-load-btn" id="sbtn-tripadvisor" onclick="event.stopPropagation();loadSent('tripadvisor')">No data</button></div>
+    <div class="sent-tile s-skytrax" data-src="skytrax" onclick="selSent('skytrax')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#127942;</span><div><div class="sent-tile-name">Skytrax <span title="No live data source connected — score estimated from other cached signals, not real Skytrax content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">Industry ratings verified travellers</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-skytrax" style="width:0%;background:#1a1a6a"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-skytrax">-</span></div><button class="sent-load-btn" id="sbtn-skytrax" onclick="event.stopPropagation();loadSent('skytrax')">No data</button></div>
+    <div class="sent-tile s-quora" data-src="quora" onclick="selSent('quora')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128172;</span><div><div class="sent-tile-name">Quora <span title="No live data source connected — score estimated from other cached signals, not real Quora content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">Q&amp;A passenger experiences shared</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-quora" style="width:0%;background:#b92b27"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-quora">-</span></div><button class="sent-load-btn" id="sbtn-quora" onclick="event.stopPropagation();loadSent('quora')">No data</button></div>
+    <div class="sent-tile s-twitter" data-src="twitter" onclick="selSent('twitter')"><div class="sent-tile-hdr"><span class="sent-tile-icon">X</span><div><div class="sent-tile-name">X / Twitter <span title="No live data source connected — score estimated from other cached signals, not real X/Twitter content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">Real-time complaints viral moments</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-twitter" style="width:0%;background:#1da1f2"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-twitter">-</span></div><button class="sent-load-btn" id="sbtn-twitter" onclick="event.stopPropagation();loadSent('twitter')">No data</button></div>
+    <div class="sent-tile s-consumer" data-src="consumer" onclick="selSent('consumer')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128203;</span><div><div class="sent-tile-name">Consumer Affairs <span title="No live data source connected — score estimated from other cached signals, not real Consumer Affairs content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">PissedConsumer AirlineQuality</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-consumer" style="width:0%;background:#e67e22"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-consumer">-</span></div><button class="sent-load-btn" id="sbtn-consumer" onclick="event.stopPropagation();loadSent('consumer')">No data</button></div>
     <div class="sent-tile s-appstore" data-src="appstore" onclick="selSent('appstore')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#127822;</span><div><div class="sent-tile-name">Apple App Store</div><div class="sent-tile-sub">iPhone airline ratings and reviews</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-appstore" style="width:0%;background:#111827"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-appstore">-</span></div><button class="sent-load-btn" id="sbtn-appstore" onclick="event.stopPropagation();loadSent('appstore')">No data</button></div>
     <div class="sent-tile s-googleplay" data-src="googleplay" onclick="selSent('googleplay')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128241;</span><div><div class="sent-tile-name">Google Play</div><div class="sent-tile-sub">Android airline ratings and reviews</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-googleplay" style="width:0%;background:#4285f4"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-googleplay">-</span></div><button class="sent-load-btn" id="sbtn-googleplay" onclick="event.stopPropagation();loadSent('googleplay')">No data</button></div>
   </div>
@@ -3759,14 +3807,14 @@ body{
   <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px">
     <div style="flex:1">
       <div class="ci-hdr-t">Customer Intelligence <span style="font-size:11px;font-weight:500;color:var(--qg);margin-left:8px;vertical-align:middle">Decisioning Layer</span></div>
-      <div class="ci-hdr-s" style="margin-bottom:8px">Traveller-centric intelligence across 7 segments. Structured as a personal working view for Adobe CJA, RTCDP, Journey Optimizer, and loyalty activation. Each segment keeps external signals, segment lenses, and owned next-step notes in one place.</div>
+      <div class="ci-hdr-s" style="margin-bottom:8px">Traveller-centric orchestration intelligence across 7 segments. Structured as a decisioning asset aligned to Adobe CJA, RTCDP, Journey Optimizer, and loyalty activation. Each analysis surfaces external signals, strategic segment lenses, and owner-ready action plans.</div>
       <div class="ci-header-pills">
         <span class="ci-header-pill">Identity confidence</span>
         <span class="ci-header-pill">Trip intent</span>
         <span class="ci-header-pill">Customer value</span>
         <span class="ci-header-pill">Premiumity</span>
         <span class="ci-header-pill warn">Service risk</span>
-        <span class="ci-header-pill ok">Priority note</span>
+        <span class="ci-header-pill ok">Next-best action</span>
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-shrink:0;margin-top:4px">
@@ -4105,6 +4153,51 @@ body{
   </section>
 </div>
 
+<div class="public-apis-page" id="publicApisPage">
+  <section class="public-apis-shell">
+    <div class="public-apis-hero">
+      <div>
+        <div class="public-apis-kicker">Live source registry</div>
+        <h1>Public APIs enabled for Radar</h1>
+        <p>This page reads the backend public-source catalogue and shows which APIs are configured, keyless, proxy-ready, or governance-gated for server-side Radar ingestion.</p>
+      </div>
+      <div class="public-apis-scorecard">
+        <strong id="publicApisTotal">-- sources</strong>
+        <span id="publicApisStatus">Checking backend registry</span>
+      </div>
+    </div>
+
+    <div class="public-apis-summary-grid">
+      <div><strong id="publicApisConfigured">-- configured</strong><span>Configured means the source either needs no key or the backend has the required server-side key.</span></div>
+      <div><strong id="publicApisProxy">-- proxy-ready</strong><span>Can be previewed through Radar's server-side request/proxy layer.</span></div>
+      <div><strong id="publicApisGovernance">-- governed</strong><span>All third-party calls stay server-side, cached, attributed and policy-reviewed.</span></div>
+    </div>
+
+    <div class="public-apis-toolbar">
+      <button class="public-api-filter active" data-filter="all" onclick="filterPublicApis('all')">All</button>
+      <button class="public-api-filter" data-filter="configured" onclick="filterPublicApis('configured')">Configured</button>
+      <button class="public-api-filter" data-filter="needs_key" onclick="filterPublicApis('needs_key')">Needs key</button>
+      <button class="public-api-filter" data-filter="proxy" onclick="filterPublicApis('proxy')">Proxy-ready</button>
+    </div>
+
+    <div class="public-apis-grid" id="publicApisGrid">
+      <div class="public-api-empty">Loading public API registry...</div>
+    </div>
+
+    <div class="public-apis-plan">
+      <div>
+        <div class="public-apis-plan-ey">What this means</div>
+        <h2>Enabled in Radar does not always mean freely callable from the browser.</h2>
+        <p>Radar should call these sources from the backend only. Some are live immediately, some need API keys, and Reddit/Common Crawl style sources require governance or batch ingestion before production use.</p>
+      </div>
+      <ol id="publicApisNextSteps">
+        <li>Use the backend catalogue as the source of truth for enabled sources.</li>
+        <li>Add server-side keys on Render for key-required sources such as YouTube.</li>
+        <li>Use domain refresh and AI discovery jobs to turn source evidence into Radar signals.</li>
+      </ol>
+    </div>
+  </section>
+</div>
 <div class="team-actions-page" id="teamActionsPage">
   <div class="ta-hero">
     <div>
@@ -4227,7 +4320,7 @@ body{
       <div class="exec-action-layer" id="execActionLayerSummary">
         <div class="exec-action-layer-copy">
           <div class="exec-panel-label-v2">Action Operating Layer</div>
-          <div class="exec-panel-copy-v2">Every priority signal must become an assigned next step, monitor decision, or recorded outcome.</div>
+          <div class="exec-panel-copy-v2">Every priority signal must become an owner-ready action, monitor decision, or recorded outcome.</div>
         </div>
         <div class="exec-action-layer-metrics">
           <span>Loading action readiness...</span>
@@ -4265,7 +4358,7 @@ body{
               <div class="exec-panel-label-v2">Pressure Breakdown</div>
               <div class="exec-panel-copy-v2">Sorted by pressure score (higher is worse)</div>
             </div>
-            <button class="exec-mini-link exec-head-link" type="button" onclick="showMain()">Open scenario view</button>
+            <button class="exec-mini-link exec-head-link" type="button" onclick="showMain()">Open model view</button>
           </div>
           <div class="exec-pressure-list" id="execPressureList"></div>
         </div>
@@ -4332,7 +4425,7 @@ body{
   <div class="exec-detail-links">
     <button type="button" class="exec-deep-chip" onclick="showComp()">Open Competitor View</button>
     <button type="button" class="exec-deep-chip" onclick="showPartner()">Open Partner Network</button>
-    <button type="button" class="exec-deep-chip" onclick="showAIDiscovery()">Open Discovery Monitor</button>
+    <button type="button" class="exec-deep-chip" onclick="showAIDiscovery()">Open AI Discovery</button>
     <button type="button" class="exec-deep-chip" onclick="showSent()">Open Sentiment View</button>
     <button type="button" class="exec-deep-chip" onclick="showCI()">Open Customer Intelligence</button>
   </div>
@@ -4385,7 +4478,7 @@ body{
       <div id="predictiveSignals"></div>
     </div>
     <div class="exec-panel">
-      <div class="exec-panel-h"><div><div class="exec-panel-t">Opportunity simulation concepts</div><div class="exec-panel-m">Live innovation ideas and backend-supported concepts</div></div></div>
+      <div class="exec-panel-h"><div><div class="exec-panel-t">Opportunity simulation concepts</div><div class="exec-panel-m">Live innovation ideas and backend-modelled concepts</div></div></div>
       <div class="sim-grid" id="simulationConcepts"></div>
     </div>
     <div class="predict-operating-grid">
@@ -4401,7 +4494,7 @@ body{
       </div>
       <div class="predict-op-panel wide">
         <div class="predict-op-ey">Strategic simulation backlog</div>
-        <div class="predict-op-sub">Review-ready business questions built from Radar evidence and live innovation discovery.</div>
+        <div class="predict-op-sub">Model-ready business questions built from Radar evidence and live innovation discovery.</div>
         <div id="strategicSimulationBacklog"></div>
       </div>
     </div>
@@ -4483,6 +4576,32 @@ body{
       <div id="backendPulseAttention"></div>
     </div>
   </div>
+
+  <div class="backend-pulse-panels">
+    <div class="backend-pulse-panel">
+      <div class="backend-pulse-panel-title">Emerging trends (7d)</div>
+      <div id="backendPulseTrendsList"></div>
+    </div>
+    <div class="backend-pulse-panel">
+      <div class="backend-pulse-panel-title">Volume anomalies (30d)</div>
+      <div id="backendPulseAnomaliesList"></div>
+    </div>
+  </div>
+
+  <div class="backend-pulse-panels">
+    <div class="backend-pulse-panel" style="grid-column: 1 / -1">
+      <div class="backend-pulse-panel-title">Recent alerts</div>
+      <div id="backendPulseAlertsList"></div>
+    </div>
+  </div>
+
+  <div class="backend-pulse-panels">
+    <div class="backend-pulse-panel" style="grid-column: 1 / -1">
+      <div class="backend-pulse-panel-title">Data source registry</div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:10px">Every external source Radar is governed to use, and whether it is actually configured with working credentials right now — not just whether it appears in the UI.</div>
+      <div id="backendPulseSourceRegistry"></div>
+    </div>
+  </div>
 </div>
 
 <div class="footer">
@@ -4493,12 +4612,12 @@ body{
   <span class="fr2">v11.4.14 - Executive Intelligence OS - Predictive Radar - Roadmap Tracker - 2026</span>
 </div>
 
-<!-- WORKING NOTE MODAL — inline, inline review flow -->
+<!-- ACTION PLAN MODAL — inline, no redirect to Claude -->
 <div id="apOverlay" class="ap-overlay" style="display:none" onclick="if(event.target===this)closeAP()">
   <div class="ap-modal">
     <div class="ap-hdr">
       <div class="ap-hdr-l">
-        <div class="ap-badge" id="apBadge">30-Day Working Note</div>
+        <div class="ap-badge" id="apBadge">30-Day Action Plan</div>
         <div class="ap-title" id="apTitle">Loading...</div>
         <div class="ap-domain" id="apDomain"></div>
       </div>
@@ -4507,13 +4626,13 @@ body{
     <div class="ap-body" id="apBody">
       <div class="ap-loading">
         <div class="ap-spin-lg"></div>
-        <div class="ap-load-txt">Preparing working note...</div>
-        <div class="ap-load-sub">Compiling the signal evidence into a focused 30-day note for the B2C team.</div>
+        <div class="ap-load-txt">Building your action plan...</div>
+        <div class="ap-load-sub">Claude is analysing the signal and building a specific, costed 30-day plan for the B2C team.</div>
       </div>
     </div>
     <div class="ap-footer">
-      <div class="ap-footer-note" id="apFooterNote">Drafted from verified intelligence · For internal B2C team use</div>
-      <button class="ap-regenerate" onclick="regenerateAP()">↻ Refresh note</button>
+      <div class="ap-footer-note" id="apFooterNote">Generated from verified intelligence · For internal B2C team use</div>
+      <button class="ap-regenerate" onclick="regenerateAP()">↻ Regenerate</button>
     </div>
   </div>
 </div>
@@ -4521,10 +4640,10 @@ body{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 <script>
-﻿// â”€â”€ External library fallback flags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── External library fallback flags ────────────────────────────────────────
 window.RADAR_CHARTS_AVAILABLE = (typeof Chart !== 'undefined');
 
-// â”€â”€ Clock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Clock ──────────────────────────────────────────────────────────────────
 setInterval(()=>{
   const clk = document.getElementById('clk');
   if(!clk) return;
@@ -4532,7 +4651,7 @@ setInterval(()=>{
   clk.textContent=p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds())+' DOH';
 },1000);
 
-// â”€â”€ Situation ribbon safety guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Situation ribbon safety guard ──────────────────────────────────────────
 // Keeps the landing view empty until backend/cache data is available.
 function initialiseSituationRibbon(){
   const sit = document.getElementById('sitTxt');
@@ -4551,9 +4670,9 @@ if(document.readyState === 'loading'){
   initialiseSituationRibbon();
 }
 
-// â”€â”€ Chart / cache rendering helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Chart / cache rendering helpers ───────────────────────────────────────
 
-// â”€â”€ CONSTANTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONSTANTS ──────────────────────────────────────────────────────────────
 const DEFAULT_DOMAINS = ['rev','dig','loy','prd','cmp','geo','agt','sml','soc','spt','sec','reg','ops','rep'];
 const B2C_DOMAINS = ['dig','agt','loy','prd','rev','sml','cmp','spt','rep','reg','geo','ops','sec','soc'];
 let DOMAINS = [...DEFAULT_DOMAINS];
@@ -4611,7 +4730,7 @@ function claudePayloadWithWebSearch(basePayload, flow){
 }
 window.claudePayloadWithWebSearch = claudePayloadWithWebSearch;
 
-// â”€â”€ BACKEND FETCH HELPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── BACKEND FETCH HELPER ────────────────────────────────────────────────────
 // Wraps fetch with CORS headers, timeout, and structured error reporting.
 // Use this for ALL backend calls instead of raw fetch() to avoid CORS errors
 // when running from file:// or a different origin.
@@ -4646,7 +4765,7 @@ async function backendFetch(path, options, timeoutMs){
   }
 }
 
-// â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── STATE ──────────────────────────────────────────────────────────────────
 function radarWebSocketUrl(){
   const base = (
     location.hostname === 'localhost' ||
@@ -4727,7 +4846,7 @@ function loadedDomainCount(){
   return DOMAINS.filter(id => !!runtimeDomains[id]).length;
 }
 
-// â”€â”€ GLOBAL RUNTIME STATE - v11.4.5 cache-first hydration layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── GLOBAL RUNTIME STATE - v11.4.5 cache-first hydration layer ─────────────
 // The backend/Supabase cache and browser backup can contain valid intelligence,
 // but older renderers expect an in-memory runtime object. This keeps the new
 // backend-first architecture while preventing missing/partial signals in tabs.
@@ -4883,7 +5002,7 @@ function syncDomainRuntimeState(id, data, source){
   return normalised;
 }
 
-// â”€â”€ HARDENING HELPERS - safe rendering, URLs and API errors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── HARDENING HELPERS - safe rendering, URLs and API errors ───────────────
 function esc(v){
   return String(v ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch] || ch));
 }
@@ -4910,7 +5029,7 @@ function extractJSON(raw){
 }
 
 
-// â”€â”€ SERVER-MANAGED BACKEND-FIRST NORMALISATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SERVER-MANAGED BACKEND-FIRST NORMALISATION ─────────────────────────────
 // All intelligence tabs must render saved backend/browser cache first. Provider refresh is
 // only used by explicit refresh/generate workflows. These helpers prevent old
 // Provider-shaped renderers from showing "undefined" when cached backend data has
@@ -5414,7 +5533,7 @@ function normalizeCIOSSource(src, data){
   return {source:src, score:safeScore(data.score || data.overallSentiment, null), label:firstText(data,['label','sentimentLabel'],'Loaded'), topComplaint:firstText(data,['topComplaint'],''), topStrength:firstText(data,['topStrength','topPraise'],'')};
 }
 
-// â”€â”€ INIT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── INIT ───────────────────────────────────────────────────────────────────
 function init(){
   if(!VIEW_PROFILES[VIEW_MODE]) VIEW_MODE = 'enterprise';
   DOMAINS = getDomainOrder();
@@ -5450,7 +5569,7 @@ async function connectKey(){
   if(btn){ btn.disabled = true; btn.textContent = 'Connecting...'; }
   setConnectStatus('Contacting server...', false);
 
-  // â”€â”€ Backend server mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Backend server mode ────────────────────────────────────────────
   if(BACKEND_URL && BACKEND_URL.includes('onrender.com')){
 
     // Countdown ticker
@@ -5507,7 +5626,7 @@ async function connectKey(){
     return;
   }
 
-  // â”€â”€ Direct frontend provider key mode retired in v11.4.5 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Direct frontend provider key mode retired in v11.4.5 ─────────────
   // Provider calls must only run through the Render backend. This protects
   // keys, removes CORS/header issues, and keeps enterprise governance clean.
   if(btn){ btn.textContent = ORIG_LABEL; btn.disabled = false; }
@@ -5533,7 +5652,7 @@ function loadSavedCacheOnly(){
 function skipStatic(){ return loadSavedCacheOnly(); }
 
 
-// â”€â”€ VIEW MODE - Enterprise / B2C â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── VIEW MODE - Enterprise / B2C ───────────────────────────────────────────
 function getDomainOrder(){
   return VIEW_MODE === 'b2c' ? [...B2C_DOMAINS] : [...DEFAULT_DOMAINS];
 }
@@ -5606,7 +5725,7 @@ function getSignalLimit(){
 }
 
 
-// â”€â”€ DOMAIN PRIORITY / REORDERING - stable, cache-safe â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DOMAIN PRIORITY / REORDERING - stable, cache-safe ──────────────────────
 // Keeps the existing localStorage keys unchanged. The goal is to prevent partial
 // async loads from constantly reshuffling the UI and breaking KPI refreshes.
 const BASE_DOMAIN_ORDER = [...DEFAULT_DOMAINS];
@@ -5740,7 +5859,7 @@ function refreshRadarDerivedState(forceOrder=false){
 }
 
 
-// â”€â”€ EXECUTIVE SCORECARD - derived from loaded signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── EXECUTIVE SCORECARD - derived from loaded signals ──────────────────────
 function allLoadedSignals(){
   const rows = [];
   DOMAINS.forEach(id => {
@@ -5940,7 +6059,7 @@ function updateExecutiveNarrative(rows){
   }
 }
 
-// â”€â”€ BACKEND CACHE-FIRST LOADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── BACKEND CACHE-FIRST LOADING ────────────────────────────────────────────
 // The backend/Supabase should be the first source of truth.
 // Provider refresh is only used when the user explicitly refreshes or no cache exists.
 function normaliseBackendSignal(row){
@@ -6105,7 +6224,7 @@ async function loadBackendCacheFirst(showMessages){
 }
 
 
-// â”€â”€ STORAGE - one key per domain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── STORAGE - one key per domain ───────────────────────────────────────────
 function saveDomain(id, data){
   try{
     const normalised = syncDomainRuntimeState(id, data, 'saveDomain');
@@ -6119,7 +6238,7 @@ function saveDomain(id, data){
 }
 
 
-// â”€â”€ SUPABASE PERSISTENCE VIA BACKEND â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SUPABASE PERSISTENCE VIA BACKEND ───────────────────────────────────────
 // This saves every loaded domain to Supabase through the Render backend.
 // localStorage remains as a browser backup, but Supabase becomes the persistent database.
 async function saveDomainToSupabase(domainId, result){
@@ -6224,7 +6343,7 @@ function clearSaved(){
   closeDom();
 }
 
-// â”€â”€ PROGRESS UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PROGRESS UI ────────────────────────────────────────────────────────────
 function buildProgressUI(){
   const track = document.getElementById('progTrack');
   const labels = document.getElementById('progLabels');
@@ -6274,10 +6393,10 @@ function checkResumable(){
   }
 }
 
-// â”€â”€ SLEEP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SLEEP ──────────────────────────────────────────────────────────────────
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-// â”€â”€ RATE LIMIT COUNTDOWN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RATE LIMIT COUNTDOWN ───────────────────────────────────────────────────
 async function rateLimitPause(seconds){
   for(let s=seconds; s>0; s--){
     if(stopFlag) return;
@@ -6288,7 +6407,7 @@ async function rateLimitPause(seconds){
 }
 
 
-// â”€â”€ RECENCY + FUTURE RELEVANCE FILTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RECENCY + FUTURE RELEVANCE FILTER ─────────────────────────────────────
 // Radar should be useful for decisions now and in the next 30-180 days.
 // Old news is allowed only when the business impact is still active today.
 function parseSignalDate(value){
@@ -6564,7 +6683,7 @@ function postProcessDomainData(data, domId){
   return d;
 }
 
-// â”€â”€ PROGRESS UI - single domain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PROGRESS UI - single domain ─────────────────────────────────────────
 async function callDomain(domId, context){
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 
@@ -6730,7 +6849,7 @@ For captureStrategy, write the action as if advising Digital/B2C leadership disc
   }
 }
 
-// â”€â”€ CONTEXT - shared facts passed to every domain call â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONTEXT - shared facts passed to every domain call ─────────────────────
 function buildContext(){
   const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   const base = `- Today is ${today}.
@@ -6755,7 +6874,7 @@ function buildContext(){
 - Keep wording discreet: do not say you know internal strategy; say 'Digital/B2C implication' or 'B2C implication'`;
 }
 
-// â”€â”€ MAIN REFRESH LOOP - one domain at a time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── MAIN REFRESH LOOP - one domain at a time ───────────────────────────────
 async function runDomains(domainsToProcess){
   isBusy = true;
   stopFlag = false;
@@ -6902,7 +7021,7 @@ function resumeRefresh(){
   runDomains(toRun);
 }
 
-// â”€â”€ UPDATE TILE FROM DOMAIN DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── UPDATE TILE FROM DOMAIN DATA ───────────────────────────────────────────
 function updateTile(id, data){
   const cb = document.getElementById('cb-'+id);
   const of = document.getElementById('of-'+id);
@@ -6920,7 +7039,7 @@ function updateTile(id, data){
   }, 200);
 }
 
-// â”€â”€ UPDATE FEED FROM LOADED DOMAINS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── UPDATE FEED FROM LOADED DOMAINS ───────────────────────────────────────
 function updateFeedFromDomains(){
   const allSignals = [];
   DOMAINS.forEach(id => {
@@ -6957,7 +7076,7 @@ function updateFeedFromDomains(){
   }
 }
 
-// â”€â”€ DOMAIN META â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DOMAIN META ────────────────────────────────────────────────────────────
 const META = {
   rev:{cls:'d-rev',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l3-8 4 4 4-8 4 6"/><path d="M21 21H3"/></svg>',ti:'Revenue &amp; pricing',su:'Yield - Route economics - Fare strategy - Ancillary'},
   dig:{cls:'d-dig',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1"/></svg>',ti:'Digital &amp; direct channel',su:'Direct booking - Conversion - Agent migration - App - Payments'},
@@ -6975,7 +7094,7 @@ const META = {
   rep:{cls:'d-rep',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',ti:'Brand &amp; reputation',su:'Social sentiment - Media - Passenger feedback - Crisis communications'}
 };
 
-// â”€â”€ OPEN DOMAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── OPEN DOMAIN ────────────────────────────────────────────────────────────
 function openDom(id){
   // Toggle behaviour: clicking the same active category again closes the detail window.
   // This keeps the existing localStorage/data flow untouched and only changes UX.
@@ -7093,7 +7212,7 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape' && currentDom){ closeDom(); }
 });
 
-// â”€â”€ RADAR NOTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RADAR NOTES ────────────────────────────────────────────────────────────────
 const SYS=`You are the Qatar Airways Digital/B2C Radar Notes for Digital Product, Digital Marketing and Loyalty leadership. Give sharp, specific, actionable commercial strategy. Do not rely on stale static facts about Qatar Airways routes, fleet, fuel prices, regulatory notices or dates unless they are verified by the current domain data or source links. Treat old events as historical context only. If B2C view is active, focus on direct booking growth, loyalty, digital product, marketing demand capture, agent/OTA shift and customer intelligence/UCP value. Do not claim access to internal strategy or confidential internal data. Give numbered working notes with Digital/B2C value ranges and 30-day timelines. Under 200 words.`;
 
 async function callChat(msg){
@@ -7156,7 +7275,7 @@ function closeAI(){
   chatHistory=[];
 }
 
-// â”€â”€ ACTION PLAN - inline modal, no redirect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ACTION PLAN - inline modal, no redirect ────────────────────────────────
 // Declared before init() so any startup path that opens/regenerates AP can read them safely.
 let AP_CURRENT_ACTION = '';
 let AP_CURRENT_DOMAIN = '';
@@ -7195,7 +7314,7 @@ window.radarInspect = function(){
   return {summary, domainRows, state};
 };
 
-// â”€â”€ START â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── START ──────────────────────────────────────────────────────────────────
 init();
 
 
@@ -7319,7 +7438,7 @@ function getEffortClass(e){
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAP(); });
 
 
-// â”€â”€ SAFE ACTION HELPERS - no inline escape needed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SAFE ACTION HELPERS - no inline escape needed ─────────────────────────
 function domAct(btn){
   const a=decodeURIComponent(btn.dataset.act||'');
   const d=btn.dataset.dom||'';
@@ -7339,7 +7458,7 @@ function compActBtn(btn){
   if(a) openAP(a,m+' - competitive response',d);
 }
 
-// â”€â”€ KPI TOOLTIPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── KPI TOOLTIPS ───────────────────────────────────────────────────────────
 function updateKpiTooltips(){
   const rows=allLoadedSignals().filter(r=>isForwardSignal(r.signal));
   const risks=rows.filter(r=>isRiskSignal(r.signal));
@@ -7448,7 +7567,7 @@ function updateKpiTooltips(){
 // Patch updateTile to refresh tooltips
 // KPI tooltips updated in updateTile directly
 
-// â”€â”€ COMPETITOR INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── COMPETITOR INTELLIGENCE ────────────────────────────────────────────────
 const CDATA={};
 const CSTORE='radar_v11_comp_';
 let ACOMP=null;
@@ -8863,12 +8982,12 @@ async function loadAllCompetitors(){
 function hideAllPrimaryPages(){
   var main = document.querySelector('.main');
   if(main) main.style.display='none';
-  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage'].forEach(function(id){
+  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage','publicApisPage','publicApisPage','publicApisPage','publicApisPage','publicApisPage'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('visible');
   });
 }
 function clearPrimaryNav(){
-  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI'].forEach(function(id){
+  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI','navPublicApis','navPublicApis','navPublicApis','navPublicApis','navPublicApis'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
 }
@@ -8975,7 +9094,7 @@ function showAIDiscovery(){
 }
 
 
-// â”€â”€ EXECUTIVE SUMMARY + PREDICTIVE INTELLIGENCE - backend/cache-derived â”€â”€
+// ── EXECUTIVE SUMMARY + PREDICTIVE INTELLIGENCE - backend/cache-derived ──
 function ensureRadarRuntimeForTabs(){
   try{
     if(!window.radarData || !window.radarData.meta || !window.radarData.meta.hydratedAt){
@@ -10215,7 +10334,7 @@ function renderPredictivePage(){
 }
 window.radarExecutiveInspect=function(){ ensureRadarRuntimeForTabs(); var out={kpis:executiveMetricCards(), topSignals:getExecSignals(5), runtime:window.radarData&&window.radarData.meta}; console.log('Radar executive inspect',out); return out; };
 
-// â”€â”€ TOOLTIP POSITIONING - compact fixed viewport coords â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── TOOLTIP POSITIONING - compact fixed viewport coords ───────────────
 (function(){
   let activeTooltip = null;
   let hideTimer = null;
@@ -10293,7 +10412,7 @@ window.radarExecutiveInspect=function(){ ensureRadarRuntimeForTabs(); var out={k
   }
 })();
 
-// â”€â”€ CHANNEL INTELLIGENCE - backend/cache-first rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CHANNEL INTELLIGENCE - backend/cache-first rendering ───────────────────
 // Channel intelligence renders saved backend/browser cache only. No browser-side benchmark generation.
 function getChannelCacheEmptyHTML(){
   return `
@@ -10373,7 +10492,7 @@ setTimeout(()=>{
 
 
 
-// â”€â”€ SAFE RENDER OVERRIDES - keep features, prevent broken/unsafe HTML â”€â”€â”€â”€â”€
+// ── SAFE RENDER OVERRIDES - keep features, prevent broken/unsafe HTML ─────
 function renderAP(plan){
   plan = plan || {};
   const stepsHTML = (plan.steps || []).map(function(s){
@@ -10576,7 +10695,7 @@ function renderChannelIntel(data){
   document.getElementById('channelBody').innerHTML = `<div style="background:var(--gbg);border:0.5px solid var(--gb);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--grn);flex-shrink:0"></div><div style="font-size:11px;color:var(--grn);font-weight:500;flex:1">${esc(data.headline||'')}</div><div style="font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace;flex-shrink:0">${esc(data.refreshed||'')}</div></div>${data.directShare?`<div class="ch-kpi-row" style="margin-bottom:12px"><div class="ch-kpi" style="grid-column:span 2;background:linear-gradient(135deg,rgba(92,6,50,.05),transparent);border-color:rgba(92,6,50,.2)"><div class="ch-kv" style="font-size:22px">${esc(ds.estimate||'-')}</div><div class="ch-kl">Direct booking share</div><div class="ch-kb">${esc(ds.confidence||'')} confidence - ${esc(ds.source||'')}</div>${ds.note?`<div style="font-size:9px;color:var(--t3);margin-top:3px;line-height:1.3">${esc(ds.note)}</div>`:''}</div><div class="ch-kpi" style="grid-column:span 2;background:var(--bg3)"><div class="ch-kv" style="color:var(--amb)">-</div><div class="ch-kl">Direct shift value</div><div class="ch-kb">Requires backend value model</div></div></div>`:''}<div style="font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:8px">Live channel signals</div><div class="ch-live-row">${sigsHTML}</div>${factHTML.length?`<div style="font-size:9px;font-weight:700;color:var(--pur);letter-spacing:.1em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin:12px 0 8px">Fact-check panel - for VP review</div>${factHTML}`:''}`;
 }
 
-// â”€â”€ COMPETITOR CACHE CLEAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── COMPETITOR CACHE CLEAR ─────────────────────────────────────────────────
 function clearCompCache(){
   if(!confirm('Clear all saved competitor analyses and reload fresh intelligence?')) return;
   Object.keys(CMETA).forEach(id=>{
@@ -10598,7 +10717,7 @@ function clearCompCache(){
   Object.keys(CDATA).forEach(k=>delete CDATA[k]);
 }
 
-// â”€â”€ DOMAIN STATUS QUICK SUMMARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── DOMAIN STATUS QUICK SUMMARY ────────────────────────────────────────────
 function getDomainSummaryForAP(domId){
   const d = domData[domId];
   if(!d || !d.signals) return 'No domain data loaded';
@@ -11042,7 +11161,7 @@ async function testSupabaseSaves(){console.log('Testing...');try{const r=await f
 window.testSupabaseSaves=testSupabaseSaves;
 
 
-// â”€â”€ CUSTOMER SENTIMENT INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CUSTOMER SENTIMENT INTELLIGENCE ─────────────────────────────────
 var SENT_DATA = {};
 var SENT_STORE = 'qr_v10_sent_';
 var SENT_LOADED = false;
@@ -11392,7 +11511,7 @@ function hydrateSentimentFromDomainCache(){
   refreshSentimentSourceFreshness();
 }
 
-// â”€â”€ CUSTOMER INTELLIGENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CUSTOMER INTELLIGENCE ─────────────────────────────────────────────
 var CI_DATA = {};
 var CI_STORE = 'qr_v10_ci_';
 var ACTIVE_CI = null;
@@ -12015,7 +12134,7 @@ function customerIntelFromDomainCache(seg){
     bookingBehaviour: rows.slice(0,4).map(function(r){return {insight:r.signal.title||'Behaviour signal', detail:r.signal.body||r.signal.whyItMattersNow||'', source:(r.domain||'').toUpperCase(), implication:r.signal.captureStrategy||r.signal.impactLabel||'', signal:r.signal};}),
     loyaltyDrivers: opps.slice(0,4).map(function(r){return {driver:r.signal.title||'Value driver', detail:r.signal.whyItMattersNow||r.signal.body||'', strength:r.signal.confidence||'Medium', signal:r.signal};}),
     painPoints: risks.slice(0,4).map(function(r){return {pain:r.signal.title||'Customer pain point', detail:r.signal.body||r.signal.whyItMattersNow||'', competitorAdvantage:r.signal.impactLabel||r.signal.demandImpact||'', signal:r.signal};}),
-    personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Customer-context note for this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both', signal:r.signal};}),
+    personalisationOpps: rows.slice(0,5).map(function(r){return {title:r.signal.captureStrategy||r.signal.title||'Personalisation opportunity', detail:r.signal.whyItMattersNow||r.signal.body||'', ucpUseCase:'Use customer context to prioritise this signal', adobeProduct: seg === 'luxury' ? 'Journey Optimizer' : 'RTCDP', value:r.signal.impactLabel||'B2C value', effort:r.signal.timeToImpact||'30 days', owner:'Digital/B2C', persona: seg === 'luxury' ? 'all' : '', dataSource:'both', signal:r.signal};}),
     externalSignals: extSignals,
     nextBestAction: genericNba,
     strategicLenses: strategicLenses,
@@ -12119,7 +12238,7 @@ async function loadCI(seg){
     return;
   }
 
-  // 3 - Nothing available - request backend refresh
+  // 3 - Nothing available - request Claude via backend
   if(typeof BACKEND_URL !== 'undefined' && BACKEND_URL && typeof ANT_KEY !== 'undefined' && ANT_KEY){
     try{
       setBtn('Generating...', false);
@@ -12129,7 +12248,7 @@ async function loadCI(seg){
       var luxuryExtra = isLuxury
         ? ' This is a LUXURY segment analysis. Use the VML Future 100 2026 luxury lens: Monumental luxury (visible prestige), Wellbeing Status (privacy/sanctuary), and Shared Luxury (access/ethics). For luxury, include three sub-personas: privacy, curator, status.'
         : '';
-      var ciPrompt = 'You are the Qatar Airways Customer Radar Notes. Today is '+today+'. Segment: '+meta.name+'. Description: '+meta.desc+'. Key routes: '+(meta.routes||'')+'. Segment size: '+(meta.size||'')+'. QR context: '+meta.qrContext+luxuryExtra+
+      var ciPrompt = 'You are the Qatar Airways Customer Intelligence AI. Today is '+today+'. Segment: '+meta.name+'. Description: '+meta.desc+'. Key routes: '+(meta.routes||'')+'. Segment size: '+(meta.size||'')+'. QR context: '+meta.qrContext+luxuryExtra+
         '. Use web search signals and return ONLY valid JSON with: '+
         '{"segment":"'+seg+'","segmentName":"'+(meta.name||seg)+'","opportunityScore":75,"opportunityLabel":"High","size":"'+(meta.size||'')+'","topInsight":"string",'+
         '"identityConfidence":"High|Medium|Low","tripIntentState":"inspiration|shopping|pre-trip|day-of|in-trip|disruption|post-trip","serviceRiskLevel":"Critical|High|Medium|Low","serviceRiskReason":"string",'+
@@ -12172,12 +12291,12 @@ async function loadCI(seg){
           applyScore(result.opportunityScore || 70);
           setBtn('Loaded', true);
           renderCI(seg, result);
-          console.log('[Radar] CI generated via backend provider for', seg);
+          console.log('[Radar] CI generated via Claude for', seg);
           return;
         }
       }
     }catch(claudeErr){
-      console.warn('[Radar] CI backend generation failed for '+seg+':', claudeErr.message||claudeErr);
+      console.warn('[Radar] CI Claude generation failed for '+seg+':', claudeErr.message||claudeErr);
     }
   }
 
@@ -12294,7 +12413,7 @@ function renderCI(seg,data){
 
   var nbaH = '';
   if(data.nextBestAction && data.nextBestAction.action){
-    nbaH = '<div class="ci-nba"><div class="ci-nba-eyebrow">Priority note'+(data.nextBestAction.timeline ? ' - '+esc(data.nextBestAction.timeline) : '')+'</div><div class="ci-nba-title">'+esc(data.nextBestAction.action)+'</div><div class="ci-nba-meta">'+
+    nbaH = '<div class="ci-nba"><div class="ci-nba-eyebrow">Next-best action'+(data.nextBestAction.timeline ? ' - '+esc(data.nextBestAction.timeline) : '')+'</div><div class="ci-nba-title">'+esc(data.nextBestAction.action)+'</div><div class="ci-nba-meta">'+
       (data.nextBestAction.adobeProduct ? '<span>'+esc(data.nextBestAction.adobeProduct)+'</span>' : '')+
       (data.nextBestAction.owner ? '<span>Owner: '+esc(data.nextBestAction.owner)+'</span>' : '')+
       '</div></div>';
@@ -12303,10 +12422,10 @@ function renderCI(seg,data){
   var planOwner = (data.nextBestAction && data.nextBestAction.owner) ? data.nextBestAction.owner : 'Digital/B2C owner';
   var planTimeline = (data.nextBestAction && data.nextBestAction.timeline) ? data.nextBestAction.timeline : '30-day execution';
   var actionPlanBlock = '<div class="ci-plan">'+
-    '<div class="ci-plan-h">Working note</div>'+
+    '<div class="ci-plan-h">Action plan</div>'+
     '<div class="ci-plan-t">'+esc(planActionSummary)+'</div>'+
     '<div class="ci-plan-meta"><span>Owner: '+esc(planOwner)+'</span><span>'+esc(planTimeline)+'</span></div>'+
-    '<button type="button" class="ci-plan-btn" onclick="openCIActionPlan(\''+seg+'\')">Open 30-day working note</button>'+
+    '<button type="button" class="ci-plan-btn" onclick="openCIActionPlan(\''+seg+'\')">Open 30-day action plan</button>'+
   '</div>';
 
   var externalRows = (data.externalSignals||[]).map(function(s){
@@ -12361,9 +12480,9 @@ function renderCI(seg,data){
   var luxuryPersonas = (data.luxuryPersonas && data.luxuryPersonas.length) ? data.luxuryPersonas : (meta.luxuryPersonas || []);
   var luxuryPanel = '';
   if(seg === 'luxury' && luxuryPersonas.length){
-    luxuryPanel = '<div class="ci-luxury-wrap"><div class="ci-luxury-title">Premium sub-personas - luxury lens</div><div class="ci-luxury-grid">'+
+    luxuryPanel = '<div class="ci-luxury-wrap"><div class="ci-luxury-title">Premium Sub-Personas - Luxury Lens</div><div class="ci-luxury-grid">'+
       luxuryPersonas.map(function(p){
-        return '<div class="ci-lux-card"><div class="ci-lux-card-icon">'+(p.icon || '&#10024;')+'</div><div class="ci-lux-card-name">'+esc(p.label || '')+'</div><div class="ci-lux-h trg">Trigger signals</div><div class="ci-lux-t">'+esc(p.triggers || '')+'</div><div class="ci-lux-h rsk">Service failure risks</div><div class="ci-lux-t">'+esc(p.serviceFailures || '')+'</div><div class="ci-lux-h nba">Priority note</div><div class="ci-lux-t">'+esc(p.nextBestAction || '')+'</div></div>';
+        return '<div class="ci-lux-card"><div class="ci-lux-card-icon">'+(p.icon || '&#10024;')+'</div><div class="ci-lux-card-name">'+esc(p.label || '')+'</div><div class="ci-lux-h trg">Trigger signals</div><div class="ci-lux-t">'+esc(p.triggers || '')+'</div><div class="ci-lux-h rsk">Service failure risks</div><div class="ci-lux-t">'+esc(p.serviceFailures || '')+'</div><div class="ci-lux-h nba">Next-best action</div><div class="ci-lux-t">'+esc(p.nextBestAction || '')+'</div></div>';
       }).join('')+
       '</div></div>';
   }
@@ -12708,6 +12827,69 @@ setTimeout(function(){
   }
 
   window.loadSentFromStorage = loadSentFromStorage = safeLoadSentFromStorage;
+
+  var sentTrajectoryChartInstance = null;
+
+  window.loadSentimentTrajectory = async function(topicOverride){
+    var input = document.getElementById('sentTrajectoryTopic');
+    var topic = (topicOverride || (input && input.value) || '').trim();
+    var statusEl = document.getElementById('sentTrajectoryStatus');
+    var wrapEl = document.getElementById('sentTrajectoryChartWrap');
+    if(!topic){
+      if(statusEl) statusEl.textContent = 'Enter a topic first (e.g. booking, baggage, pricing).';
+      return;
+    }
+    if(statusEl) statusEl.textContent = 'Loading trajectory for "' + topic + '"...';
+    try{
+      var path = '/api/sentiment/trajectory?topic=' + encodeURIComponent(topic) + '&days=30';
+      var resp = typeof backendFetch === 'function'
+        ? await backendFetch(path, { method:'GET' }, 15000)
+        : await fetch((typeof BACKEND_URL === 'string' ? BACKEND_URL : '') + path);
+      var json = await resp.json();
+      if(!json || !json.ok || !json.data || !json.data.trajectory || !json.data.trajectory.length){
+        if(statusEl) statusEl.textContent = 'No sentiment data found for "' + topic + '" in the last 30 days.';
+        if(wrapEl) wrapEl.style.display = 'none';
+        return;
+      }
+
+      var trajectory = json.data.trajectory;
+      var labels = trajectory.map(function(t){ return t.timestamp; });
+      var positive = trajectory.map(function(t){ return t.positiveRatio; });
+      var negative = trajectory.map(function(t){ return t.negativeRatio; });
+
+      if(wrapEl) wrapEl.style.display = 'block';
+      var canvas = document.getElementById('sentTrajectoryChart');
+      if(canvas && typeof Chart !== 'undefined'){
+        if(sentTrajectoryChartInstance){ sentTrajectoryChartInstance.destroy(); }
+        sentTrajectoryChartInstance = new Chart(canvas, {
+          type:'line',
+          data:{
+            labels: labels,
+            datasets:[
+              { label:'Positive %', data: positive, borderColor:'#1abc9c', backgroundColor:'rgba(26,188,156,.12)', tension:.3, fill:true },
+              { label:'Negative %', data: negative, borderColor:'#e74c3c', backgroundColor:'rgba(231,76,60,.12)', tension:.3, fill:true }
+            ]
+          },
+          options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{ legend:{ display:true, labels:{ font:{ size:10 } } } },
+            scales:{
+              y:{ beginAtZero:true, max:100, ticks:{ font:{ size:9 } } },
+              x:{ ticks:{ font:{ size:9 }, maxRotation:0 } }
+            }
+          }
+        });
+      }
+
+      var direction = json.data.trendDirection || 'stable';
+      var directionLabel = direction === 'worsening' ? 'Worsening ⚠️' : direction === 'improving' ? 'Improving ✅' : 'Stable';
+      if(statusEl) statusEl.textContent = 'Trend for "' + topic + '": ' + directionLabel + ' (' + trajectory.length + ' data points)';
+    }catch(err){
+      if(statusEl) statusEl.textContent = 'Could not load trajectory: ' + (err && err.message ? err.message : 'request failed');
+      if(wrapEl) wrapEl.style.display = 'none';
+    }
+  };
 
   window.selSent = selSent = function(src){
     document.querySelectorAll('.sent-tile').forEach(function(t){ t.classList.remove('on'); });
@@ -13311,7 +13493,7 @@ function ciosCompetitor(items){
 
 function ciosProductRequests(items){
   items = ciosLimit(items, 24);
-  if(!items.length) return ciosEmpty('No product/follow-up requests loaded from backend/cache.');
+  if(!items.length) return ciosEmpty('No product/action requests loaded from backend/cache.');
   var rows = items.map(function(i, idx){
     var score = ciosScoreFromItem(i);
     return '<div class="cios-pr-row"><div class="cios-pr-n">' + String(idx + 1).padStart(2, '0') + '</div><div class="cios-pr-body"><div class="cios-pr-title">' + esc(ciosItemTitle(i)) + '</div><div class="cios-pr-desc">' + esc(ciosItemDetail(i)) + '</div><div class="cios-pr-tags"><span class="cios-chip ' + ciosChipClass(i) + '">' + esc(ciosItemSource(i)) + '</span><span class="cios-chip cc-stable">' + esc(ciosImpactLabel(i)) + '</span></div><div class="cios-pr-prog"><div class="cios-pr-pf" style="width:' + score + '%"></div></div></div></div>';
@@ -13344,7 +13526,7 @@ function ciosNarrative(sources, issues, improvements, strengths){
   var topRisk = issues[0] ? ciosItemTitle(issues[0]) : 'No dominant risk signal loaded';
   var topAction = improvements[0] ? ciosItemTitle(improvements[0]) : 'No action item loaded';
   var topStrength = strengths[0] ? ciosItemTitle(strengths[0]) : 'No strength signal loaded';
-  return '<div class="cios-narr"><div class="cios-narr-ey">Executive narrative - backend/cache only</div><div class="cios-narr-txt">Customer intelligence currently shows <strong>' + esc(topRisk) + '</strong> as the most visible risk signal. The strongest priority follow-up is <strong>' + esc(topAction) + '</strong>, while <strong>' + esc(topStrength) + '</strong> should be used to balance the leadership narrative with verified signs of brand strength.</div><div class="cios-narr-rec"><strong>Coverage:</strong> ' + sources.length + ' sources loaded - ' + issues.length + ' risk signals - ' + improvements.length + ' follow-up requests - ' + strengths.length + ' strength signals.</div></div>';
+  return '<div class="cios-narr"><div class="cios-narr-ey">Executive narrative - backend/cache only</div><div class="cios-narr-txt">Customer intelligence currently shows <strong>' + esc(topRisk) + '</strong> as the most visible risk signal. The strongest recommended action is <strong>' + esc(topAction) + '</strong>, while <strong>' + esc(topStrength) + '</strong> should be used to balance the leadership narrative with verified signs of brand strength.</div><div class="cios-narr-rec"><strong>Coverage:</strong> ' + sources.length + ' sources loaded - ' + issues.length + ' risk signals - ' + improvements.length + ' action requests - ' + strengths.length + ' strength signals.</div></div>';
 }
 
 function ciosAppRatings(items){
@@ -13655,7 +13837,7 @@ setTimeout(function(){
     var el = document.getElementById('taSummary');
     if (!el) return;
     if (!actions.length) {
-      el.innerHTML = '<div class="ta-empty">Load or refresh Radar signals first. Team Actions will then list assigned work from the highest-priority signals.</div>';
+      el.innerHTML = '<div class="ta-empty">Load or refresh Radar signals first. Team Actions will then create owner-ready work from the highest-priority signals.</div>';
       return;
     }
     var open = actions.filter(function (a) { return a.status !== 'done'; }).length;
@@ -14109,7 +14291,7 @@ setTimeout(function(){
       if (/premium/.test(n)) return 'Package premium demand with lounge, Qsuite, stopover, and upgrade messaging.';
       if (/ancillary/.test(n)) return 'Bundle seats, bags, lounge, and fast-track where purchase intent is highest.';
       if (/loyalty/.test(n)) return 'Convert the demand into Avios earn, tier progress, and member-only offers.';
-      return 'Create an assigned commercial playbook for this lane.';
+      return 'Create an owner-ready commercial playbook for this lane.';
     }
 
     function laneStatus(total) {
@@ -14253,7 +14435,7 @@ setTimeout(function(){
     var high = Number((low * 1.45).toFixed(1));
     return {
       label: '$' + low.toFixed(1) + 'M-$' + high.toFixed(1) + 'M',
-      sub: '12-18 month estimated upside'
+      sub: '12-18 month modeled upside'
     };
   }
 
@@ -14334,20 +14516,20 @@ setTimeout(function(){
         '<div class="exec-panel-copy-v2">' + safeEsc(headline) + '</div>' +
       '</div>' +
       '<div class="exec-action-layer-metrics">' +
-        '<span><strong>' + ownerReady + '/' + actions.length + '</strong> assigned</span>' +
+        '<span><strong>' + ownerReady + '/' + actions.length + '</strong> owner-ready</span>' +
         '<span><strong>' + dueSoon + '</strong> urgent this week</span>' +
         '<span><strong>' + evidence + '</strong> evidence points</span>' +
         '<span><strong>' + outcomeMissing + '</strong> outcomes open</span>' +
-        '<button type="button" class="exec-action-ai-btn" id="execAskRadarActionBtn">Open working brief</button>' +
+        '<button type="button" class="exec-action-ai-btn" id="execAskRadarActionBtn">Ask Radar for brief</button>' +
       '</div>';
     var btn = document.getElementById('execAskRadarActionBtn');
     if (btn) {
       btn.onclick = function () {
         if (typeof openExecDetailDrawer === 'function') {
           openExecDetailDrawer({
-            type: 'Radar Brief Note',
-            title: 'Action layer working note',
-            body: 'Working note: summarise the top priority signal, what changed, the assigned next step, evidence strength, and the outcome to record after execution.',
+            type: 'Radar AI Brief Prompt',
+            title: 'Ask Radar about the action layer',
+            body: 'Suggested question: Summarise the top priority signal, what changed, the owner-ready action, evidence strength, and what outcome should be recorded after execution.',
             meta: ['Context loaded', actions.length + ' actions', topSignals.length + ' signals']
           });
         }
@@ -14381,7 +14563,7 @@ setTimeout(function(){
     var cards = [
       { icon: '↗', label: 'State', value: avg + '/100 Elevated', sub: 'Risk signals: ' + risk + ' | Opportunity: ' + opp, cta: 'Open evidence' },
       { icon: '$', label: 'Opportunity', value: (model.opportunityRange || oppRange.label), sub: oppRange.sub, cta: 'See opportunity detail' },
-      { icon: '◎', label: 'Next Move', value: nextMove, sub: 'Run execution with named owners', cta: 'View working note' },
+      { icon: '◎', label: 'Next Move', value: nextMove, sub: 'Run execution with named owners', cta: 'View action plan' },
       { icon: '◍', label: 'Trust', value: sourceCount + ' sources, ' + corroborated + ' corroborated', sub: confidence + ' data confidence', cta: 'View sources' }
     ];
     el.innerHTML = cards.map(function (c, i) {
@@ -14449,7 +14631,7 @@ setTimeout(function(){
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<button type="button" class="exec-inline-link">Open working note <span>→</span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<button type="button" class="exec-inline-link">Open action brief <span>→</span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Impact (12-18M)</label><strong>' + safeEsc(x.impact) + '</strong></div>' +
@@ -14588,7 +14770,7 @@ setTimeout(function(){
     var cards = [
       { icon: 'ST', label: 'State', value: avg + '/100 Elevated', sub: 'Risk signals: ' + risk + ' | Opportunity: ' + opp, cta: 'Open evidence' },
       { icon: '$', label: 'Opportunity', value: (model.opportunityRange || oppRange.label), sub: oppRange.sub, cta: 'See opportunity detail' },
-      { icon: 'NM', label: 'Next Move', value: nextMove, sub: 'Run execution with named owners', cta: 'View working note' },
+      { icon: 'NM', label: 'Next Move', value: nextMove, sub: 'Run execution with named owners', cta: 'View action plan' },
       { icon: 'TR', label: 'Trust', value: sourceCount + ' sources, ' + corroborated + ' corroborated', sub: confidence + ' data confidence', cta: 'View sources' }
     ];
     el.innerHTML = cards.map(function (c, i) {
@@ -14655,7 +14837,7 @@ setTimeout(function(){
     }
     el.innerHTML = q.map(function (x, i) {
       return '<article class="exec-action-row exec-clickable" data-action-index="' + i + '">' +
-        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open working note <span>-></span></button></div></div>' +
+        '<div class="exec-action-main"><img class="exec-action-avatar" src="' + ownerPhotoUrl + '" alt="Executive owner portrait" loading="eager" decoding="async"><div class="exec-action-rank">' + (i + 1) + '</div><div><div class="exec-action-title">' + safeEsc(x.title) + '</div><div class="exec-action-body">' + safeEsc(x.body) + '</div>' + dateMetaOf(x.signal) + '<div class="exec-action-mini-tags"><span class="' + safeEsc(x.status.cls) + '">' + safeEsc(x.status.label) + '</span><span>' + safeEsc(x.impact) + '</span></div><button type="button" class="exec-inline-link">Open action brief <span>-></span></button></div></div>' +
         '<div class="exec-action-meta"><label>Owner</label><span>' + safeEsc(x.owner) + '</span></div>' +
         '<div class="exec-action-meta"><label>Due</label><span>' + safeEsc(x.due) + '</span></div>' +
         '<div class="exec-action-meta"><label>Proof</label><span>' + safeEsc(x.evidenceCount) + ' evidence point' + (x.evidenceCount === 1 ? '' : 's') + '</span><em>' + safeEsc(x.outcomeStatus) + '</em></div>' +
@@ -14774,10 +14956,10 @@ setTimeout(function(){
         tags: ['Simulation', idea.due || 'Due TBC', idea.expectedImpact || 'Impact TBC']
       };
     }) : [
-      { t: 'Digital service assistant impact simulation', b: 'Estimate conversion, service deflection, loyalty engagement and ancillary attach impact before investment.', tags: ['Simulation', 'Digital', 'Review-ready'] },
-      { t: 'Direct-share recapture model', b: 'Estimate how route windows, loyalty incentives and OTA pressure could shift customers back to QR direct channels.', tags: ['OTA leakage', 'Direct booking', 'Revenue'] },
+      { t: 'AI travel assistant impact simulation', b: 'Estimate conversion, service deflection, loyalty engagement and ancillary attach impact before investment.', tags: ['Simulation', 'AI', 'Model-ready'] },
+      { t: 'Direct-share recapture model', b: 'Model how route windows, loyalty incentives and OTA pressure could shift customers back to QR direct channels.', tags: ['OTA leakage', 'Direct booking', 'Revenue'] },
       { t: 'Premium recovery concierge business case', b: 'Forecast high-value customer retention and NPS uplift from proactive disruption recovery and tailored servicing.', tags: ['Premium', 'Recovery', 'Retention'] },
-      { t: 'Journey-aware ancillary marketplace model', b: 'Predict attach-rate lift from journey-aware bundles across seats, baggage, lounges, Fast Track and eSIM.', tags: ['Ancillary', 'Personalization', 'Marketplace'] }
+      { t: 'Next-best ancillary marketplace model', b: 'Predict attach-rate lift from journey-aware bundles across seats, baggage, lounges, Fast Track and eSIM.', tags: ['Ancillary', 'Personalization', 'Marketplace'] }
     ]));
   }
 
@@ -14813,7 +14995,7 @@ setTimeout(function(){
     'Discovery status endpoint': 'ai_discovery',
     'Refresh and source run tables': 'source_ledger',
     'Source coverage and freshness ledger': 'source_ledger',
-    'Discovery Monitor backend contract': 'ai_discovery',
+    'AI Discovery backend API contract': 'ai_discovery',
     'App ratings intelligence feed': 'app_ratings_feed',
     'Signal-to-action completeness': 'action_completeness',
     'Executive briefing export': 'executive_export',
@@ -14829,7 +15011,15 @@ setTimeout(function(){
     'Watchlists and threshold alerts': 'watchlist',
     'Action-to-outcome attribution': 'outcome',
     'Executive delta brief': 'delta',
-    'All primary tabs backend-valid': 'empty_state'
+    'All primary tabs backend-valid': 'empty_state',
+    'Circuit breaker fault tolerance': 'circuit_breakers',
+    'Automatic retry with backoff': 'retry_backoff',
+    'Trend and anomaly detection': 'trend_anomaly_detection',
+    'Sentiment trend tracking': 'sentiment_trajectory',
+    'Automated critical-signal alerting': 'alert_digest',
+    'Alert history endpoint': 'alerts_history_api',
+    'Automatic topic tagging': 'topic_classification',
+    'Scheduled job reliability on free hosting': 'cron_reliability_workaround'
   };
 
   function proofToLocalStatus(v) {
@@ -14858,7 +15048,7 @@ setTimeout(function(){
         ['Production-safe CORS', 'done', 'Localhost and production frontend origins are reported allowed'],
         ['Unified backend response envelope', 'done', 'Frontend and backend are aligned on normalized cache/API contract'],
         ['Structured backend logs and diagnostics', 'done', 'Route-level request logging and diagnostics routes are reported active'],
-        ['Web search enabled in frontend refresh flows', 'done', 'Domain scan, chat, working note, competitor generation, and customer-intel generation send web-search tool config'],
+        ['Web search enabled in frontend AI flows', 'done', 'Domain scan, chat, action plan, competitor generation, and customer-intel generation send web-search tool config'],
         ['Web search enforcement in local proxy', 'done', 'Local dev proxy now auto-injects web-search tool into /api/claude requests'],
         ['Competitor loader hardening', 'done', 'Cache alias fallback, stale/no-data handling, and guarded generation/persistence behavior are now implemented in frontend runtime'],
         ['Deployed backend web-search enforcement', 'progress', 'Waiting for live endpoint proof sync.'],
@@ -14895,16 +15085,26 @@ setTimeout(function(){
       { s: 'Approval-Ready Finish Line (Before Internal Data)', tasks: [
         ['Backend Pulse completion', 'done', 'Footer link and Backend Pulse page are live, wired to health, daily-status, runtime warnings, performance and discovery proof endpoints.'],
         ['Rich daily-status endpoint', 'progress', '/api/refresh/daily-status is available for runtime proof; next polish is to align it with the richer discovery run-history fields now returned by discovery status.'],
-        ['Discovery status endpoint', 'done', '/api/discovery/status confirms active discovery: sources checked, new signals found and saved, web search and scoring ran, and errors/warnings are visible.'],
-        ['Refresh and source run tables', 'done', 'refresh_runs, source_ingestion_runs and source_freshness_ledger exist and are writing discovery proof after the successful source discovery run.'],
+        ['Discovery status endpoint', 'done', '/api/discovery/status confirms active discovery: sources checked, new signals found and saved, Claude web search ran, OpenAI scoring ran, and errors/warnings are visible.'],
+        ['Refresh and source run tables', 'done', 'refresh_runs, source_ingestion_runs and source_freshness_ledger exist and are writing discovery proof after the successful AI discovery run.'],
         ['Full source discovery cron', 'progress', 'Manual /api/discovery/run is proven end to end; next step is scheduled discovery cadence and source expansion beyond the tested source subset.'],
         ['Source coverage and freshness ledger', 'progress', 'Source ledger now writes rows and freshness proof; final polish is to expose direct items_saved, last_checked_at, last_success_at, freshness_state and confidence_score fields consistently.'],
-        ['Discovery Monitor backend contract', 'done', 'Backend discovery route is live: /api/discovery/run saves discovered items/signals and /api/discovery/status reports provider, scoring, saved signal and ledger proof.'],
-        ['App ratings intelligence feed', 'progress', 'Competitor airline app ratings source is now part of discovery proof; expand coverage to QR and all competitor app-store review feeds.'],
-        ['Signal-to-action completeness', 'progress', 'Every top signal should map to an assigned next step, due date, expected impact, evidence, status or explicit monitor decision.'],
+        ['AI Discovery backend API contract', 'done', 'Backend discovery API is live: /api/discovery/run saves discovered items/signals and /api/discovery/status reports Claude, OpenAI, saved signal and ledger proof.'],
+        ['App ratings intelligence feed', 'progress', 'Competitor airline app ratings source is now part of AI discovery proof; expand coverage to QR and all competitor app-store review feeds.'],
+        ['Signal-to-action completeness', 'progress', 'Every top signal should map to an owner-ready action, due date, expected impact, evidence, status or explicit monitor decision.'],
         ['Executive briefing export', 'progress', 'Export button exists; finish one-click PowerPoint brief with verdict, top signals, top actions, evidence, commercial impact and next decision needed.'],
         ['Partner and competitor business proof', 'progress', 'Partner Network and Competitor tabs are visible; close with data proof showing partner opportunity, competitor threat, action and source freshness.'],
         ['Deployment and release stability', 'progress', 'Keep GitHub, Vercel and Render deployment paths stable with post-deploy smoke checks and clear rollback instructions.']
+      ]},
+      { s: 'Phase 4 - Reliability, Analytics & Alerting Upgrade (Jul 2026)', tasks: [
+        ['Circuit breaker fault tolerance', 'progress', 'Awaiting live backend proof checks.'],
+        ['Automatic retry with backoff', 'progress', 'Awaiting live backend proof checks.'],
+        ['Trend and anomaly detection', 'progress', 'Awaiting live backend proof checks.'],
+        ['Sentiment trend tracking', 'progress', 'Awaiting live backend proof checks.'],
+        ['Automated critical-signal alerting', 'progress', 'Awaiting live backend proof checks.'],
+        ['Alert history endpoint', 'progress', 'Awaiting live backend proof checks.'],
+        ['Automatic topic tagging', 'progress', 'Awaiting live backend proof checks.'],
+        ['Scheduled job reliability on free hosting', 'progress', 'Awaiting live backend proof checks.']
       ]}
     ];
   }
@@ -15057,9 +15257,9 @@ setTimeout(function(){
     var cards = [
       { date: '28 May 2026', tag: 'Production', title: 'Backend runtime is live', body: 'Render deployment is healthy and endpoint smoke checks are passing.' },
       { date: '28 May 2026', tag: 'Validation', title: 'Core smoke checks passed', body: 'Health, cache, diagnostics, ranking and predictive routes are returning success.' },
-      { date: '28 May 2026', tag: 'UX Upgrade', title: 'Executive Summary redesigned for glanceable decisions', body: 'First-screen verdict now prioritizes status, cause, impact and priority move with clearer drill-down paths.' },
+      { date: '28 May 2026', tag: 'UX Upgrade', title: 'Executive Summary redesigned for glanceable decisions', body: 'First-screen verdict now prioritizes status, cause, impact and recommended move with clearer drill-down paths.' },
       { date: '28 May 2026', tag: 'Roadmap', title: 'Tracker moved to live-proof mode', body: 'Roadmap now hydrates statuses from backend proof endpoints for review parity.' },
-      { date: '05 Jun 2026', tag: 'Discovery', title: 'Discovery run proved signal creation', body: 'Manual discovery run checked source data, used web search and scoring, saved new signals, and wrote source proof to Supabase.' },
+      { date: '05 Jun 2026', tag: 'Discovery', title: 'AI discovery proved signal creation', body: 'Manual discovery run checked source data, used Claude web search and OpenAI scoring, saved new signals, and wrote source proof to Supabase.' },
       { date: '04 Jun 2026', tag: 'Finish Line', title: 'Approval-ready checklist added', body: 'Roadmap now separates the non-internal-data work needed before Radar can be positioned as approval-ready.' },
       { date: '02 Jun 2026', tag: 'Planning', title: 'Frontend-shippable vs backend-blocked split added', body: 'Roadmap now shows what can be finished in the UI and what still needs server-side proof or schema work.' }
     ];
@@ -15168,6 +15368,12 @@ setTimeout(function(){
     daily: null,
     warnings: null,
     performance: null,
+    trends: null,
+    anomalies: null,
+    systemMetrics: null,
+    dataQuality: null,
+    alerts: null,
+    sourceRegistry: null,
     error: null,
     lastFetchedAt: null
   };
@@ -15239,8 +15445,8 @@ setTimeout(function(){
     '</div>';
   }
 
-  function renderBackendPulseList(items) {
-    if (!items || !items.length) return '<div class="backend-pulse-empty">No attention items right now.</div>';
+  function renderBackendPulseList(items, emptyMessage) {
+    if (!items || !items.length) return '<div class="backend-pulse-empty">' + safeEsc(emptyMessage || 'No attention items right now.') + '</div>';
     return '<ul class="backend-pulse-list">' + items.map(function (x) {
       return '<li class="' + safeEsc(x.tone || 'neutral') + '"><strong>' + safeEsc(x.title) + '</strong><span>' + safeEsc(x.body) + '</span></li>';
     }).join('') + '</ul>';
@@ -15251,6 +15457,10 @@ setTimeout(function(){
     var gridEl = document.getElementById('backendPulseGrid');
     var meaningEl = document.getElementById('backendPulseMeaning');
     var attentionEl = document.getElementById('backendPulseAttention');
+    var trendsEl = document.getElementById('backendPulseTrendsList');
+    var anomaliesEl = document.getElementById('backendPulseAnomaliesList');
+    var alertsEl = document.getElementById('backendPulseAlertsList');
+    var sourceRegistryEl = document.getElementById('backendPulseSourceRegistry');
     if (!statusEl || !gridEl || !meaningEl || !attentionEl) return;
 
     var tone = backendPulseTone();
@@ -15276,6 +15486,11 @@ setTimeout(function(){
     var requestCount = perf.requestCount || perf.totalRequests || perf.requests || 'Unknown';
     var warnCount = warnings.warnCount || 0;
     var errorCount = warnings.errorCount || 0;
+    var trendsData = pulseData(backendPulseState.trends);
+    var anomaliesData = pulseData(backendPulseState.anomalies);
+    var sysMetrics = pulseData(backendPulseState.systemMetrics);
+    var dataQuality = pulseData(backendPulseState.dataQuality);
+    var alertsData = pulseData(backendPulseState.alerts);
 
     var statusTitle = tone === 'good' ? 'Backend is clean' : tone === 'warn' ? 'Backend has warnings' : tone === 'error' ? 'Backend needs attention' : 'Checking backend';
     var statusBody = backendPulseState.lastFetchedAt
@@ -15289,7 +15504,7 @@ setTimeout(function(){
       renderBackendPulseCard(
         'Backend health',
         checks.server === false ? 'Offline' : 'Online',
-        'Supabase: ' + pulseText(checks.supabase, 'Unknown') + ' | Provider: ' + pulseText(checks.anthropic, 'Unknown'),
+        'Supabase: ' + pulseText(checks.supabase, 'Unknown') + ' | Claude: ' + pulseText(checks.anthropic, 'Unknown'),
         'WebSocket: ' + pulseText(checks.websocket, 'Unknown') + ' | Runtime: ' + pulseText(backendPulseState.health && backendPulseState.health.meta && backendPulseState.health.meta.version, 'Unknown'),
         checks.server === false || checks.supabase === false ? 'error' : 'good'
       ),
@@ -15334,6 +15549,20 @@ setTimeout(function(){
         'Requests tracked',
         'Uptime: ' + pulseText(uptime, 'Unknown'),
         'neutral'
+      ),
+      renderBackendPulseCard(
+        'System metrics',
+        pulseText(sysMetrics.system && sysMetrics.system.uptimeHuman, 'Unknown'),
+        'Signals today: ' + pulseText(sysMetrics.database && sysMetrics.database.signalsToday, 'Unknown'),
+        'AI cost today: $' + pulseText(sysMetrics.ai && sysMetrics.ai.costTodayUsd, '0') + ' | Tokens: ' + pulseText(sysMetrics.ai && sysMetrics.ai.tokensUsedToday, '0'),
+        'neutral'
+      ),
+      renderBackendPulseCard(
+        'Data quality',
+        dataQuality.qualityScore != null ? dataQuality.qualityScore + '%' : 'Unknown',
+        'Verified: ' + pulseText(dataQuality.completeness && dataQuality.completeness.verifiedPct, 'Unknown') + '%',
+        'Signals analyzed (7d): ' + pulseText(dataQuality.totalSignals, 'Unknown'),
+        dataQuality.qualityScore >= 70 ? 'good' : dataQuality.qualityScore >= 40 ? 'warn' : dataQuality.qualityScore != null ? 'error' : 'neutral'
       )
     ].join('');
 
@@ -15361,6 +15590,70 @@ setTimeout(function(){
       });
     }
     attentionEl.innerHTML = renderBackendPulseList(attention);
+
+    if (trendsEl) {
+      var trendItems = (trendsData.trends || []).map(function (t) {
+        var trendTone = t.trajectory === 'explosive' ? 'error' : t.trajectory === 'rapid' ? 'warn' : 'neutral';
+        return {
+          tone: trendTone,
+          title: 'Domain ' + (t.domainId || 'unknown') + ': ' + (t.trajectory || 'growing') + ' (' + t.acceleration + 'x)',
+          body: t.signalCount + ' signals, avg score ' + t.averageRankScore + '. ' + (t.recommendedAction || '')
+        };
+      });
+      trendsEl.innerHTML = renderBackendPulseList(trendItems, 'No accelerating domains detected in the last 7 days.');
+    }
+
+    if (anomaliesEl) {
+      var anomalyItems = (anomaliesData.anomalies || []).map(function (a) {
+        var anomalyTone = a.severity === 'extreme' ? 'error' : a.severity === 'severe' ? 'warn' : 'neutral';
+        return {
+          tone: anomalyTone,
+          title: (a.anomalyType === 'spike' ? 'Spike' : 'Drop') + ' on ' + a.timestamp,
+          body: 'z-score ' + a.zScore + ', ' + (a.severity || 'moderate') + ' severity, value ' + a.value
+        };
+      });
+      anomaliesEl.innerHTML = renderBackendPulseList(anomalyItems, 'No volume anomalies detected in the last 30 days.');
+    }
+
+    if (alertsEl) {
+      var alertItems = (alertsData.alerts || []).map(function (a) {
+        var sev = String(a.severity || '').toLowerCase();
+        var alertTone = sev.indexOf('critical') >= 0 ? 'error' : sev.indexOf('high') >= 0 ? 'warn' : 'neutral';
+        var channels = a.notified_to;
+        try { channels = JSON.parse(a.notified_to).join(', '); } catch (e) {}
+        return {
+          tone: alertTone,
+          title: '[' + (a.severity || 'Alert') + '] ' + (a.signal_title || 'Untitled signal'),
+          body: 'Domain ' + (a.domain_id || 'n/a') + ' · sent ' + pulseDate(a.alert_sent_at) + ' via ' + (channels || 'n/a')
+        };
+      });
+      alertsEl.innerHTML = renderBackendPulseList(alertItems, 'No alerts have been sent yet.');
+    }
+
+    if (sourceRegistryEl) {
+      var registryData = pulseData(backendPulseState.sourceRegistry);
+      var sources = registryData.sources || [];
+      if (!sources.length) {
+        sourceRegistryEl.innerHTML = '<div class="backend-pulse-empty">Source registry unavailable right now.</div>';
+      } else {
+        var configuredCount = sources.filter(function (s) { return s.configured; }).length;
+        var rows = sources.map(function (s) {
+          var isLive = s.configured && (s.liveProxySupported !== false);
+          var tone = isLive ? 'good' : s.configured ? 'neutral' : 'error';
+          var statusLabel = s.configured
+            ? (s.liveProxySupported === false ? 'Configured (batch/reference only)' : 'Live')
+            : 'Not configured' + (s.envVar ? ' (' + s.envVar + ' missing)' : '');
+          return {
+            tone: tone,
+            title: s.name + ' — ' + s.category,
+            body: statusLabel
+          };
+        });
+        sourceRegistryEl.innerHTML =
+          '<div class="backend-pulse-registry-summary">' + configuredCount + ' of ' + sources.length + ' sources configured</div>' +
+          renderBackendPulseList(rows, 'No sources registered.');
+      }
+    }
   }
 
   async function loadBackendPulse(force) {
@@ -15373,12 +15666,24 @@ setTimeout(function(){
         fetchBackendPulsePath('/api/health/full', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Health request failed' } }; }),
         fetchBackendPulsePath('/api/refresh/daily-status?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Daily status request failed' } }; }),
         fetchBackendPulsePath('/api/diagnostics/runtime-warnings?viewMode=b2c', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Runtime warnings request failed' } }; }),
-        fetchBackendPulsePath('/api/diagnostics/performance', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Performance request failed' } }; })
+        fetchBackendPulsePath('/api/diagnostics/performance', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Performance request failed' } }; }),
+        fetchBackendPulsePath('/api/trends/detect?viewMode=b2c&windowDays=7', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Trends request failed' } }; }),
+        fetchBackendPulsePath('/api/anomalies/detect?viewMode=b2c&windowDays=30', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Anomalies request failed' } }; }),
+        fetchBackendPulsePath('/api/metrics/system', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'System metrics request failed' } }; }),
+        fetchBackendPulsePath('/api/metrics/data-quality?viewMode=b2c&days=7', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Data quality request failed' } }; }),
+        fetchBackendPulsePath('/api/alerts?limit=20', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Alerts request failed' } }; }),
+        fetchBackendPulsePath('/api/public-sources', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Source registry request failed' } }; })
       ]);
       backendPulseState.health = results[0];
       backendPulseState.daily = results[1];
       backendPulseState.warnings = results[2];
       backendPulseState.performance = results[3];
+      backendPulseState.trends = results[4];
+      backendPulseState.anomalies = results[5];
+      backendPulseState.systemMetrics = results[6];
+      backendPulseState.dataQuality = results[7];
+      backendPulseState.alerts = results[8];
+      backendPulseState.sourceRegistry = results[9];
       backendPulseState.lastFetchedAt = new Date().toISOString();
       var failed = results.filter(function (r) { return !r || r.ok === false; });
       if (failed.length) {
@@ -15455,6 +15760,165 @@ setTimeout(function(){
   else init();
 })();
 
+</script>
+<script>
+(function(){
+  var publicApisState = { sources: [], filter: 'all', loaded: false, error: null };
+  var expectedPublicApiIds = ['opensky','aviationweather','openmeteo','ourairports','openaq','worldbank','nominatim','wikidata','youtube','itunes','reddit','mastodon','gdelt','bluesky','mediawiki','commoncrawl'];
+
+  function apiEsc(value){
+    if (typeof esc === 'function') return esc(value);
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+    });
+  }
+
+  function backendBase(){
+    if (window.RADAR_API_BASE) return String(window.RADAR_API_BASE).replace(/\/+$/, '');
+    if (typeof BACKEND_URL === 'string' && BACKEND_URL) return String(BACKEND_URL).replace(/\/+$/, '');
+    return '';
+  }
+
+  async function publicApiFetch(path, timeoutMs){
+    if (typeof backendFetch === 'function') {
+      var backendResponse = await backendFetch(path, { method: 'GET' }, timeoutMs || 15000);
+      return backendResponse.json();
+    }
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function(){ controller.abort(); }, timeoutMs || 15000) : null;
+    try {
+      var response = await fetch(backendBase() + path, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        signal: controller ? controller.signal : undefined
+      });
+      if (!response.ok) throw new Error('Registry request failed: HTTP ' + response.status);
+      return response.json();
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+
+  function publicApiStatus(source){
+    if (source.configured) return 'configured';
+    if (source.requiresServerSideKey) return 'needs_key';
+    return 'configured';
+  }
+
+  function statusLabel(source){
+    var status = publicApiStatus(source);
+    if (status === 'needs_key') return 'Needs server key';
+    if (source.liveProxySupported) return 'Configured + proxy-ready';
+    return 'Configured catalogue source';
+  }
+
+  function sourceMatchesFilter(source){
+    if (publicApisState.filter === 'configured') return publicApiStatus(source) === 'configured';
+    if (publicApisState.filter === 'needs_key') return publicApiStatus(source) === 'needs_key';
+    if (publicApisState.filter === 'proxy') return !!source.liveProxySupported;
+    return true;
+  }
+
+  function updateText(id, text){
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  function updatePublicApiSummary(){
+    var sources = publicApisState.sources || [];
+    var configured = sources.filter(function(s){ return publicApiStatus(s) === 'configured'; }).length;
+    var proxyReady = sources.filter(function(s){ return !!s.liveProxySupported; }).length;
+    var allExpected = expectedPublicApiIds.every(function(id){ return sources.some(function(s){ return s.id === id; }); });
+    updateText('publicApisTotal', sources.length ? sources.length + ' sources' : '-- sources');
+    updateText('publicApisStatus', publicApisState.error ? 'Backend registry unavailable' : (allExpected ? 'All requested sources present' : 'Registry loaded with missing expected sources'));
+    updateText('publicApisConfigured', configured + ' configured');
+    updateText('publicApisProxy', proxyReady + ' proxy-ready');
+    updateText('publicApisGovernance', 'server-side only');
+    var badge = document.getElementById('publicApisNavBadge');
+    if (badge) badge.textContent = sources.length ? sources.length + ' sources' : 'registry';
+  }
+
+  function renderPublicApis(){
+    var host = document.getElementById('publicApisGrid');
+    if (!host) return;
+    updatePublicApiSummary();
+    if (publicApisState.error) {
+      host.innerHTML = '<div class="public-api-empty"><strong>Backend registry could not be loaded.</strong><span>' + apiEsc(publicApisState.error) + '</span></div>';
+      return;
+    }
+    var visible = (publicApisState.sources || []).filter(sourceMatchesFilter);
+    if (!visible.length) {
+      host.innerHTML = '<div class="public-api-empty">No sources match this filter.</div>';
+      return;
+    }
+    host.innerHTML = visible.map(function(source, index){
+      var needsKey = publicApiStatus(source) === 'needs_key';
+      var requestUrl = backendBase() + '/api/public-sources/' + encodeURIComponent(source.id) + '/request?q=Qatar%20Airways&term=Qatar%20Airways&query=Qatar%20Airways&search=Qatar%20Airways&limit=3';
+      return '<article class="public-api-card ' + (needsKey ? 'needs-key' : 'configured') + '">' +
+        '<div class="public-api-top"><span>' + String(index + 1).padStart(2, '0') + '</span><em>' + apiEsc(source.category || 'Public source') + '</em></div>' +
+        '<h2>' + apiEsc(source.name || source.id) + '</h2>' +
+        '<p>' + apiEsc(source.radarUse || 'Public source available to the Radar evidence layer.') + '</p>' +
+        '<div class="public-api-pills">' +
+          '<span class="' + (needsKey ? 'warn' : 'ok') + '">' + apiEsc(statusLabel(source)) + '</span>' +
+          '<span>' + (source.liveProxySupported ? 'Live proxy' : 'Catalogue/batch') + '</span>' +
+        '</div>' +
+        '<div class="public-api-row"><b>Access</b><span>' + apiEsc(source.access || 'Public API') + '</span></div>' +
+        '<div class="public-api-row"><b>Owner</b><span>' + apiEsc(source.defaultOwner || 'Radar owner pending') + '</span></div>' +
+        '<div class="public-api-row"><b>Key</b><span>' + apiEsc(source.requiresServerSideKey ? (source.envVar || 'Server key required') : 'No key required') + '</span></div>' +
+        '<div class="public-api-governance">' + apiEsc(source.governance || 'Use server-side, cached and attributed ingestion.') + '</div>' +
+        '<div class="public-api-links">' +
+          '<a href="' + apiEsc(source.docsUrl || source.baseUrl || '#') + '" target="_blank" rel="noopener">Docs</a>' +
+          '<a href="' + apiEsc(requestUrl) + '" target="_blank" rel="noopener">Request preview</a>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  async function loadPublicApis(){
+    if (publicApisState.loaded) {
+      renderPublicApis();
+      return;
+    }
+    var host = document.getElementById('publicApisGrid');
+    if (host) host.innerHTML = '<div class="public-api-empty">Loading public API registry...</div>';
+    try {
+      var payload = await publicApiFetch('/api/public-sources', 15000);
+      var sources = (payload && payload.data && payload.data.sources) || [];
+      publicApisState.sources = sources.slice().sort(function(a, b){
+        return expectedPublicApiIds.indexOf(a.id) - expectedPublicApiIds.indexOf(b.id);
+      });
+      publicApisState.loaded = true;
+      publicApisState.error = null;
+    } catch (err) {
+      publicApisState.error = err && err.message ? err.message : 'Unknown registry error';
+    }
+    renderPublicApis();
+  }
+
+  function filterPublicApis(filter){
+    publicApisState.filter = filter || 'all';
+    Array.prototype.forEach.call(document.querySelectorAll('.public-api-filter'), function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-filter') === publicApisState.filter);
+    });
+    renderPublicApis();
+  }
+
+  function showPublicApis(){
+    if (typeof ensureRadarRuntimeForTabs === 'function') ensureRadarRuntimeForTabs();
+    if (typeof hideAllPrimaryPages === 'function') hideAllPrimaryPages();
+    if (typeof clearPrimaryNav === 'function') clearPrimaryNav();
+    var el = document.getElementById('publicApisPage');
+    if (el) el.classList.add('visible');
+    var nav = document.getElementById('navPublicApis');
+    if (nav) nav.classList.add('active');
+    loadPublicApis();
+  }
+
+  window.loadPublicApis = loadPublicApis;
+  window.renderPublicApis = renderPublicApis;
+  window.filterPublicApis = filterPublicApis;
+  window.showPublicApis = showPublicApis;
+})();
 </script>
 </body>
 </html>
