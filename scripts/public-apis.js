@@ -101,6 +101,8 @@
         '<div class="public-api-row"><b>Access</b><span>' + apiEsc(source.access || 'Public API') + '</span></div>' +
         '<div class="public-api-row"><b>Owner</b><span>' + apiEsc(source.defaultOwner || 'Radar owner pending') + '</span></div>' +
         '<div class="public-api-row"><b>Key</b><span>' + apiEsc(source.requiresServerSideKey ? (source.envVar || 'Server key required') : 'No key required') + '</span></div>' +
+        '<div class="public-api-row"><b>Tabs</b><span>' + apiEsc((source.radarTabFit && source.radarTabFit.tabs ? source.radarTabFit.tabs.map(function(tab){ return tab.label; }).join(', ') : (source.radarTabs || []).join(', ')) || 'Radar routing pending') + '</span></div>' +
+        '<div class="public-api-fit">' + apiEsc((source.radarTabFit && source.radarTabFit.why) || 'Radar will route this source to the most relevant tab based on source evidence.') + '</div>' +
         '<div class="public-api-governance">' + apiEsc(source.governance || 'Use server-side, cached and attributed ingestion.') + '</div>' +
         '<div class="public-api-links">' +
           '<a href="' + apiEsc(source.docsUrl || source.baseUrl || '#') + '" target="_blank" rel="noopener">Docs</a>' +

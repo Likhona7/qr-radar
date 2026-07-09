@@ -20,6 +20,7 @@
 .public-api-card h2{font-size:15px;color:#231a29;margin:0 0 8px;font-weight:900}.public-api-card p{font-size:12px;line-height:1.55;color:#665f6b;margin:0 0 12px}
 .public-api-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.public-api-pills span{font-size:10px;font-weight:900;border-radius:999px;background:#f4eef6;color:#6c5d70;padding:5px 8px}.public-api-pills span.ok{background:#edf9f2;color:#087443}.public-api-pills span.warn{background:#fff6e9;color:#9a5b00}
 .public-api-row{display:grid;grid-template-columns:56px 1fr;gap:8px;margin-top:7px;font-size:11px}.public-api-row b{color:#8a004f}.public-api-row span{color:#665f6b}
+.public-api-fit{margin-top:9px;border-left:3px solid #8a004f;background:#fbf7fa;border-radius:8px;padding:8px 9px;font-size:11px;line-height:1.45;color:#4a4050}
 .public-api-governance{margin-top:11px;border-top:1px solid #eee8f1;padding-top:10px;font-size:11px;line-height:1.45;color:#4a4050}
 .public-api-links{margin-top:auto;display:flex;gap:8px;padding-top:12px}.public-api-links a{flex:1;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:8px 10px;background:#8a004f;color:#fff;text-decoration:none;font-size:11px;font-weight:900}.public-api-links a:first-child{background:#f3e8ef;color:#8a004f}
 .public-api-empty{grid-column:1/-1;background:#fff;border:1px dashed #d9c7d2;border-radius:12px;padding:18px;color:#6b5d68;font-size:13px}.public-api-empty strong,.public-api-empty span{display:block}.public-api-empty span{margin-top:4px;font-size:12px}

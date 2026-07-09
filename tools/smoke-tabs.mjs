@@ -113,6 +113,8 @@ addCheck(
   bundle.includes('Public APIs enabled for Radar') &&
     bundle.includes('/api/public-sources') &&
     bundle.includes('expectedPublicApiIds') &&
+    bundle.includes('radarTabFit') &&
+    bundle.includes('Radar routing pending') &&
     bundle.includes('youtube') &&
     bundle.includes('itunes') &&
     bundle.includes('reddit') &&

@@ -3263,12 +3263,14 @@ body{
 .public-api-card h2{font-size:15px;color:#231a29;margin:0 0 8px;font-weight:900}.public-api-card p{font-size:12px;line-height:1.55;color:#665f6b;margin:0 0 12px}
 .public-api-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.public-api-pills span{font-size:10px;font-weight:900;border-radius:999px;background:#f4eef6;color:#6c5d70;padding:5px 8px}.public-api-pills span.ok{background:#edf9f2;color:#087443}.public-api-pills span.warn{background:#fff6e9;color:#9a5b00}
 .public-api-row{display:grid;grid-template-columns:56px 1fr;gap:8px;margin-top:7px;font-size:11px}.public-api-row b{color:#8a004f}.public-api-row span{color:#665f6b}
+.public-api-fit{margin-top:9px;border-left:3px solid #8a004f;background:#fbf7fa;border-radius:8px;padding:8px 9px;font-size:11px;line-height:1.45;color:#4a4050}
 .public-api-governance{margin-top:11px;border-top:1px solid #eee8f1;padding-top:10px;font-size:11px;line-height:1.45;color:#4a4050}
 .public-api-links{margin-top:auto;display:flex;gap:8px;padding-top:12px}.public-api-links a{flex:1;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:8px 10px;background:#8a004f;color:#fff;text-decoration:none;font-size:11px;font-weight:900}.public-api-links a:first-child{background:#f3e8ef;color:#8a004f}
 .public-api-empty{grid-column:1/-1;background:#fff;border:1px dashed #d9c7d2;border-radius:12px;padding:18px;color:#6b5d68;font-size:13px}.public-api-empty strong,.public-api-empty span{display:block}.public-api-empty span{margin-top:4px;font-size:12px}
 .public-apis-plan{display:grid;grid-template-columns:1fr 1.2fr;gap:18px;margin-top:18px;background:#fff;border:1px solid #e8e2ea;border-radius:14px;padding:18px;box-shadow:0 12px 30px rgba(31,36,48,.07)}
 .public-apis-plan-ey{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#8a004f}.public-apis-plan h2{font-size:20px;color:#231a29;margin:6px 0}.public-apis-plan p,.public-apis-plan li{font-size:12px;line-height:1.65;color:#665f6b}.public-apis-plan ol{margin:0 0 0 18px}
 @media(max-width:1200px){.public-apis-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:900px){.public-apis-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.public-apis-summary-grid,.public-apis-plan{grid-template-columns:1fr}}@media(max-width:650px){.public-apis-page{padding:18px 16px}.public-apis-hero{display:block}.public-apis-scorecard{margin-top:16px}.public-apis-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -15865,6 +15867,8 @@ setTimeout(function(){
         '<div class="public-api-row"><b>Access</b><span>' + apiEsc(source.access || 'Public API') + '</span></div>' +
         '<div class="public-api-row"><b>Owner</b><span>' + apiEsc(source.defaultOwner || 'Radar owner pending') + '</span></div>' +
         '<div class="public-api-row"><b>Key</b><span>' + apiEsc(source.requiresServerSideKey ? (source.envVar || 'Server key required') : 'No key required') + '</span></div>' +
+        '<div class="public-api-row"><b>Tabs</b><span>' + apiEsc((source.radarTabFit && source.radarTabFit.tabs ? source.radarTabFit.tabs.map(function(tab){ return tab.label; }).join(', ') : (source.radarTabs || []).join(', ')) || 'Radar routing pending') + '</span></div>' +
+        '<div class="public-api-fit">' + apiEsc((source.radarTabFit && source.radarTabFit.why) || 'Radar will route this source to the most relevant tab based on source evidence.') + '</div>' +
         '<div class="public-api-governance">' + apiEsc(source.governance || 'Use server-side, cached and attributed ingestion.') + '</div>' +
         '<div class="public-api-links">' +
           '<a href="' + apiEsc(source.docsUrl || source.baseUrl || '#') + '" target="_blank" rel="noopener">Docs</a>' +
@@ -15919,6 +15923,7 @@ setTimeout(function(){
   window.filterPublicApis = filterPublicApis;
   window.showPublicApis = showPublicApis;
 })();
+
 </script>
 </body>
 </html>
