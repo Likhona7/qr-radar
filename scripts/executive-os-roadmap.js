@@ -1336,6 +1336,7 @@
     systemMetrics: null,
     dataQuality: null,
     alerts: null,
+    sourceRegistry: null,
     error: null,
     lastFetchedAt: null
   };
@@ -1422,6 +1423,7 @@
     var trendsEl = document.getElementById('backendPulseTrendsList');
     var anomaliesEl = document.getElementById('backendPulseAnomaliesList');
     var alertsEl = document.getElementById('backendPulseAlertsList');
+    var sourceRegistryEl = document.getElementById('backendPulseSourceRegistry');
     if (!statusEl || !gridEl || !meaningEl || !attentionEl) return;
 
     var tone = backendPulseTone();
@@ -1590,6 +1592,31 @@
       });
       alertsEl.innerHTML = renderBackendPulseList(alertItems, 'No alerts have been sent yet.');
     }
+
+    if (sourceRegistryEl) {
+      var registryData = pulseData(backendPulseState.sourceRegistry);
+      var sources = registryData.sources || [];
+      if (!sources.length) {
+        sourceRegistryEl.innerHTML = '<div class="backend-pulse-empty">Source registry unavailable right now.</div>';
+      } else {
+        var configuredCount = sources.filter(function (s) { return s.configured; }).length;
+        var rows = sources.map(function (s) {
+          var isLive = s.configured && (s.liveProxySupported !== false);
+          var tone = isLive ? 'good' : s.configured ? 'neutral' : 'error';
+          var statusLabel = s.configured
+            ? (s.liveProxySupported === false ? 'Configured (batch/reference only)' : 'Live')
+            : 'Not configured' + (s.envVar ? ' (' + s.envVar + ' missing)' : '');
+          return {
+            tone: tone,
+            title: s.name + ' — ' + s.category,
+            body: statusLabel
+          };
+        });
+        sourceRegistryEl.innerHTML =
+          '<div class="backend-pulse-registry-summary">' + configuredCount + ' of ' + sources.length + ' sources configured</div>' +
+          renderBackendPulseList(rows, 'No sources registered.');
+      }
+    }
   }
 
   async function loadBackendPulse(force) {
@@ -1607,7 +1634,8 @@
         fetchBackendPulsePath('/api/anomalies/detect?viewMode=b2c&windowDays=30', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Anomalies request failed' } }; }),
         fetchBackendPulsePath('/api/metrics/system', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'System metrics request failed' } }; }),
         fetchBackendPulsePath('/api/metrics/data-quality?viewMode=b2c&days=7', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Data quality request failed' } }; }),
-        fetchBackendPulsePath('/api/alerts?limit=20', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Alerts request failed' } }; })
+        fetchBackendPulsePath('/api/alerts?limit=20', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Alerts request failed' } }; }),
+        fetchBackendPulsePath('/api/public-sources', 15000).catch(function (err) { return { ok: false, error: { message: err.message || 'Source registry request failed' } }; })
       ]);
       backendPulseState.health = results[0];
       backendPulseState.daily = results[1];
@@ -1618,6 +1646,7 @@
       backendPulseState.systemMetrics = results[6];
       backendPulseState.dataQuality = results[7];
       backendPulseState.alerts = results[8];
+      backendPulseState.sourceRegistry = results[9];
       backendPulseState.lastFetchedAt = new Date().toISOString();
       var failed = results.filter(function (r) { return !r || r.ok === false; });
       if (failed.length) {
