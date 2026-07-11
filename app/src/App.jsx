@@ -10,6 +10,7 @@ import IntelligenceDashboardPage from './pages/IntelligenceDashboardPage'
 import CompetitorsPage from './pages/CompetitorsPage'
 import PartnerNetworkPage from './pages/PartnerNetworkPage'
 import CustomerIntelligencePage from './pages/CustomerIntelligencePage'
+import AIDiscoveryPage from './pages/AIDiscoveryPage'
 
 // Ported 1:1 from components/01-top-shell.html:114-174 (showMain/showComp/...).
 const PRIMARY_NAV = [
@@ -46,7 +47,7 @@ export default function App() {
           <Route path="/team-actions" element={<LegacyPageEmbed label="Team Actions" />} />
           <Route path="/executive-summary" element={<ExecutiveSummaryPage />} />
           <Route path="/predictive" element={<PredictiveIntelligencePage />} />
-          <Route path="/ai-discovery" element={<LegacyPageEmbed label="AI Discovery" />} />
+          <Route path="/ai-discovery" element={<AIDiscoveryPage />} />
           <Route path="/public-apis" element={<LegacyPageEmbed label="Public APIs" />} />
           <Route path="/roadmap" element={<LegacyPageEmbed label="Roadmap Tracker" />} />
         </Routes>
