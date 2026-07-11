@@ -4340,12 +4340,12 @@ async function loadAllCompetitors(){
 function hideAllPrimaryPages(){
   var main = document.querySelector('.main');
   if(main) main.style.display='none';
-  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage','publicApisPage','publicApisPage','publicApisPage','publicApisPage','publicApisPage'].forEach(function(id){
+  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage','publicApisPage'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('visible');
   });
 }
 function clearPrimaryNav(){
-  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI','navPublicApis','navPublicApis','navPublicApis','navPublicApis','navPublicApis'].forEach(function(id){
+  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI','navPublicApis'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
 }

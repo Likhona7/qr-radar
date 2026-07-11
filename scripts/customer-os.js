@@ -203,7 +203,10 @@ var SENT_META = {
   twitter:    { name:'X/Twitter', icon:'X', color:'#1da1f2', sources:'X/Twitter @qatarairways mentions', note:'Real-time complaints and viral service failures.' },
   consumer:   { name:'Consumer Affairs', icon:'&#128203;', color:'#e67e22', sources:'ConsumerAffairs, PissedConsumer, AirlineQuality', note:'Formal complaint platforms with highest severity issues.' },
   appstore:   { name:'Apple App Store', icon:'&#127822;', color:'#111827', sources:'iPhone airline ratings and reviews', note:'iOS app reviews reveal booking flow, crash, and boarding-pass friction.' },
-  googleplay: { name:'Google Play', icon:'&#128241;', color:'#4285f4', sources:'Android airline ratings and reviews', note:'Android reviews reveal app stability, login, and checkout issues.' }
+  googleplay: { name:'Google Play', icon:'&#128241;', color:'#4285f4', sources:'Android airline ratings and reviews', note:'Android reviews reveal app stability, login, and checkout issues.' },
+  youtube:    { name:'YouTube Data API', icon:'&#9654;', color:'#ff0000', sources:'Travel creator videos and comments', note:'Creator reviews and comment threads reveal brand, service, lounge, app and loyalty narratives.' },
+  bluesky:    { name:'Bluesky AT Protocol', icon:'&#9729;', color:'#1185fe', sources:'Public travel and brand posts', note:'Public social posts provide early customer narrative and brand conversation outside X.' },
+  mastodon:   { name:'Mastodon API', icon:'&#128172;', color:'#6364ff', sources:'Public Fediverse travel posts', note:'Federated public posts add secondary travel, disruption and reputation conversation.' }
 };
 
 
@@ -216,7 +219,7 @@ function sentimentPriorityScore(src, data){
   const improvements = data?.improvements || [];
   score += pain.filter(p => /revenue|loyalty|brand|ops|operational|refund|baggage|delay|missed|connection|compensation/i.test([p.impact,p.title,p.detail].join(' '))).length * 12;
   score += improvements.filter(i => /quick win|revenue|loyalty|retention|conversion|app|web|refund|baggage/i.test([i.effort,i.title,i.detail,i.value].join(' '))).length * 6;
-  const base = {twitter:10, reddit:9, flyertalk:9, trustpilot:8, skytrax:7, tripadvisor:6, consumer:6, quora:4};
+  const base = {youtube:10, twitter:10, reddit:9, bluesky:8, mastodon:7, flyertalk:9, trustpilot:8, skytrax:7, tripadvisor:6, consumer:6, quora:4};
   return score + (base[src] || 0);
 }
 function reorderSentimentSources(){
@@ -255,7 +258,10 @@ function domainCacheSignalsForSentiment(src){
     quora:['agt','dig','loy','prd'],
     consumer:['rep','ops','prd','reg'],
     appstore:['dig','prd','loy','rep'],
-    googleplay:['dig','prd','loy','rep']
+    googleplay:['dig','prd','loy','rep'],
+    youtube:['sml','rep','soc','dig','loy'],
+    bluesky:['sml','soc','rep','dig'],
+    mastodon:['soc','sml','rep','ops']
   };
   var sourceTerms = {
     twitter:/\bx\b|twitter|tweet|retweet|mention|social|viral|trend/i,
@@ -267,7 +273,10 @@ function domainCacheSignalsForSentiment(src){
     quora:/quora|question|answer|how to|why does|can i/i,
     consumer:/consumer affairs|consumeraffairs|pissedconsumer|airlinequality|formal complaint|case id|chargeback/i,
     appstore:/app store|ios|iphone|app rating|star rating|review|boarding pass|booking flow|crash/i,
-    googleplay:/google play|android|app rating|star rating|review|login|checkout|crash/i
+    googleplay:/google play|android|app rating|star rating|review|login|checkout|crash/i,
+    youtube:/youtube|video|creator|comment thread|channel|vlog|review video|shorts/i,
+    bluesky:/bluesky|at protocol|bsky|public post|social post/i,
+    mastodon:/mastodon|fediverse|toot|public post|instance/i
   };
   var themeTerms = {
     twitter:/social|viral|tweet|mention|trend|x\/twitter|realtime/i,
@@ -279,7 +288,10 @@ function domainCacheSignalsForSentiment(src){
     quora:/question|answer|how to|why|booking advice|loyalty advice/i,
     consumer:/complaint|case|refund|chargeback|escalation|compensation/i,
     appstore:/app|ios|iphone|booking flow|boarding pass|crash|login|checkout|rating/i,
-    googleplay:/app|android|booking flow|boarding pass|crash|login|checkout|rating/i
+    googleplay:/app|android|booking flow|boarding pass|crash|login|checkout|rating/i,
+    youtube:/video|creator|comment|review|lounge|business class|app|booking|loyalty|service|brand/i,
+    bluesky:/social|brand|post|conversation|service|delay|app|booking|loyalty|reputation/i,
+    mastodon:/social|fediverse|post|travel|aviation|service|delay|reputation|customer/i
   };
   var sentimentTerms = /customer|passenger|review|complaint|sentiment|refund|delay|app|website|loyalty|service|booking|baggage|cabin|social|brand|reputation/i;
   var personaTerms = {
@@ -287,7 +299,10 @@ function domainCacheSignalsForSentiment(src){
     tripadvisor:/cabin|crew|seat|food|comfort|service|lounge|airport|check-?in|experience|holiday|family|destination/i,
     quora:/booking|policy|visa|avios|loyalty|upgrade|award|status|change|tips|guide|how to|why|can i/i,
     appstore:/app|ios|iphone|booking flow|crash|login|checkout|boarding pass|review/i,
-    googleplay:/app|android|booking flow|crash|login|checkout|boarding pass|review/i
+    googleplay:/app|android|booking flow|crash|login|checkout|boarding pass|review/i,
+    youtube:/video|creator|comment|review|lounge|business class|app|booking|loyalty|service|brand/i,
+    bluesky:/social|brand|post|conversation|service|delay|app|booking|loyalty|reputation/i,
+    mastodon:/social|fediverse|post|travel|aviation|service|delay|reputation|customer/i
   };
   var domains = (domainMap[src] || ['sml','rep','prd','ops'])
     .map(function(id){
@@ -374,7 +389,7 @@ function sentimentIssueFromSignal(item, fallbackImpact){
 function sentimentFromDomainCache(src){
   var items = domainCacheSignalsForSentiment(src);
   if(!items.length) return null;
-  var sourceSeed = {twitter:0, reddit:3, flyertalk:5, trustpilot:1, tripadvisor:2, skytrax:4, quora:6, consumer:7}[src] || 0;
+  var sourceSeed = {twitter:0, youtube:8, bluesky:9, mastodon:10, reddit:3, flyertalk:5, trustpilot:1, tripadvisor:2, skytrax:4, quora:6, consumer:7}[src] || 0;
   var offset = items.length ? (sourceSeed % items.length) : 0;
   var ranked = items.slice(offset).concat(items.slice(0, offset));
   var joined = items.map(function(i){ return i.text; }).join(' ').toLowerCase();
@@ -382,7 +397,7 @@ function sentimentFromDomainCache(src){
   var positiveRegex = /award|best|positive|praise|premium|improve|opportunity|growth|strong|loyalty gain|service recovery|win|satisfaction|on.?time|upgrade/i;
   var negativeTerms = (joined.match(new RegExp(negativeRegex.source, 'g')) || []).length;
   var positiveTerms = (joined.match(new RegExp(positiveRegex.source, 'g')) || []).length;
-  var sourceBias = {twitter:-7, reddit:-4, flyertalk:-2, trustpilot:-5, tripadvisor:2, skytrax:5, quora:0, consumer:-8}[src] || 0;
+  var sourceBias = {twitter:-7, youtube:-3, bluesky:-4, mastodon:-3, reddit:-4, flyertalk:-2, trustpilot:-5, tripadvisor:2, skytrax:5, quora:0, consumer:-8}[src] || 0;
   var score = Math.max(34, Math.min(86, Math.round(64 + sourceBias + positiveTerms * 1.5 - negativeTerms * 2.1 + Math.min(items.length, 5))));
   var label = score >= 68 ? 'Positive but watchlisted' : score >= 52 ? 'Mixed customer pressure' : 'Negative customer pressure';
   var occupiedTitles = {};
@@ -762,7 +777,7 @@ function ciSourceReliabilityPoints(source){
   if(/qatar airways|official|newsroom|press release|regulator|civil aviation|airport|iata|icao|government|app store|apple|google play/.test(t)) return 29;
   if(/reuters|bloomberg|ft|financial times|wsj|cnn|bbc|forbes|skift|aerotime|gulf times|qatar tribune|industry/.test(t)) return 23;
   if(/flyertalk|trustpilot|tripadvisor|skytrax|review/.test(t)) return 19;
-  if(/reddit|twitter|x\/|x |quora|consumer/.test(t)) return 14;
+  if(/reddit|twitter|x\/|x |youtube|video|creator|bluesky|bsky|mastodon|fediverse|quora|consumer/.test(t)) return 14;
   return 16;
 }
 function ciConfidenceBand(score){
@@ -1590,6 +1605,9 @@ setTimeout(function(){
 (function(){
   var SENT_CACHE_ALIASES = {
     twitter: ['twitter', 'x'],
+    youtube: ['youtube', 'youtube_data_api', 'video', 'creator'],
+    bluesky: ['bluesky', 'bsky', 'at_protocol'],
+    mastodon: ['mastodon', 'fediverse'],
     reddit: ['reddit'],
     flyertalk: ['flyertalk', 'flyer_talk'],
     trustpilot: ['trustpilot'],
@@ -1706,6 +1724,9 @@ setTimeout(function(){
 
     var sourceRules = {
       twitter:/\bx\b|twitter|tweet|retweet|mention|viral|hashtag/i,
+      youtube:/youtube|video|creator|comment thread|channel|vlog|review video|shorts/i,
+      bluesky:/bluesky|bsky|at protocol|public post|social post/i,
+      mastodon:/mastodon|fediverse|toot|public post|instance/i,
       reddit:/reddit|subreddit|r\/|thread|upvote/i,
       flyertalk:/flyertalk|frequent flyer|tier|avios|upgrade|status/i,
       trustpilot:/trustpilot|verified review|star rating/i,

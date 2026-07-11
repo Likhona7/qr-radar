@@ -5,7 +5,7 @@ var CIOS_STORE = 'qr_cios_v1_';
 var CIOS_DATA = {};
 var CIOS_ACTIVE_TAB = 'heatmap';
 var CIOS_SOURCES_LOADED = 0;
-var CIOS_SOURCES = ['reddit','flyertalk','trustpilot','skytrax','tripadvisor','quora','twitter','consumer','appstore','googleplay'];
+var CIOS_SOURCES = ['reddit','flyertalk','trustpilot','skytrax','tripadvisor','quora','twitter','youtube','bluesky','mastodon','consumer','appstore','googleplay'];
 
 function cacheOnlyNotice(title){
   return '<div class="empty-d"><div class="er"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><div class="et"><strong>'+esc(title || 'No backend/cache data loaded')+'</strong><br>Connect to the backend server and click <strong>Refresh all</strong> to populate this section with live intelligence. Data is fetched from the Render backend and cached in Supabase.</div></div>';

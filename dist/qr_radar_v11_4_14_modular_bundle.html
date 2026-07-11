@@ -3405,7 +3405,7 @@ body{
   <button class="comp-nav-btn" id="navSent" onclick="showSent()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M5.5 9.5s.8 1.5 2.5 1.5 2.5-1.5 2.5-1.5"/><circle cx="5.5" cy="7" r=".8" fill="currentColor"/><circle cx="10.5" cy="7" r=".8" fill="currentColor"/></svg>
     Customer Sentiment
-    <span class="comp-nav-badge">8 sources</span>
+    <span class="comp-nav-badge">13 sources</span>
   </button>
   <button class="comp-nav-btn" id="navCI" onclick="showCI()">
     <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M2 13c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
@@ -3798,6 +3798,9 @@ body{
     <div class="sent-tile s-consumer" data-src="consumer" onclick="selSent('consumer')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128203;</span><div><div class="sent-tile-name">Consumer Affairs <span title="No live data source connected — score estimated from other cached signals, not real Consumer Affairs content." style="display:inline-block;font-size:8px;font-weight:700;color:#B45309;background:#FEF3C7;border-radius:4px;padding:1px 5px;vertical-align:middle">EST</span></div><div class="sent-tile-sub">PissedConsumer AirlineQuality</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-consumer" style="width:0%;background:#e67e22"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-consumer">-</span></div><button class="sent-load-btn" id="sbtn-consumer" onclick="event.stopPropagation();loadSent('consumer')">No data</button></div>
     <div class="sent-tile s-appstore" data-src="appstore" onclick="selSent('appstore')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#127822;</span><div><div class="sent-tile-name">Apple App Store</div><div class="sent-tile-sub">iPhone airline ratings and reviews</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-appstore" style="width:0%;background:#111827"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-appstore">-</span></div><button class="sent-load-btn" id="sbtn-appstore" onclick="event.stopPropagation();loadSent('appstore')">No data</button></div>
     <div class="sent-tile s-googleplay" data-src="googleplay" onclick="selSent('googleplay')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128241;</span><div><div class="sent-tile-name">Google Play</div><div class="sent-tile-sub">Android airline ratings and reviews</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-googleplay" style="width:0%;background:#4285f4"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-googleplay">-</span></div><button class="sent-load-btn" id="sbtn-googleplay" onclick="event.stopPropagation();loadSent('googleplay')">No data</button></div>
+    <div class="sent-tile s-youtube" data-src="youtube" onclick="selSent('youtube')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#9654;</span><div><div class="sent-tile-name">YouTube Data API</div><div class="sent-tile-sub">Travel creator videos and comments</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-youtube" style="width:0%;background:#ff0000"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-youtube">-</span></div><button class="sent-load-btn" id="sbtn-youtube" onclick="event.stopPropagation();loadSent('youtube')">No data</button></div>
+    <div class="sent-tile s-bluesky" data-src="bluesky" onclick="selSent('bluesky')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#9729;</span><div><div class="sent-tile-name">Bluesky AT Protocol</div><div class="sent-tile-sub">Public travel and brand posts</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-bluesky" style="width:0%;background:#1185fe"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-bluesky">-</span></div><button class="sent-load-btn" id="sbtn-bluesky" onclick="event.stopPropagation();loadSent('bluesky')">No data</button></div>
+    <div class="sent-tile s-mastodon" data-src="mastodon" onclick="selSent('mastodon')"><div class="sent-tile-hdr"><span class="sent-tile-icon">&#128172;</span><div><div class="sent-tile-name">Mastodon API</div><div class="sent-tile-sub">Public Fediverse travel posts</div></div></div><div class="sent-score-bar"><div class="sent-score-fill" id="sbar-mastodon" style="width:0%;background:#6364ff"></div></div><div class="sent-score-row"><span>Sentiment</span><span id="sscore-mastodon">-</span></div><button class="sent-load-btn" id="sbtn-mastodon" onclick="event.stopPropagation();loadSent('mastodon')">No data</button></div>
   </div>
   <div id="sentDetail"><div style="padding:32px;text-align:center;color:var(--t3);background:var(--su);border:1px solid var(--bo);border-radius:var(--r3)"><div style="font-size:36px;margin-bottom:10px">&#128172;</div><div style="font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Select a source to view cache-backed sentiment</div><div style="font-size:11px;max-width:480px;margin:0 auto;line-height:1.6">The system uses backend/cache payloads for source-specific sentiment and shows explicit no-data states when a source payload is missing.</div></div></div>
 </div>
@@ -3907,10 +3910,10 @@ body{
       <div>
         <div class="cios-eyebrow">Qatar Airways &middot; Intelligence OS &middot; External Only</div>
         <div class="cios-title">Customer Intelligence<br>Operating System</div>
-      <div class="cios-sub">Voice-of-customer from 10 live public platforms &mdash; no NPS or internal data required. Every insight derived from what passengers say publicly, classified and ranked for commercial action.</div>
+      <div class="cios-sub">Voice-of-customer from 13 live public platforms &mdash; no NPS or internal data required. Every insight derived from what passengers say publicly, classified and ranked for commercial action.</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
-        <div class="cios-live-pill"><div class="cios-live-dot"></div><span class="cios-live-txt">Live &middot; 10 sources</span></div>
+        <div class="cios-live-pill"><div class="cios-live-dot"></div><span class="cios-live-txt">Live &middot; 13 sources</span></div>
         <div class="cios-nps-pill"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="rgba(100,220,160,.85)" stroke-width="2" aria-hidden="true"><path d="M13 5l-7 7-3-3"/></svg><span class="cios-nps-txt">No NPS required &mdash; external only</span></div>
         <button class="cios-gen-btn" onclick="loadCIOSAll()" style="margin-top:4px">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v4l3-3"/><circle cx="8" cy="10" r="4"/></svg>
@@ -3972,6 +3975,9 @@ body{
       <div class="cios-src" style="--cios-c:#e67e22;--cios-cb:rgba(230,126,34,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#128203;</div><div class="cios-src-nm">Consumer Affairs</div><div class="cios-src-pct" id="cscore-consumer" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-consumer" style="width:0%;background:#e67e22"></div></div><div class="cios-src-sub" id="csub-consumer">No data</div></div>
       <div class="cios-src" style="--cios-c:#111827;--cios-cb:rgba(17,24,39,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#127822;</div><div class="cios-src-nm">Apple App Store</div><div class="cios-src-pct" id="cscore-appstore" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-appstore" style="width:0%;background:#111827"></div></div><div class="cios-src-sub" id="csub-appstore">No data</div></div>
       <div class="cios-src" style="--cios-c:#4285f4;--cios-cb:rgba(66,133,244,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#128241;</div><div class="cios-src-nm">Google Play</div><div class="cios-src-pct" id="cscore-googleplay" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-googleplay" style="width:0%;background:#4285f4"></div></div><div class="cios-src-sub" id="csub-googleplay">No data</div></div>
+      <div class="cios-src" style="--cios-c:#ff0000;--cios-cb:rgba(255,0,0,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#9654;</div><div class="cios-src-nm">YouTube</div><div class="cios-src-pct" id="cscore-youtube" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-youtube" style="width:0%;background:#ff0000"></div></div><div class="cios-src-sub" id="csub-youtube">No data</div></div>
+      <div class="cios-src" style="--cios-c:#1185fe;--cios-cb:rgba(17,133,254,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#9729;</div><div class="cios-src-nm">Bluesky</div><div class="cios-src-pct" id="cscore-bluesky" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-bluesky" style="width:0%;background:#1185fe"></div></div><div class="cios-src-sub" id="csub-bluesky">No data</div></div>
+      <div class="cios-src" style="--cios-c:#6364ff;--cios-cb:rgba(99,100,255,.1)"><div class="cios-src-hdr"><div class="cios-src-ic">&#128172;</div><div class="cios-src-nm">Mastodon</div><div class="cios-src-pct" id="cscore-mastodon" style="color:var(--red)">-</div></div><div class="cios-src-bar"><div class="cios-src-bf" id="cbar-mastodon" style="width:0%;background:#6364ff"></div></div><div class="cios-src-sub" id="csub-mastodon">No data</div></div>
     </div>
 
 
@@ -8984,12 +8990,12 @@ async function loadAllCompetitors(){
 function hideAllPrimaryPages(){
   var main = document.querySelector('.main');
   if(main) main.style.display='none';
-  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage','publicApisPage','publicApisPage','publicApisPage','publicApisPage','publicApisPage'].forEach(function(id){
+  ['compPage','partnerPage','sentPage','ciPage','ciosPage','teamActionsPage','execPage','predictPage','aiDiscoveryPage','publicApisPage'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('visible');
   });
 }
 function clearPrimaryNav(){
-  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI','navPublicApis','navPublicApis','navPublicApis','navPublicApis','navPublicApis'].forEach(function(id){
+  ['navMain','navComp','navPartner','navSent','navCI','navCIOS','navTeamActions','navExec','navPredict','navAI','navPublicApis'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.remove('active');
   });
 }
@@ -11179,7 +11185,10 @@ var SENT_META = {
   twitter:    { name:'X/Twitter', icon:'X', color:'#1da1f2', sources:'X/Twitter @qatarairways mentions', note:'Real-time complaints and viral service failures.' },
   consumer:   { name:'Consumer Affairs', icon:'&#128203;', color:'#e67e22', sources:'ConsumerAffairs, PissedConsumer, AirlineQuality', note:'Formal complaint platforms with highest severity issues.' },
   appstore:   { name:'Apple App Store', icon:'&#127822;', color:'#111827', sources:'iPhone airline ratings and reviews', note:'iOS app reviews reveal booking flow, crash, and boarding-pass friction.' },
-  googleplay: { name:'Google Play', icon:'&#128241;', color:'#4285f4', sources:'Android airline ratings and reviews', note:'Android reviews reveal app stability, login, and checkout issues.' }
+  googleplay: { name:'Google Play', icon:'&#128241;', color:'#4285f4', sources:'Android airline ratings and reviews', note:'Android reviews reveal app stability, login, and checkout issues.' },
+  youtube:    { name:'YouTube Data API', icon:'&#9654;', color:'#ff0000', sources:'Travel creator videos and comments', note:'Creator reviews and comment threads reveal brand, service, lounge, app and loyalty narratives.' },
+  bluesky:    { name:'Bluesky AT Protocol', icon:'&#9729;', color:'#1185fe', sources:'Public travel and brand posts', note:'Public social posts provide early customer narrative and brand conversation outside X.' },
+  mastodon:   { name:'Mastodon API', icon:'&#128172;', color:'#6364ff', sources:'Public Fediverse travel posts', note:'Federated public posts add secondary travel, disruption and reputation conversation.' }
 };
 
 
@@ -11192,7 +11201,7 @@ function sentimentPriorityScore(src, data){
   const improvements = data?.improvements || [];
   score += pain.filter(p => /revenue|loyalty|brand|ops|operational|refund|baggage|delay|missed|connection|compensation/i.test([p.impact,p.title,p.detail].join(' '))).length * 12;
   score += improvements.filter(i => /quick win|revenue|loyalty|retention|conversion|app|web|refund|baggage/i.test([i.effort,i.title,i.detail,i.value].join(' '))).length * 6;
-  const base = {twitter:10, reddit:9, flyertalk:9, trustpilot:8, skytrax:7, tripadvisor:6, consumer:6, quora:4};
+  const base = {youtube:10, twitter:10, reddit:9, bluesky:8, mastodon:7, flyertalk:9, trustpilot:8, skytrax:7, tripadvisor:6, consumer:6, quora:4};
   return score + (base[src] || 0);
 }
 function reorderSentimentSources(){
@@ -11231,7 +11240,10 @@ function domainCacheSignalsForSentiment(src){
     quora:['agt','dig','loy','prd'],
     consumer:['rep','ops','prd','reg'],
     appstore:['dig','prd','loy','rep'],
-    googleplay:['dig','prd','loy','rep']
+    googleplay:['dig','prd','loy','rep'],
+    youtube:['sml','rep','soc','dig','loy'],
+    bluesky:['sml','soc','rep','dig'],
+    mastodon:['soc','sml','rep','ops']
   };
   var sourceTerms = {
     twitter:/\bx\b|twitter|tweet|retweet|mention|social|viral|trend/i,
@@ -11243,7 +11255,10 @@ function domainCacheSignalsForSentiment(src){
     quora:/quora|question|answer|how to|why does|can i/i,
     consumer:/consumer affairs|consumeraffairs|pissedconsumer|airlinequality|formal complaint|case id|chargeback/i,
     appstore:/app store|ios|iphone|app rating|star rating|review|boarding pass|booking flow|crash/i,
-    googleplay:/google play|android|app rating|star rating|review|login|checkout|crash/i
+    googleplay:/google play|android|app rating|star rating|review|login|checkout|crash/i,
+    youtube:/youtube|video|creator|comment thread|channel|vlog|review video|shorts/i,
+    bluesky:/bluesky|at protocol|bsky|public post|social post/i,
+    mastodon:/mastodon|fediverse|toot|public post|instance/i
   };
   var themeTerms = {
     twitter:/social|viral|tweet|mention|trend|x\/twitter|realtime/i,
@@ -11255,7 +11270,10 @@ function domainCacheSignalsForSentiment(src){
     quora:/question|answer|how to|why|booking advice|loyalty advice/i,
     consumer:/complaint|case|refund|chargeback|escalation|compensation/i,
     appstore:/app|ios|iphone|booking flow|boarding pass|crash|login|checkout|rating/i,
-    googleplay:/app|android|booking flow|boarding pass|crash|login|checkout|rating/i
+    googleplay:/app|android|booking flow|boarding pass|crash|login|checkout|rating/i,
+    youtube:/video|creator|comment|review|lounge|business class|app|booking|loyalty|service|brand/i,
+    bluesky:/social|brand|post|conversation|service|delay|app|booking|loyalty|reputation/i,
+    mastodon:/social|fediverse|post|travel|aviation|service|delay|reputation|customer/i
   };
   var sentimentTerms = /customer|passenger|review|complaint|sentiment|refund|delay|app|website|loyalty|service|booking|baggage|cabin|social|brand|reputation/i;
   var personaTerms = {
@@ -11263,7 +11281,10 @@ function domainCacheSignalsForSentiment(src){
     tripadvisor:/cabin|crew|seat|food|comfort|service|lounge|airport|check-?in|experience|holiday|family|destination/i,
     quora:/booking|policy|visa|avios|loyalty|upgrade|award|status|change|tips|guide|how to|why|can i/i,
     appstore:/app|ios|iphone|booking flow|crash|login|checkout|boarding pass|review/i,
-    googleplay:/app|android|booking flow|crash|login|checkout|boarding pass|review/i
+    googleplay:/app|android|booking flow|crash|login|checkout|boarding pass|review/i,
+    youtube:/video|creator|comment|review|lounge|business class|app|booking|loyalty|service|brand/i,
+    bluesky:/social|brand|post|conversation|service|delay|app|booking|loyalty|reputation/i,
+    mastodon:/social|fediverse|post|travel|aviation|service|delay|reputation|customer/i
   };
   var domains = (domainMap[src] || ['sml','rep','prd','ops'])
     .map(function(id){
@@ -11350,7 +11371,7 @@ function sentimentIssueFromSignal(item, fallbackImpact){
 function sentimentFromDomainCache(src){
   var items = domainCacheSignalsForSentiment(src);
   if(!items.length) return null;
-  var sourceSeed = {twitter:0, reddit:3, flyertalk:5, trustpilot:1, tripadvisor:2, skytrax:4, quora:6, consumer:7}[src] || 0;
+  var sourceSeed = {twitter:0, youtube:8, bluesky:9, mastodon:10, reddit:3, flyertalk:5, trustpilot:1, tripadvisor:2, skytrax:4, quora:6, consumer:7}[src] || 0;
   var offset = items.length ? (sourceSeed % items.length) : 0;
   var ranked = items.slice(offset).concat(items.slice(0, offset));
   var joined = items.map(function(i){ return i.text; }).join(' ').toLowerCase();
@@ -11358,7 +11379,7 @@ function sentimentFromDomainCache(src){
   var positiveRegex = /award|best|positive|praise|premium|improve|opportunity|growth|strong|loyalty gain|service recovery|win|satisfaction|on.?time|upgrade/i;
   var negativeTerms = (joined.match(new RegExp(negativeRegex.source, 'g')) || []).length;
   var positiveTerms = (joined.match(new RegExp(positiveRegex.source, 'g')) || []).length;
-  var sourceBias = {twitter:-7, reddit:-4, flyertalk:-2, trustpilot:-5, tripadvisor:2, skytrax:5, quora:0, consumer:-8}[src] || 0;
+  var sourceBias = {twitter:-7, youtube:-3, bluesky:-4, mastodon:-3, reddit:-4, flyertalk:-2, trustpilot:-5, tripadvisor:2, skytrax:5, quora:0, consumer:-8}[src] || 0;
   var score = Math.max(34, Math.min(86, Math.round(64 + sourceBias + positiveTerms * 1.5 - negativeTerms * 2.1 + Math.min(items.length, 5))));
   var label = score >= 68 ? 'Positive but watchlisted' : score >= 52 ? 'Mixed customer pressure' : 'Negative customer pressure';
   var occupiedTitles = {};
@@ -11738,7 +11759,7 @@ function ciSourceReliabilityPoints(source){
   if(/qatar airways|official|newsroom|press release|regulator|civil aviation|airport|iata|icao|government|app store|apple|google play/.test(t)) return 29;
   if(/reuters|bloomberg|ft|financial times|wsj|cnn|bbc|forbes|skift|aerotime|gulf times|qatar tribune|industry/.test(t)) return 23;
   if(/flyertalk|trustpilot|tripadvisor|skytrax|review/.test(t)) return 19;
-  if(/reddit|twitter|x\/|x |quora|consumer/.test(t)) return 14;
+  if(/reddit|twitter|x\/|x |youtube|video|creator|bluesky|bsky|mastodon|fediverse|quora|consumer/.test(t)) return 14;
   return 16;
 }
 function ciConfidenceBand(score){
@@ -12566,6 +12587,9 @@ setTimeout(function(){
 (function(){
   var SENT_CACHE_ALIASES = {
     twitter: ['twitter', 'x'],
+    youtube: ['youtube', 'youtube_data_api', 'video', 'creator'],
+    bluesky: ['bluesky', 'bsky', 'at_protocol'],
+    mastodon: ['mastodon', 'fediverse'],
     reddit: ['reddit'],
     flyertalk: ['flyertalk', 'flyer_talk'],
     trustpilot: ['trustpilot'],
@@ -12682,6 +12706,9 @@ setTimeout(function(){
 
     var sourceRules = {
       twitter:/\bx\b|twitter|tweet|retweet|mention|viral|hashtag/i,
+      youtube:/youtube|video|creator|comment thread|channel|vlog|review video|shorts/i,
+      bluesky:/bluesky|bsky|at protocol|public post|social post/i,
+      mastodon:/mastodon|fediverse|toot|public post|instance/i,
       reddit:/reddit|subreddit|r\/|thread|upvote/i,
       flyertalk:/flyertalk|frequent flyer|tier|avios|upgrade|status/i,
       trustpilot:/trustpilot|verified review|star rating/i,
@@ -13012,7 +13039,7 @@ var CIOS_STORE = 'qr_cios_v1_';
 var CIOS_DATA = {};
 var CIOS_ACTIVE_TAB = 'heatmap';
 var CIOS_SOURCES_LOADED = 0;
-var CIOS_SOURCES = ['reddit','flyertalk','trustpilot','skytrax','tripadvisor','quora','twitter','consumer','appstore','googleplay'];
+var CIOS_SOURCES = ['reddit','flyertalk','trustpilot','skytrax','tripadvisor','quora','twitter','youtube','bluesky','mastodon','consumer','appstore','googleplay'];
 
 function cacheOnlyNotice(title){
   return '<div class="empty-d"><div class="er"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><div class="et"><strong>'+esc(title || 'No backend/cache data loaded')+'</strong><br>Connect to the backend server and click <strong>Refresh all</strong> to populate this section with live intelligence. Data is fetched from the Render backend and cached in Supabase.</div></div>';

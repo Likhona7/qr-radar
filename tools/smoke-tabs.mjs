@@ -126,6 +126,32 @@ addCheck(
   'Public APIs tab reads the backend registry and includes all requested public API ids'
 );
 addCheck(
+  'sentiment:public-api-source-cards',
+  bundle.includes('Customer Sentiment') &&
+    bundle.includes('13 sources') &&
+    bundle.includes('YouTube Data API') &&
+    bundle.includes('Bluesky AT Protocol') &&
+    bundle.includes('Mastodon API') &&
+    bundle.includes('sbtn-youtube') &&
+    bundle.includes('sbtn-bluesky') &&
+    bundle.includes('sbtn-mastodon'),
+  'Customer Sentiment tab exposes the newly enabled public API sources'
+);
+addCheck(
+  'customer-intelligence:public-api-source-breakdown',
+  bundle.includes('cscore-youtube') &&
+    bundle.includes('cscore-bluesky') &&
+    bundle.includes('cscore-mastodon') &&
+    bundle.includes("youtube','bluesky','mastodon"),
+  'Customer Intelligence OS source breakdown loads the newly enabled public API sources'
+);
+addCheck(
+  'navigation:no-duplicate-public-api-ids',
+  !bundle.includes("'publicApisPage','publicApisPage'") &&
+    !bundle.includes("'navPublicApis','navPublicApis'"),
+  'Primary navigation does not carry duplicated Public APIs page ids'
+);
+addCheck(
   'devserver:use-stubs',
   (await fs.readFile(path.join(root, 'tools', 'dev-server.mjs'), 'utf8')).includes('USE_STUBS'),
   'Local proxy toggle exists'
