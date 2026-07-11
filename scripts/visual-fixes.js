@@ -287,8 +287,39 @@ function ciosScoreFromItem(i){
   return 55;
 }
 
+function ciosDomainLoadStatus(){
+  var domains = (typeof DOMAINS !== 'undefined' && DOMAINS) || [];
+  var loaded = domains.filter(function(id){ return typeof domData !== 'undefined' && domData && domData[id]; });
+  return { total: domains.length, loaded: loaded.length };
+}
+
 function ciosEmpty(title){
-  return '<div class="cios-card"><div class="cios-card-hdr"><div class="cios-card-ht">Backend/cache only</div></div><div class="empty-d"><div class="et">'+esc(title || 'No backend/cache data loaded for this view')+'</div></div></div>';
+  var status = ciosDomainLoadStatus();
+  var hint = (status.total > 0 && status.loaded === 0)
+    ? 'No domain data loaded yet - use "Load domain data" above to generate real signals for this section.'
+    : (status.total > 0 && status.loaded < status.total)
+      ? 'Only ' + status.loaded + ' of ' + status.total + ' domains loaded so far - load more above for fuller coverage.'
+      : '';
+  return '<div class="cios-card"><div class="cios-card-hdr"><div class="cios-card-ht">Backend/cache only</div></div><div class="empty-d"><div class="et">'+esc(title || 'No backend/cache data loaded for this view')+'</div>' + (hint ? '<div class="et" style="margin-top:6px;font-size:11px;opacity:.75">' + esc(hint) + '</div>' : '') + '</div></div>';
+}
+
+function updateCIOSDomainBanner(){
+  var el = document.getElementById('ciosGenStrip');
+  if(!el) return;
+  var status = ciosDomainLoadStatus();
+  if(status.total > 0 && status.loaded < status.total){
+    el.innerHTML = '<div class="cios-gen-info"><strong>' + status.loaded + ' of ' + status.total + ' domains loaded.</strong> Intelligence OS is generated from the same domain signals shown in the main Intelligence tab - load the remaining domains first to see real, differentiated action plans here instead of empty or generic sections. This calls live backend/AI generation and can take a few minutes.</div>' +
+      '<button class="cios-gen-btn" onclick="if(typeof resumeRefresh===\'function\')resumeRefresh();">' +
+        '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="5,3 14,8 5,13"/></svg>' +
+        'Load domain data (' + (status.total - status.loaded) + ' remaining)' +
+      '</button>';
+  } else {
+    el.innerHTML = '<div class="cios-gen-info"><strong>Backend/cache-first analysis.</strong> This view loads only backend/Supabase cache or saved browser cache. Customer intelligence loads only from backend/cache data.</div>' +
+      '<button class="cios-gen-btn" onclick="loadCIOSAll()">' +
+        '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="5,3 14,8 5,13"/></svg>' +
+        'Run full analysis' +
+      '</button>';
+  }
 }
 
 function ciosLimit(items, n){ return (items || []).filter(Boolean).slice(0, n || 18); }
@@ -561,6 +592,7 @@ function updateCIOSTabBadges(ctx){
 }
 
 function renderCIOSPanels(){
+  updateCIOSDomainBanner();
   var sources = getAllSentimentSources();
   var issues = sources.flatMap(function(d){ return (d.painPoints || []).map(function(p){ return Object.assign({ source:d.sourceName || d.source }, p); }); });
   var strengths = sources.flatMap(function(d){ return (d.strengths || []).map(function(p){ return Object.assign({ source:d.sourceName || d.source }, p); }); });
