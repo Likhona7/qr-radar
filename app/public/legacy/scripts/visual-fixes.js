@@ -118,26 +118,34 @@ function ciosParseNumber(v){
   return null;
 }
 
-function ciosEstimatePostCount(data){
+function ciosPostCountMeta(data){
   var direct = ciosParseNumber(data && data.totalMentions);
-  if(Number.isFinite(direct) && direct >= 0) return Math.round(direct);
+  if(Number.isFinite(direct) && direct >= 0) return { value: Math.round(direct), estimated: false };
   var pain = (data && data.painPoints ? data.painPoints.length : 0);
   var strengths = (data && data.strengths ? data.strengths.length : 0);
   var improvements = (data && data.improvements ? data.improvements.length : 0);
   var estimated = (pain * 26) + (strengths * 18) + (improvements * 22);
-  return Math.max(0, estimated);
+  return { value: Math.max(0, estimated), estimated: true };
 }
 
-function ciosEstimateConfidence(data){
+function ciosEstimatePostCount(data){
+  return ciosPostCountMeta(data).value;
+}
+
+function ciosConfidenceMeta(data){
   var direct = ciosParseNumber(data && (data.confidencePct || data.confidence || data.confidenceScore));
-  if(Number.isFinite(direct)) return Math.max(0, Math.min(100, Math.round(direct)));
+  if(Number.isFinite(direct)) return { value: Math.max(0, Math.min(100, Math.round(direct))), estimated: false };
   var signals = (data && data.painPoints ? data.painPoints.length : 0) +
     (data && data.strengths ? data.strengths.length : 0) +
     (data && data.improvements ? data.improvements.length : 0) +
     (data && data.verbatims ? data.verbatims.length : 0);
   var hasTop = (data && (data.topComplaint || data.topPraise)) ? 1 : 0;
   var score = 52 + Math.min(40, (signals * 2) + (hasTop * 6));
-  return Math.max(45, Math.min(94, Math.round(score)));
+  return { value: Math.max(45, Math.min(94, Math.round(score))), estimated: true };
+}
+
+function ciosEstimateConfidence(data){
+  return ciosConfidenceMeta(data).value;
 }
 
 function ciosFreshnessLabel(data){
@@ -150,14 +158,14 @@ function ciosFreshnessLabel(data){
   return Math.round(ageHours / 24) + ' days';
 }
 
-function ciosSourceMetaMarkup(postCount, confidencePct, freshness){
+function ciosSourceMetaMarkup(postCount, confidencePct, freshness, postEstimated, confidenceEstimated){
   var freshCls = freshness === 'today' ? 'cios-src-time' : 'cios-src-time stale';
   return '<div class="cios-src-conf">' +
     '<span class="cios-src-conf-num">' + (postCount ? Number(postCount).toLocaleString() : '-') + '</span>' +
-    '<span class="cios-src-fresh">posts</span>' +
+    '<span class="cios-src-fresh">' + (postEstimated ? 'est. mentions' : 'mentions') + '</span>' +
     '<span style="color:var(--bo)">|</span>' +
     '<span class="cios-src-conf-num">' + (confidencePct ? confidencePct + '%' : '-') + '</span>' +
-    '<span class="cios-src-fresh">confidence</span>' +
+    '<span class="cios-src-fresh">' + (confidenceEstimated ? 'est. confidence' : 'confidence') + '</span>' +
     '<span class="' + freshCls + '">' + esc(freshness || 'cache') + '</span>' +
   '</div>';
 }
@@ -170,17 +178,21 @@ function updateCIOSSourceTile(src, data) {
   if(score == null){
     if(bar) bar.style.width = '0%';
     if(scoreEl) scoreEl.textContent = '-';
-    if(subEl) subEl.innerHTML = ciosSourceMetaMarkup(0, 0, 'cache');
+    if(subEl) subEl.innerHTML = ciosSourceMetaMarkup(0, 0, 'cache', true, true);
     return false;
   }
   var color = score >= 65 ? 'var(--grn)' : score >= 45 ? 'var(--amb)' : 'var(--red)';
   if(bar) bar.style.width = score + '%';
   if(scoreEl) { scoreEl.textContent = score + '%'; scoreEl.style.color = color; }
   if(subEl){
+    var postMeta = ciosPostCountMeta(data);
+    var confidenceMeta = ciosConfidenceMeta(data);
     subEl.innerHTML = ciosSourceMetaMarkup(
-      ciosEstimatePostCount(data),
-      ciosEstimateConfidence(data),
-      ciosFreshnessLabel(data)
+      postMeta.value,
+      confidenceMeta.value,
+      ciosFreshnessLabel(data),
+      postMeta.estimated,
+      confidenceMeta.estimated
     );
   }
   return true;
