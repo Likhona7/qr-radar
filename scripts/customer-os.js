@@ -382,7 +382,7 @@ function sentimentIssueFromSignal(item, fallbackImpact){
     title: String(title).slice(0, 90),
     detail: String(detail).slice(0, 180),
     frequency: score >= 80 ? 'High' : score >= 55 ? 'Medium' : 'Low',
-    impact: fallbackImpact || s.impact_label || s.impactLabel || (score >= 70 ? 'High business impact' : 'Monitor for customer impact')
+    impact: s.impact_label || s.impactLabel || fallbackImpact || (score >= 70 ? 'High business impact' : 'Monitor for customer impact')
   };
 }
 

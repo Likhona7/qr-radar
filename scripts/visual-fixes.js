@@ -241,7 +241,9 @@ function ciosItemTitle(i){
 }
 
 function ciosItemDetail(i){
-  return ciosCleanText(i.detail || i.body || i.description || i.implication || i.competitorAdvantage || i.ucpUseCase || i.topComplaint || i.topStrength || '');
+  var s = i.signal || null;
+  var fromSignal = s && (s.captureStrategy || s.capture_strategy || s.whyItMattersNow || s.why_it_matters_now);
+  return ciosCleanText(fromSignal || i.detail || i.body || i.description || i.implication || i.competitorAdvantage || i.ucpUseCase || i.topComplaint || i.topStrength || '');
 }
 
 function ciosItemSource(i){
