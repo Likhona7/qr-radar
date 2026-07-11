@@ -68,3 +68,14 @@ export async function getDiscoveryStatus(viewMode = 'b2c') {
   const resp = await backendFetch(`/api/discovery/status?viewMode=${encodeURIComponent(viewMode)}&limit=20`, {}, 18000)
   return resp.json()
 }
+
+/** Port of loadBackendCacheFirst's 2 calls (radar-core.js:1490-1582) — read-only cache path, no AI generation. */
+export async function getCacheLatest(viewMode = 'b2c', maxAgeHours = 720) {
+  const resp = await backendFetch(`/api/cache/latest?viewMode=${encodeURIComponent(viewMode)}&maxAgeHours=${maxAgeHours}`, {}, 20000)
+  return resp.json()
+}
+
+export async function getCacheDomain(domainId, viewMode = 'b2c', maxAgeHours = 720) {
+  const resp = await backendFetch(`/api/cache/domain/${domainId}?viewMode=${encodeURIComponent(viewMode)}&maxAgeHours=${maxAgeHours}`, {}, 15000)
+  return resp.json()
+}

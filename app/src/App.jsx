@@ -6,6 +6,7 @@ import CustomerIntelligenceOS from './pages/CustomerIntelligenceOS'
 import SentimentPage from './pages/SentimentPage'
 import ExecutiveSummaryPage from './pages/ExecutiveSummaryPage'
 import PredictiveIntelligencePage from './pages/PredictiveIntelligencePage'
+import IntelligenceDashboardPage from './pages/IntelligenceDashboardPage'
 
 // Ported 1:1 from components/01-top-shell.html:114-174 (showMain/showComp/...).
 const PRIMARY_NAV = [
@@ -34,7 +35,7 @@ export default function App() {
       <div className="main">
         <Routes>
           <Route path="/customer-os" element={<CustomerIntelligenceOS />} />
-          <Route path="/" element={<LegacyPageEmbed label="Intelligence" />} />
+          <Route path="/" element={<IntelligenceDashboardPage />} />
           <Route path="/competitors" element={<LegacyPageEmbed label="Competitor Intelligence" />} />
           <Route path="/partners" element={<LegacyPageEmbed label="Partner Network" />} />
           <Route path="/sentiment" element={<SentimentPage />} />
