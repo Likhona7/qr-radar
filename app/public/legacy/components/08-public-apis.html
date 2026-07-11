@@ -1,0 +1,45 @@
+<div class="public-apis-page" id="publicApisPage">
+  <section class="public-apis-shell">
+    <div class="public-apis-hero">
+      <div>
+        <div class="public-apis-kicker">Live source registry</div>
+        <h1>Public APIs enabled for Radar</h1>
+        <p>This page reads the backend public-source catalogue and shows which APIs are configured, keyless, proxy-ready, or governance-gated for server-side Radar ingestion.</p>
+      </div>
+      <div class="public-apis-scorecard">
+        <strong id="publicApisTotal">-- sources</strong>
+        <span id="publicApisStatus">Checking backend registry</span>
+      </div>
+    </div>
+
+    <div class="public-apis-summary-grid">
+      <div><strong id="publicApisConfigured">-- configured</strong><span>Configured means the source either needs no key or the backend has the required server-side key.</span></div>
+      <div><strong id="publicApisProxy">-- proxy-ready</strong><span>Can be previewed through Radar's server-side request/proxy layer.</span></div>
+      <div><strong id="publicApisGovernance">-- governed</strong><span>All third-party calls stay server-side, cached, attributed and policy-reviewed.</span></div>
+    </div>
+
+    <div class="public-apis-toolbar">
+      <button class="public-api-filter active" data-filter="all" onclick="filterPublicApis('all')">All</button>
+      <button class="public-api-filter" data-filter="configured" onclick="filterPublicApis('configured')">Configured</button>
+      <button class="public-api-filter" data-filter="needs_key" onclick="filterPublicApis('needs_key')">Needs key</button>
+      <button class="public-api-filter" data-filter="proxy" onclick="filterPublicApis('proxy')">Proxy-ready</button>
+    </div>
+
+    <div class="public-apis-grid" id="publicApisGrid">
+      <div class="public-api-empty">Loading public API registry...</div>
+    </div>
+
+    <div class="public-apis-plan">
+      <div>
+        <div class="public-apis-plan-ey">What this means</div>
+        <h2>Enabled in Radar does not always mean freely callable from the browser.</h2>
+        <p>Radar should call these sources from the backend only. Some are live immediately, some need API keys, and Reddit/Common Crawl style sources require governance or batch ingestion before production use.</p>
+      </div>
+      <ol id="publicApisNextSteps">
+        <li>Use the backend catalogue as the source of truth for enabled sources.</li>
+        <li>Add server-side keys on Render for key-required sources such as YouTube.</li>
+        <li>Use domain refresh and AI discovery jobs to turn source evidence into Radar signals.</li>
+      </ol>
+    </div>
+  </section>
+</div>

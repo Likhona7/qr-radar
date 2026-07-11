@@ -1,0 +1,176 @@
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-l">
+    <div class="oryx" style="width:56px;height:48px;background:transparent;border-radius:0;flex-shrink:0;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 56 48" width="56" height="48" xmlns="http://www.w3.org/2000/svg" aria-label="Qatar Airways oryx logo">
+  <!-- Speed lines — grey, horizontal, tapered at both ends, stacked -->
+  <ellipse cx="22" cy="10" rx="14" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <ellipse cx="20" cy="15" rx="16" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <ellipse cx="19" cy="20" rx="17" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <ellipse cx="19" cy="25" rx="17" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <ellipse cx="19" cy="30" rx="16" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <ellipse cx="20" cy="35" rx="14" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <ellipse cx="22" cy="40" rx="11" ry="2.2" fill="#8a9aaa" opacity="0.55"/>
+  <!-- Oryx body — the shield/wedge shape facing left -->
+  <!-- Main body mass -->
+  <path d="M36 42 L22 42 Q16 40 14 35 Q12 30 14 25 Q16 20 20 18 Q22 17 24 17 Q28 17 30 20 Q32 23 31 27 Q30 31 33 35 Q35 38 36 42 Z" fill="#5C0632"/>
+  <!-- Comb serrations along right/bottom edge — the distinctive QR logo detail -->
+  <path d="M36 42 L33 38 L37 36 L33 33 L37 30 L33 27 L36 24 L33 21 L36 18 L34 16 L37 14" fill="none" stroke="#5C0632" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Serration fills -->
+  <path d="M31 27 L37 30 L31 33 L37 36 L31 38 L36 42" fill="#5C0632"/>
+  <path d="M32 21 L36 24 L32 27" fill="#5C0632"/>
+  <!-- Head — compact oryx skull -->
+  <path d="M20 18 Q16 18 13 20 Q11 22 11 25 Q11 28 13 30 Q15 32 18 32 Q21 31 22 28 Q24 25 22 21 Z" fill="#5C0632"/>
+  <!-- Muzzle/snout — slightly forward -->
+  <path d="M11 25 Q9 25 9 27 Q9 29 11 29 Q13 29 13 27 Q13 25 11 25 Z" fill="#7a1850"/>
+  <!-- Horn 1 — outer, long, sweeping back and up gracefully -->
+  <path d="M19 19 L24 8 L28 2 Q30 0 31 1 Q32 2 31 4 Q29 7 26 12 L22 20 Z" fill="#5C0632"/>
+  <!-- Horn 2 — inner, slightly shorter -->
+  <path d="M21 19 L26 10 L29 5 Q30 3 31 4 Q32 5 30 8 L24 18 Z" fill="#5C0632" opacity="0.75"/>
+  <!-- Eye -->
+  <circle cx="15" cy="26" r="1.8" fill="#1a0010"/>
+  <circle cx="15.6" cy="25.4" r="0.7" fill="#fff" opacity="0.9"/>
+</svg></div>
+    <div class="bk"><span class="bn">Qatar Airways</span><span class="bs">Digital Intelligence</span></div>
+    <div class="tdv"></div>
+    <span class="rl">Radar · v11</span>
+  </div>
+  <div class="tb-r">
+    <div class="view-switch" title="Switch Radar focus without changing the file">
+      <button class="view-btn" id="btnViewEnterprise" onclick="setViewMode('enterprise')">🏢 Enterprise</button>
+      <button class="view-btn" id="btnViewB2C" onclick="setViewMode('b2c')">⚡ B2C</button>
+    </div>
+    <div class="lvb"><span class="ld"></span><span id="liveLabel">Ready</span></div>
+    <div class="ws-proof" id="wsProof" title="Realtime backend event stream">
+      <span class="ws-dot" id="wsDot"></span>
+      <span id="wsStatus">Live pending</span>
+      <span class="ws-count" id="wsCount">0</span>
+    </div>
+    <span class="tck" id="clk">--:--:-- DOH</span>
+    <div class="tav">QR</div>
+  </div>
+</div>
+
+<!-- API BAR -->
+<div class="api-bar" id="apiBar">
+  <div class="api-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+  <div class="api-main">
+    <div class="api-title">Connect to Qatar Airways Radar Intelligence Server</div>
+    <div class="api-desc">
+      All intelligence is powered by a secure backend server. Click Connect to start.
+      The server automatically refreshes all 14 domains every morning at 6am Doha time
+      and saves results to the database. First connection may take 30-60 seconds if the
+      server is waking up.
+    </div>
+    <div class="api-fields" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <button class="api-go" onclick="connectKey()" style="font-size:13px;font-weight:600;padding:10px 28px;border-radius:8px;cursor:pointer">
+        Connect to Server
+      </button>
+      <span class="api-skip" onclick="loadSavedCacheOnly()" style="cursor:pointer">Load saved cache</span>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:6px">
+      Server: qr-radar-backend.onrender.com &middot; No API key required
+    </div>
+    <div id="connectStatus" style="display:none;font-size:11px;margin-top:6px;font-weight:500"></div>
+    <input type="hidden" id="antKey" value="" />
+    <input type="hidden" id="optScan" />
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="prog-bar hidden" id="progBar">
+  <div class="prog-top">
+    <div class="prog-status">
+      <div class="prog-spin" id="progSpin" style="display:none"></div>
+      <span id="progStatus">Ready</span>
+    </div>
+    <span class="prog-phase" id="progPhase"></span>
+    <div class="prog-btns">
+      <button class="prog-btn resume hidden" id="btnResume" onclick="resumeRefresh()">↻ Resume</button>
+      <button class="prog-btn" id="btnRefresh" onclick="startFresh()">↻ Refresh all</button>
+      <button class="prog-btn clear" id="btnClear" onclick="clearSaved()" title="Clear all saved domain data">✕ Clear saved</button>
+    </div>
+  </div>
+  <div class="prog-track" id="progTrack"></div>
+  <div class="prog-labels" id="progLabels"></div>
+  <div class="prog-meta">
+    <span id="progMeta">0 of 14 domains loaded</span>
+    <span class="prog-save-note" id="progSave"></span>
+  </div>
+</div>
+
+<!-- SITUATION RIBBON -->
+<div class="sit" id="sitRib">
+  <div class="sfl"><span class="srd"></span>Situation active</div>
+  <span class="stx" id="sitTxt">API-driven Digital/B2C situation · refresh domains to populate current leadership focus</span>
+  <div class="stags" id="sitTags">
+    <span class="stag">Current only</span>
+    <span class="stag">Forward 180 days</span>
+    <span class="stag">Verify sources</span>
+    <span class="stag">No stale dates</span>
+  </div>
+</div>
+
+<!-- COMPETITOR NAV TAB -->
+<div class="comp-nav" id="compNav">
+  <button class="comp-nav-btn active" id="navMain" onclick="showMain()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-7 3 3 3-6 3 4"/></svg>
+    Intelligence
+  </button>
+  <button class="comp-nav-btn" id="navComp" onclick="showComp()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="8" r="3"/><circle cx="11" cy="8" r="3"/></svg>
+    Competitor Intelligence
+    <span class="comp-nav-badge" id="compRivalsBadge">11 rivals</span>
+  </button>
+  <button class="comp-nav-btn partner" id="navPartner" onclick="showPartner()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12"/><path d="M8 2v12"/><circle cx="8" cy="8" r="2.5"/></svg>
+    Partner Network
+    <span class="comp-nav-badge partner-nav-badge" id="partnerNetworkBadge">18 partners</span>
+  </button>
+  <button class="comp-nav-btn" id="navSent" onclick="showSent()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M5.5 9.5s.8 1.5 2.5 1.5 2.5-1.5 2.5-1.5"/><circle cx="5.5" cy="7" r=".8" fill="currentColor"/><circle cx="10.5" cy="7" r=".8" fill="currentColor"/></svg>
+    Customer Sentiment
+    <span class="comp-nav-badge">13 sources</span>
+  </button>
+  <button class="comp-nav-btn" id="navCI" onclick="showCI()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M2 13c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+    Customer Intelligence
+    <span class="comp-nav-badge" id="ciSegmentsBadge">7 segments</span>
+  </button>
+  <button class="comp-nav-btn" id="navCIOS" onclick="showCIOS()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/><circle cx="11.5" cy="9.5" r="2" fill="none"/><path d="M13 11l1.5 1.5"/></svg>
+    Intelligence OS
+    <span class="comp-nav-badge" id="ciosBadge">live</span>
+  </button>
+  <button class="comp-nav-btn action-os" id="navTeamActions" onclick="showTeamActions()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8.5l2.2 2.2L12 4.5"/><rect x="2.5" y="2.5" width="11" height="11" rx="2"/></svg>
+    Team Actions
+    <span class="comp-nav-badge action-nav-badge" id="teamActionsBadge">action</span>
+  </button>
+  <button class="comp-nav-btn strategic" id="navExec" onclick="showExecSummary()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13h12"/><path d="M4 11V6"/><path d="M8 11V3"/><path d="M12 11V8"/></svg>
+    Executive Summary
+    <span class="comp-nav-badge">exec</span>
+  </button>
+  <button class="comp-nav-btn strategic" id="navPredict" onclick="showPredictive()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c3-7 7 2 12-7"/><path d="M10 5h4v4"/></svg>
+    Predictive Intelligence
+    <span class="comp-nav-badge">future</span>
+  </button>
+  <button class="comp-nav-btn ai-discovery" id="navAI" onclick="showAIDiscovery()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3.2"/><path d="M9.5 9.5L14 14"/><path d="M6 3.8v.8M6 7.4v.8M3.8 6h.8M7.4 6h.8"/></svg>
+    AI Discovery
+    <span class="comp-nav-badge ai-nav-badge">new</span>
+  </button>
+  <button class="comp-nav-btn strategic" id="navPublicApis" onclick="showPublicApis()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10v8H3z"/><path d="M5 6.5h6M5 9.5h3"/><path d="M11 2.5v3M13.5 5h-3"/></svg>
+    Public APIs
+    <span class="comp-nav-badge" id="publicApisNavBadge">live registry</span>
+  </button>
+  <button class="comp-nav-btn strategic" id="navRoadmap" onclick="showRoadmap()">
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h10v10H3z"/><path d="M5 6h6M5 9h4"/></svg>
+    Roadmap Tracker
+    <span class="comp-nav-badge">progress</span>
+  </button>
+</div>
+
+<div class="main">
