@@ -85,3 +85,9 @@ export async function getCacheCompetitor(alias, viewMode = 'b2c') {
   const resp = await backendFetch(`/api/cache/competitor/${encodeURIComponent(alias)}?viewMode=${encodeURIComponent(viewMode)}`, {}, 12000)
   return resp.json()
 }
+
+/** Port of loadCI's cache-check fetch (customer-os.js:1230-1233). */
+export async function getCacheCustomerIntel(segment, viewMode = 'b2c') {
+  const resp = await backendFetch(`/api/cache/customer-intel/${encodeURIComponent(segment)}?viewMode=${encodeURIComponent(viewMode)}`, {}, 12000)
+  return resp.json()
+}
