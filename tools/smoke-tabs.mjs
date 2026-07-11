@@ -152,6 +152,17 @@ addCheck(
   'Primary navigation does not carry duplicated Public APIs page ids'
 );
 addCheck(
+  'domain-cards:public-api-fit-badges',
+  bundle.includes('PUBLIC_SOURCE_FIT') &&
+    bundle.includes('domain-source-panel') &&
+    bundle.includes('dom-src-fit') &&
+    bundle.includes('OpenSky') &&
+    bundle.includes('NOAA AviationWeather') &&
+    bundle.includes('World Bank') &&
+    bundle.includes('Common Crawl'),
+  'Main radar domains expose source-fit badges for non-sentiment public APIs'
+);
+addCheck(
   'devserver:use-stubs',
   (await fs.readFile(path.join(root, 'tools', 'dev-server.mjs'), 'utf8')).includes('USE_STUBS'),
   'Local proxy toggle exists'
