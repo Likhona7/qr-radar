@@ -3,6 +3,7 @@ import TopBar from './components/TopBar'
 import TabNav from './components/TabNav'
 import LegacyPageEmbed from './components/LegacyPageEmbed'
 import CustomerIntelligenceOS from './pages/CustomerIntelligenceOS'
+import SentimentPage from './pages/SentimentPage'
 
 // Ported 1:1 from components/01-top-shell.html:114-174 (showMain/showComp/...).
 const PRIMARY_NAV = [
@@ -34,7 +35,7 @@ export default function App() {
           <Route path="/" element={<LegacyPageEmbed label="Intelligence" />} />
           <Route path="/competitors" element={<LegacyPageEmbed label="Competitor Intelligence" />} />
           <Route path="/partners" element={<LegacyPageEmbed label="Partner Network" />} />
-          <Route path="/sentiment" element={<LegacyPageEmbed label="Customer Sentiment" />} />
+          <Route path="/sentiment" element={<SentimentPage />} />
           <Route path="/customer-intelligence" element={<LegacyPageEmbed label="Customer Intelligence" />} />
           <Route path="/team-actions" element={<LegacyPageEmbed label="Team Actions" />} />
           <Route path="/executive-summary" element={<LegacyPageEmbed label="Executive Summary" />} />
