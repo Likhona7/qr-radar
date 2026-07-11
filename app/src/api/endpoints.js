@@ -79,3 +79,9 @@ export async function getCacheDomain(domainId, viewMode = 'b2c', maxAgeHours = 7
   const resp = await backendFetch(`/api/cache/domain/${domainId}?viewMode=${encodeURIComponent(viewMode)}&maxAgeHours=${maxAgeHours}`, {}, 15000)
   return resp.json()
 }
+
+/** Port of loadComp's cache-check fetch (radar-core.js:4267-4279), one alias at a time until one succeeds. */
+export async function getCacheCompetitor(alias, viewMode = 'b2c') {
+  const resp = await backendFetch(`/api/cache/competitor/${encodeURIComponent(alias)}?viewMode=${encodeURIComponent(viewMode)}`, {}, 12000)
+  return resp.json()
+}
