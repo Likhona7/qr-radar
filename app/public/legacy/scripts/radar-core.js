@@ -2902,6 +2902,93 @@ function compActBtn(btn){
 }
 
 // ── KPI TOOLTIPS ───────────────────────────────────────────────────────────
+// Adds Action Plan access to rendered intelligence cards that do not already
+// have a specific Plan button. Existing domain/signal Plan buttons stay intact.
+function radarPlanCleanText(value, max){
+  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, max || 180);
+}
+function radarPlanTitleFromCard(card){
+  const titleEl = card.querySelector([
+    'h1','h2','h3',
+    '.sent-item-t','.sent-det-title','.cios-card-ht','.cios-cluster-title',
+    '.cios-opp-t','.cios-app-title','.public-api-card h2',
+    '.partner-card-title','.partner-detail-title',
+    '.exec-sig-title','.future-title','.predict-card h3','.sim-title',
+    '.ch-kv','.ch-sig strong','.roadmap-panel-title'
+  ].join(','));
+  const title = radarPlanCleanText(titleEl ? titleEl.textContent : '', 90);
+  return title || radarPlanCleanText(card.textContent, 90) || 'Radar intelligence item';
+}
+function radarPlanContextForCard(card){
+  const page = card.closest('.sent-page,.cios-page,.public-apis-page,.partner-page,.comp-page,.exec-page,.predict-page,.roadmap-page,.team-actions-page,.main,.det');
+  const pageId = page ? (page.id || page.className || '') : '';
+  if(/publicApisPage|public-apis/i.test(pageId)) return { domainId:'pub', domainTitle:'Public API source registry' };
+  if(/ciosPage|cios-page/i.test(pageId)) return { domainId:'soc', domainTitle:'Customer Intelligence OS' };
+  if(/sentPage|sent-page/i.test(pageId)) return { domainId:'soc', domainTitle:'Customer Sentiment Intelligence' };
+  if(/partnerPage|partner-page/i.test(pageId)) return { domainId:'prt', domainTitle:'Partner Network' };
+  if(/compPage|comp-page/i.test(pageId)) return { domainId:'cmp', domainTitle:'Competitor Intelligence' };
+  if(/predict|exec/i.test(pageId)) return { domainId:'dig', domainTitle:'Executive / Predictive Intelligence' };
+  const dom = card.dataset.dom || card.dataset.domain || card.getAttribute('data-domain') || '';
+  return { domainId: dom || 'dig', domainTitle: dom ? (DOM_LABELS[dom] || dom) : 'Radar Intelligence' };
+}
+function radarPlanActionFromCard(card){
+  const title = radarPlanTitleFromCard(card);
+  const summary = radarPlanCleanText(card.textContent, 360);
+  return 'Create action plan for: ' + title + (summary && summary !== title ? ' | Evidence: ' + summary : '');
+}
+function radarGenericPlanBtnClick(btn){
+  const card = btn.closest('[data-radar-plan-card]');
+  if(!card || typeof openAP !== 'function') return;
+  const ctx = radarPlanContextForCard(card);
+  openAP(radarPlanActionFromCard(card), ctx.domainTitle, ctx.domainId);
+}
+function enhanceRadarActionPlans(root){
+  root = root || document;
+  if(!root.querySelectorAll || typeof openAP !== 'function') return;
+  const selectors = [
+    '.public-api-card',
+    '.sent-tile','.sent-item','.sent-detail',
+    '.cios-src','.cios-card','.cios-cluster','.cios-opp','.cios-app-card',
+    '.partner-card','.partner-detail',
+    '.future-card','.predict-card','.sim-card','.exec-signal',
+    '.ch-sig','.ch-kpi','.roadmap-update','.roadmap-section-card',
+    '.ta-action-card'
+  ];
+  root.querySelectorAll(selectors.join(',')).forEach(function(card){
+    if(card.closest('#apOverlay')) return;
+    if(card.dataset.radarPlanEnhanced === '1') return;
+    if(card.querySelector('.sig-ap-btn,.comp-ap-btn,.ktt-btn,.radar-plan-chip,.abt')) return;
+    const text = radarPlanCleanText(card.textContent, 80);
+    if(!text || /loading|no data|select a partner/i.test(text)) return;
+    card.dataset.radarPlanEnhanced = '1';
+    card.dataset.radarPlanCard = '1';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'radar-plan-chip';
+    btn.textContent = 'Action plan';
+    btn.setAttribute('style', 'display:inline-flex;align-items:center;justify-content:center;width:auto;margin-top:10px;padding:6px 10px;border:1px solid rgba(138,0,79,.22);border-radius:999px;background:rgba(138,0,79,.06);color:#8A004F;font:700 10px/1 Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;');
+    btn.onmouseenter = function(){ btn.style.background = '#8A004F'; btn.style.color = '#fff'; };
+    btn.onmouseleave = function(){ btn.style.background = 'rgba(138,0,79,.06)'; btn.style.color = '#8A004F'; };
+    btn.onclick = function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      radarGenericPlanBtnClick(btn);
+    };
+    card.appendChild(btn);
+  });
+}
+window.enhanceRadarActionPlans = enhanceRadarActionPlans;
+window.radarGenericPlanBtnClick = radarGenericPlanBtnClick;
+setInterval(function(){ enhanceRadarActionPlans(document); }, 1800);
+setTimeout(function(){
+  enhanceRadarActionPlans(document);
+  try{
+    new MutationObserver(function(mutations){
+      mutations.forEach(function(m){ if(m.addedNodes && m.addedNodes.length) enhanceRadarActionPlans(document); });
+    }).observe(document.body, {childList:true, subtree:true});
+  }catch(e){}
+}, 1200);
+
 function updateKpiTooltips(){
   const rows=allLoadedSignals().filter(r=>isForwardSignal(r.signal));
   const risks=rows.filter(r=>isRiskSignal(r.signal));
